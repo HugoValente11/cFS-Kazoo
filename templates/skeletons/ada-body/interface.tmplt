@@ -1,0 +1,36 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@IF@@ not @_Is_Timer_@
+@@IF@@ @_EXIST:Param_Names_@
+@@INLINE@@
+procedure @_CAPITALIZE:Name_@
+@@INLINE(\()(; )(\) is)@@
+@@TABLE@@
+@@IF@@ @_Param_Directions_@ = "PARAM_IN"
+@_Param_Names_@ : in out asn1Scc@_CAPITALIZE:REPLACE_ALL((-)/_):Param_Types_@
+@@ELSE@@
+@_Param_Names_@ : out asn1Scc@_CAPITALIZE:REPLACE_ALL((-)/_):Param_Types_@
+@@END_IF@@
+@@END_TABLE@@
+@@END_INLINE@@
+@@END_INLINE@@
+@@ELSE@@
+procedure @_CAPITALIZE:Name_@ is
+@@END_IF@@
+
+   begin
+      --  Write your code here
+      null;
+   end @_CAPITALIZE:Name_@;
+@@END_IF@@

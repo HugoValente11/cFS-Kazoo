@@ -1,0 +1,174 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fnode.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_block.ascii
+with Text_IO; use Text_IO;
+
+with ASN1_Ada_Iterators.Iterators;         use ASN1_Ada_Iterators.Iterators;
+
+package body @_CAPITALIZE:Name_@_Events is
+
+   procedure Process_Event
+     (Event        : asn1sccObservable_Event;
+      Global_State : in out asn1SccSystem_State)
+   is
+      Evt : constant asn1scc@_CAPITALIZE:Name_@_Event :=
+              (case Event.Kind is
+                 when Input_Event_Present =>
+                    Event.Input_Event.Event.@_CAPITALIZE:Name_@,
+                 when Output_Event_Present =>
+                    Event.Output_Event.Event.@_CAPITALIZE:Name_@,
+                 when others => asn1scc@_CAPITALIZE:Name_@_Event_Init);
+      --  To transform outputs into a corresponding input message to place
+      --  in the recipient queue (with a possibly different name):
+      Input_Event : asn1SccObservable_Event (Kind => Input_Event_PRESENT);
+   begin
+      -- This function executes provided interface events only
+      if Event.Kind in No_Event_Present .. System_Startup_Present then
+         return;
+      end if;
+      case Evt.Kind is
+      @@IF@@ @_List_Of_ASync_PIs'Length_@ > 0 or @_Timers'Length_@ > 0
+         when Msg_IN_Present =>
+            case Evt.Msg_In.Kind is
+              @@TABLE@@
+               when @_CAPITALIZE:List_Of_ASync_PIs_@_PRESENT =>
+                 @@IF@@ @_ASync_PI_Param_Name_@ /= ""
+                  declare
+                     Param : asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):ASync_PI_Param_Type_@ := Evt.Msg_In.@_CAPITALIZE:List_Of_ASync_PIs_@.@_CAPITALIZE:ASync_PI_Param_Name_@;
+                  begin
+                     @_CAPITALIZE:Name_@_PI.@_CAPITALIZE:List_Of_ASync_PIs_@ (@_CAPITALIZE:ASync_PI_Param_Name_@ => Param, Global_State => Global_State);
+                  end;
+                 @@ELSE@@
+                  @_CAPITALIZE:Name_@_PI.@_CAPITALIZE:List_Of_ASync_PIs_@ (Global_State => Global_State);
+                 @@END_IF@@
+              @@END_TABLE@@
+              @@TABLE@@
+              @@-- Do the timers too
+               when @_CAPITALIZE:Timers_@_PRESENT =>
+                  @_CAPITALIZE:Name_@_PI.@_CAPITALIZE:Timers_@ (Global_State => Global_State);
+              @@END_TABLE@@
+            end case;
+      @@END_IF@@
+      @@IF@@ @_List_Of_ASync_RIs'Length_@ > 0
+         when Msg_OUT_Present =>
+            --  Create a input message and place it in the recipient msg queue
+            case Evt.Msg_Out.Kind is
+                @_Required'Indent_@
+            end case;
+      @@END_IF@@
+      end case;
+   end Process_Event;
+
+   procedure Print_Event (Event : asn1scc@_CAPITALIZE:Name_@_Event) is
+   begin
+      case Event.Kind is
+      @@IF@@ @_List_Of_ASync_PIs'Length_@ > 0 or @_Timers'Length_@ > 0
+         when Msg_IN_Present =>
+            case Event.Msg_In.Kind is
+              @@TABLE@@
+               when @_CAPITALIZE:List_Of_ASync_PIs_@_PRESENT =>
+                 Put ("@_Name_@: INPUT @_CAPITALIZE:List_Of_ASync_PIs_@");
+                 @@IF@@ @_ASync_PI_Param_Name_@ /= ""
+                  Put_Line (" (" & @_CAPITALIZE:REPLACE_ALL(-/_):ASync_PI_Param_Type_@_Pkg.Image (Event.Msg_In.@_CAPITALIZE:List_Of_ASync_PIs_@.@_CAPITALIZE:ASync_PI_Param_Name_@) & ")");
+                 @@ELSE@@
+                  Put_Line ("()");
+                 @@END_IF@@
+              @@END_TABLE@@
+              @@TABLE@@
+              @@-- Do the timers too
+               when @_CAPITALIZE:Timers_@_PRESENT =>
+                 Put ("@_Name_@: TIMEOUT @_CAPITALIZE:Timers_@");
+              @@END_TABLE@@
+            end case;
+      @@END_IF@@
+      @@IF@@ @_List_Of_ASync_RIs'Length_@ > 0
+         when Msg_OUT_Present =>
+            case Event.Msg_Out.Kind is
+              @@TABLE@@
+                when @_CAPITALIZE:List_Of_ASync_RIs_@_PRESENT =>
+                 Put ("@_Name_@: OUTPUT @_CAPITALIZE:List_Of_ASync_RIs_@");
+                 @@IF@@ @_ASync_RI_Param_Name_@ /= ""
+                  Put_Line (" (" & @_CAPITALIZE:REPLACE_ALL(-/_):ASync_RI_Param_Type_@_Pkg.Image (Event.Msg_Out.@_CAPITALIZE:List_Of_ASync_RIs_@.@_CAPITALIZE:ASync_RI_Param_Name_@) & ")");
+                 @@ELSE@@
+                  Put_Line ("()");
+                 @@END_IF@@
+              @@END_TABLE@@
+              @@TABLE@@
+                --  Synchronous calls are not intercepted for the moment
+                --  when @_CAPITALIZE:List_Of_Sync_RIs_@_PRESENT =>
+                --     Put_Line ("@_Name_@ : CALL @_List_Of_Sync_RIs_@");
+              @@END_TABLE@@
+            end case;
+      @@END_IF@@
+      end case;
+   end Print_Event;
+
+@@IF@@ @_Language_@ = GUI
+   procedure Exhaust_Interfaces
+      (Global_State : in out asn1SccSystem_State;
+       Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                        Limit_Reached : out Boolean)) is
+   begin
+     --  Put_Line ("Exhaust interfaces of @_Name_@");
+     @@TABLE@@
+      Exhaust_@_CAPITALIZE:List_Of_ASync_RIs_@ (Global_State, Callback);
+     @@END_TABLE@@
+   end Exhaust_Interfaces;
+
+@@TABLE@@
+   procedure Exhaust_@_CAPITALIZE:List_Of_ASync_RIs_@
+      (Global_State : in out asn1SccSystem_State;
+       Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                        Limit_Reached : out Boolean)) is
+  @@IF@@ @_ASync_RI_Param_Name'Length_@ > 0
+   Iterator     : @_CAPITALIZE:REPLACE_ALL(-/_):ASync_RI_Param_Type_@_Pkg.Instance;
+   Param        : asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):ASync_RI_Param_Type_@;
+  @@END_IF@@
+   Original_State : constant asn1SccSystem_State := Global_State;
+   Event          : asn1SccObservable_Event
+                     (Kind => Output_Event_PRESENT);
+   Limit_Reached  : Boolean;
+begin
+      --  Put_Line ("Exhausing interface @_Name_@");
+      --  Create an event to store as an edge of the state graph
+      Event.Output_Event.Source := asn1Scc@_CAPITALIZE:Name_@;
+      Event.Output_Event.Dest   := asn1Scc@_CAPITALIZE:Async_RIs_Parent_@;
+      Event.Output_Event.Event  :=
+         (Kind => @_CAPITALIZE:Name_@_PRESENT,
+          @_CAPITALIZE:Name_@ =>
+             (Kind   => Msg_OUT_PRESENT,
+              Msg_Out => (Kind => @_CAPITALIZE:List_Of_ASync_RIs_@_PRESENT, others => <>)));
+
+  @@IF@@ @_ASync_RI_Param_Name'Length_@ > 0
+      for Each of Iterator loop
+         --  Iterate exhaustively over the interface parameter
+         Param := @_CAPITALIZE:REPLACE_ALL(-/_):ASync_RI_Param_Type_@_Pkg.To_ASN1 (Each);
+         Event.Output_Event.Event.@_CAPITALIZE:Name_@.Msg_Out.@_CAPITALIZE:List_Of_ASync_RIs_@.@_ASync_RI_Param_Name_@ := Param;
+    
+         --  the Callback will call the observers, then execute the event
+         --  (which may have been altered by the observers), and then
+         --  process all the new events possibly generated during this execution
+         --  If a new state is generated at the end, it will be added to the graph
+         Callback (Event, Limit_Reached);
+    
+         --  Restore previous state
+         Global_State := Original_State;
+         exit when Limit_Reached;
+      end loop;
+  @@ELSE@@
+      Callback (Event, Limit_Reached);
+
+      --  Restore previous state
+      Global_State := Original_State;
+  @@END_IF@@
+   end Exhaust_@_CAPITALIZE:List_Of_ASync_RIs_@;
+@@END_TABLE@@
+@@END_IF@@
+
+   @@--  pi.tmplt generate code to exhaust RI parameters
+@@--   @_Protected_PIs'Indent_@
+@@--   @_Unprotected_PIs'Indent_@
+
+end @_CAPITALIZE:Name_@_Events;

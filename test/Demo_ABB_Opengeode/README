@@ -1,0 +1,11 @@
+Demo_ABB
+
+Implementation of a demonstrator showing the integration of Opengeode and Simulink on a complex lift system
+The Simulink model was implemented and kindly provided by ABB.
+
+This system also shows the plot and GUI. It can be used for MSC tracing as well.
+
+Author of the Simulink model of the lift system: Stein-Erik Ellevseth (ABB)
+
+
+

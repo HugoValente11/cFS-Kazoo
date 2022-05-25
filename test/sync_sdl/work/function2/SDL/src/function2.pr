@@ -1,0 +1,79 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Function2;
+    /* CIF TEXT (508, 352), (267, 140) */
+    dcl val MyInteger := 0;
+    
+    dcl dataHasChanged T_Boolean := False;
+    /* CIF ENDTEXT */
+    /* CIF procedure (622, 214), (75, 35) */
+    procedure getData;
+        /* CIF TEXT (446, 134), (267, 148) */
+        fpar
+            in/out P1 MyInteger;
+        /* CIF ENDTEXT */
+        /* CIF START (112, 72), (70, 35) */
+        START;
+            /* CIF task (112, 127), (71, 35) */
+            task p1 := val;
+            /* CIF PROCEDURECALL (0, 182), (295, 35) */
+            call writeln('function2] procedure getData called');
+            /* CIF return (130, 232), (35, 35) */
+            return ;
+    endprocedure;
+    /* CIF procedure (874, 361), (77, 35) */
+    procedure setData;
+        /* CIF TEXT (412, 134), (267, 148) */
+        fpar
+            in P1 MyInteger,
+            in P2 T_Boolean;
+        /* CIF ENDTEXT */
+        /* CIF START (157, 86), (70, 35) */
+        START;
+            /* CIF PROCEDURECALL (2, 141), (378, 35) */
+            call writeln('procedure setData called with params:  ', p1, ' - ', p2);
+            /* CIF task (156, 196), (71, 35) */
+            task val := p1;
+            /* CIF task (108, 251), (167, 35) */
+            task dataHasChanged := True;
+            /* CIF return (174, 301), (35, 35) */
+            return ;
+    endprocedure;
+    /* CIF START (167, 10), (70, 35) */
+    START;
+        /* CIF NEXTSTATE (167, 60), (70, 35) */
+        NEXTSTATE Wait;
+    /* CIF state (770, 50), (85, 40) */
+    state wait, 
+otherstate;
+        /* CIF provided (753, 110), (119, 35) */
+        provided datahaschanged;
+            /* CIF PROCEDURECALL (679, 165), (266, 35) */
+            call writeln('[Function2] Data has changed!!!');
+            /* CIF task (728, 220), (170, 35) */
+            task dataHaschanged := False;
+            /* CIF NEXTSTATE (778, 275), (70, 35) */
+            NEXTSTATE -;
+    endstate;
+    /* CIF state (520, 10), (88, 35) */
+    state Otherstate;
+        /* CIF input (527, 65), (70, 35) */
+        input getData;
+            /* CIF PROCEDURECALL (415, 120), (296, 35) */
+            call writeln('[function2] Transition after getData');
+            /* CIF NEXTSTATE (528, 175), (70, 40) */
+            NEXTSTATE -;
+    endstate;
+    /* CIF state (167, 60), (70, 35) */
+    state Wait;
+        /* CIF input (0, 115), (102, 35) */
+        input doSomething;
+            /* CIF NEXTSTATE (6, 170), (89, 35) */
+            NEXTSTATE OtherState;
+        /* CIF input (223, 115), (70, 35) */
+        input getData;
+            /* CIF PROCEDURECALL (111, 170), (296, 35) */
+            call writeln('[function2] Transition after getData');
+            /* CIF NEXTSTATE (224, 225), (70, 40) */
+            NEXTSTATE -;
+    endstate;
+endprocess Function2;

@@ -1,0 +1,1881 @@
+== Templates ==
+
+=== templates/skeletons/makefile.tmplt ===
+This template is evaluated only once. The output is saved to the Makefile within output directory.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Function_Names
+|Combined table: list of fuction names...
+|-
+|Language
+|&#8627; and corresponding implementation language
+|-
+|Is_Type
+|&#8627; and flag if it is a function type
+|-
+|Has_Context_Param
+|&#8627; and flag to indicate if function has context parameters
+|-
+|Instance_Of
+|&#8627;  and the instance name or empty string
+|-
+|Is_Shared_Type
+|&#8627;  true if component is an instance of a function stored in the shared types folder
+|-
+|CP_Files
+|List of all context parameters ASN.1 files
+|-
+|Unique_Languages
+|List of all languages used in the system
+|-
+|ASN1_Files
+|List of all ASN.1 files
+|-
+|ACN_Files
+|List of all ACN files
+|-
+|ASN1_Modules
+|List of all ASN.1 modules
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|DOCUMENTATION MISSING
+|-
+|Target
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|List of available component types
+|-
+|Check_Data_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Data_View
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|DOCUMENTATION MISSING
+|-
+|Use_POHIC
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|CPU_Platform
+|DOCUMENTATION MISSING
+|-
+|Is_FPGA
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/context-parameters.tmplt ===
+This template is evaluated for every function which has context parameters. The output is saved to the file Context-<function name>.asn
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|Function name
+|-
+|Sort_Set
+|Set of types used for this Context Parameter file
+|-
+|Module_Set
+|&#8627; corresponding module (needed for ASN.1 "IMPORTS")
+|-
+|CP_Name
+|Table of context parameter names
+|-
+|CP_Sort
+|&#8627; corresponding ASN.1 type
+|-
+|CP_ASN1_Module
+|&#8627; in ASN.1 module
+|-
+|CP_Value
+|&#8627; with default value
+|-
+|Is_Type
+|DOCUMENTATION MISSING
+|-
+|Instance_Of
+|Name of instance or empty string
+|}
+=== templates/skeletons/sub/trigger.tmplt ===
+This template is evaluated to trigger processing of other files from given directory.
+If the result of evaluation is equal to "TRUE", then other files will be processed.
+This template is identical for Skeleton and Glue subfolders.
+
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the function
+|-
+|Is_Type
+|True if function type
+|-
+|Instance_Of
+|Name of instance or empty string
+|-
+|Language
+|Implementation	language for the function
+|-
+|Filename_Is_Present
+|True if target function output already exists
+|-
+|Makefile_Is_Present
+|True if target build script already exists
+|-
+|Zip_File
+|Optional path to zip file
+|-
+|Use_POHIC
+|Value of command line flag --polyorb-hi-c (or -p)
+|-
+|List_Of_PIs
+|List of all provided interfaces (names only)
+|-
+|ASync_RI_Param_Type
+|DOCUMENTATION MISSING
+|-
+|RIs_Have_Params
+|DOCUMENTATION MISSING
+|-
+|List_Of_Sync_RIs
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Property_Names
+|Vector tag: AADL Property name
+|-
+|Property_Values
+|  &#8627; corresponding AADL property value
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|Interface view filename
+|-
+|ASync_RI_Param_Name
+|DOCUMENTATION MISSING
+|-
+|CP_Asn1Modules
+|DOCUMENTATION MISSING
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|CP_Values
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|List_Of_ASync_PIs
+|Vector tag: list of async Provided interfaces
+|-
+|ASync_PI_Kind
+|  &#8627; CYCLIC_OPERATION or SPORADIC_OPERATION
+|-
+|ASync_PI_Is_Connected
+|  &#8627; Flag set to true if PI is connected
+|-
+|ASync_PI_Param_Name
+|DOCUMENTATION MISSING
+|-
+|ASync_PI_Param_Type
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|Async_RIs_Parent
+|DOCUMENTATION MISSING
+|-
+|CP_Names
+|DOCUMENTATION MISSING
+|-
+|List_Of_Sync_PIs
+|DOCUMENTATION MISSING
+|-
+|List_Of_ASync_RIs
+|DOCUMENTATION MISSING
+|-
+|Has_Context
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|PIs_Have_Params
+|DOCUMENTATION MISSING
+|-
+|CP_Asn1Filenames
+|DOCUMENTATION MISSING
+|-
+|Timers
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|Value of command line flag --check-dataview
+|-
+|CP_Types
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|List of AADL files passed to the command line
+|-
+|Sync_RIs_Parent
+|DOCUMENTATION MISSING
+|-
+|List_Of_RIs
+|DOCUMENTATION MISSING
+|-
+|Data_View
+|Data view filename
+|-
+|Target
+|Value of command line flag --target=Target
+|-
+|Shared_Types
+|List of available component types
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Coord.Y2
+|DOCUMENTATION MISSING
+|-
+|Coord.Y1
+|DOCUMENTATION MISSING
+|-
+|Coord.X2
+|DOCUMENTATION MISSING
+|-
+|Coord.X1
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/sub/makefile-filename.tmplt ===
+This file is optional, if exists the result of parsing of this file is a name of output file for makefile.tmplt, otherwise this template will not be processed.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the function
+|-
+|Language
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/sub/function-filename.tmplt ===
+This file is optional, if exists the result of parsing of this file is a name of output file for function.tmplt, otherwise this template will not be processed.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the function
+|-
+|Language
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/sub/function.tmplt ===
+Template for a function in the skeleton or glue folder
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the function
+|-
+|Language
+|Implementation language
+|-
+|List_Of_PIs
+|List of all provided interfaces (names only)
+|-
+|List_Of_RIs
+|List of all required interfaces (names only)
+|-
+|Provided_Interfaces
+|Generated from interfaces.tmplt
+|-
+|Required_Interfaces
+|Generated from interfaces.tmplt
+|-
+|RIs_Have_Params
+|True if at least one RI has an ASN.1 parameter
+|-
+|PIs_Have_Params
+|True if at least one PI has an ASN.1 parameter
+|-
+|Zip_File
+|Path to optional zip file containing the code of the function
+|(deprecated functionality)
+|-
+|Is_Type
+|True if it is a function type
+|-
+|Instance_Of
+|Name of the function type if it is an instance
+|-
+|Has_Context
+|True if function has context parameters
+|-
+|CP_Names
+|Vector tag: context parameters (names)
+|-
+|CP_Types
+| &#8627; corresponding ASN.1 type
+|-
+|CP_Values
+| &#8627; corresponding value
+|-
+|CP_Asn1Modules
+| &#8627; corresponding ASN.1 module containing the type
+|-
+|CP_Asn1Filenames
+| &#8627; corresponding ASN.1 filename
+|-
+|Property_Names
+|Vector tag: user defined AADL property names
+|-
+|Property_Values
+| &#8627; corresponding value
+|-
+|List_Of_ASync_PIs
+|List of asynchronous provided interfaces
+|-
+|ASync_PI_Param_Name
+| &#8627; name of the parameter
+|-
+|ASync_PI_Param_Type
+| &#8627; ASN.1 typename of the parameter
+|-
+|ASync_PI_Kind
+| &#8627; CYCLIC_OPERATION or SPORADIC_OPERATION
+|-
+|ASync_PI_Is_Connected
+|  &#8627; Flag set to true if PI is connected
+|-
+|Timers
+|List of timers (names)
+|-
+|List_Of_Sync_RIs
+|List of synchronous required interfaces
+|-
+|List_Of_Sync_PIs
+|List of synchronous provided interfaces
+|-
+|Sync_RIs_Parent
+| &#8627; and corresponding parent function name
+|-
+|ASN1_Modules
+|List of ASN.1 modules containing types used in this function
+|-
+|ASN1_Files
+|List of ASN.1 files containing types used in this function
+|-
+|List_Of_ASync_RIs
+|vector tag: list of asynchronous required interfaces
+|-
+|Async_RIs_Parent
+| &#8627; Corresponding parent function name
+|-
+|ASync_RI_Param_Name
+| &#8627; parameter name of the required interface
+|-
+|ASync_RI_Param_Type
+| &#8627; ASN1 typename of the parameter
+|-
+|Data_View
+|DOCUMENTATION MISSING
+|-
+|Shared_Lib_Dir
+|DOCUMENTATION MISSING
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Use_POHIC
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Target
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|Coord.Y2
+|DOCUMENTATION MISSING
+|-
+|Coord.Y1
+|DOCUMENTATION MISSING
+|-
+|Coord.X2
+|DOCUMENTATION MISSING
+|-
+|Coord.X1
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/sub/interface.tmplt ===
+This file is processed twice, first time for required interfaces of the function from Interface View, second time for the provided interfaces. The results are parameters for processing function.tmplt
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the interface
+|-
+|Direction
+|"PI" or "RI"
+|-
+|Kind
+|The RCM Kind (SPORADIC|CYCLIC|PROTECTED|UNPROTECTED_OPERATION)
+|-
+|Parent_Function
+|The name of the function
+|-
+|Language
+|The implementation language of the function
+|-
+|Property_Names
+|All AADL properties (names) associated to the function
+|-
+|Property_Values
+|&#8627; and corresponding values
+|-
+|Param_Names
+|List of parameter names
+|-
+|Param_Types
+| &#8627; Corresponding parameter types
+|-
+|Param_Directions
+| &#8627; Corresponding direction
+|-
+|Param_Encodings
+| &#8627; Corresponding ASN.1 encoding
+|-
+|Is_Timer
+|Flag set to true if this is a timer interface
+|-
+|Period
+|Property of the interface
+|-
+|WCET
+|Property of the interface
+|-
+|Queue_Size
+|Property of the interface
+|-
+|IF_Property_Names
+| and Values	User-defined properties (vector tag)
+|-
+|IF_Property_Values
+|DOCUMENTATION MISSING
+|-
+|Remote_Languages
+|DOCUMENTATION MISSING
+|-
+|Param_ASN1_Modules
+|DOCUMENTATION MISSING
+|-
+|Remote_Interface_Names
+|DOCUMENTATION MISSING
+|-
+|Remote_Function_Names
+|DOCUMENTATION MISSING
+|-
+|Param_Basic_Types
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|DOCUMENTATION MISSING
+|-
+|Shared_Lib_Dir
+|DOCUMENTATION MISSING
+|-
+|Use_POHIC
+|DOCUMENTATION MISSING
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Target
+|DOCUMENTATION MISSING
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|DOCUMENTATION MISSING
+|-
+|Data_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|Coord.Y
+|DOCUMENTATION MISSING
+|-
+|Coord.X
+|DOCUMENTATION MISSING
+|-
+|Parent_Instance_Of
+|DOCUMENTATION MISSING
+|-
+|IF_Offset
+|DOCUMENTATION MISSING
+|-
+|IF_Priority
+|DOCUMENTATION MISSING
+|-
+|IF_Stack_Size
+|DOCUMENTATION MISSING
+|}
+=== templates/skeletons/sub/makefile.tmplt ===
+This template is processed when makefile-filename.tmplt exists.
+The output of this template is saved to the file with name returned by processing makefile-filename.tmplt In directory [functionname]/[ languagename]
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The function name
+|-
+|ASN1_Files
+|List of all ASN.1 files
+|-
+|ASN1_Modules
+|List of all ASN.1 modules
+|-
+|Is_Type
+|Flag set to True for function type
+|-
+|Instance_Of
+|Name of function type if instance
+|-
+|Has_CP
+|True if context parameters are defined for this function
+|-
+|Property_Names
+|Function user-defined property names (goes in pair with Property_Values)
+|-
+|Property_Values
+|Function user-defined property values (goes in pair with Property_Names)
+|-
+|Is_Shared_Type
+|True if component is an instance of a function in the shared types folder
+|-
+|Language
+|Implementation language of the function
+|-
+|Shared_Lib_Dir
+|Path to the shared component type folder
+|-
+|List_Of_PIs
+|List of all provided interfaces (names only)
+|}
+=== templates/concurrency_view/sub/trigger.tmplt ===
+This file is processed for every node. The result of this file indicates if the rest of templates for given node will be processed.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Filename_Is_Present
+|true if file with name returned by filenode.tmplt exists
+|-
+|Skeletons
+|from kazoo configuration
+|-
+|Glue
+|from kazoo configuration
+|-
+|No_Stdlib_Flag
+|Command line-flag --no-stdlib to avoid loading ocarina_components.aadl
+|-
+|Timer_Resolution
+|Value of command line --timer
+|-
+|Output_Dir
+|Value or command line -o to set the output folder
+|-
+|Interface_View
+|Interface view filename
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|Value of command line flag --check-dataview
+|-
+|Debug_Flag
+|Value of command line flag --debug (or -g)
+|-
+|Use_POHIC
+|Value of command line flag --polyorb-hi-c (or -p)
+|-
+|Other_Files
+|List of AADL files passed to the command line
+|-
+|Deployment_View
+|Deployment view filename
+|-
+|Data_View
+|Data view filename
+|-
+|CPU_Family
+|CPU Kind (e.g. leon3)
+|-
+|CPU_Platform
+|AADL CPU_Platform (e.g. PLATFORM_NATIVE)
+|-
+|CPU_Name
+|CPU AADL Identifier (e.g. x86_inst)
+|-
+|Target
+|Value of command line flag --target=Target
+|-
+|CPU_Classifier
+|AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+|-
+|Shared_Types
+|List of available component types
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Is_Distributed
+|True if the system contains at least one bus
+|}
+=== templates/concurrency_view/sub/bus.tmplt ===
+This template is parsed for all busses referenced in system.tmplt
+
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Bus_Name
+|Name of the bus
+|-
+|Classifier
+|AADL Classifier for the bus
+|-
+|Property_Names
+|AADL property names (vector tag)
+|-
+|Property_Values
+|AADL property values
+|-
+|AADL_Package
+|AADL package name containing the bus
+|}
+=== templates/concurrency_view/sub/thread.tmplt ===
+This file is processed for every thread in every partition in every node.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Thread_Name
+|Thread name
+|-
+|Partition_Name
+|Partition containing this thread
+|-
+|Entry_Port_Name
+|Name of the PI
+|-
+|RCM
+|One of "CYCLIC_OPERATION", "SPORADIC_OPERATION"
+|-
+|Need_Mutex
+|True if the PI is shared with others in the protected block
+|-
+|Pro_Block_Name
+|Name of the protected function
+|-
+|Node_Name
+|Name of the deployment node
+|-
+|Remote_Threads
+|Vector tag: output remote thread list
+|-
+|Remote_PIs
+| &#8627; Associated PI Name
+|-
+|Remote_PI_Sorts
+| &#8627; Optional param type of the remote thread
+|-
+|Remote_PI_Modules
+| &#8627; Asn1 module of the optional param type
+|-
+|Name
+|
+|-
+|Kind
+|
+|-
+|Parent_Function
+|Tags related to the PI that is at the origin of the thread creation: shoud be useless here
+|-
+|Param_Names
+|
+|-
+|Period
+|
+|-
+|WCET
+|
+|-
+|Queue_Size
+|relevant here
+|-
+|IF_Property_Names
+|
+|-
+|Skeletons
+|from kazoo configuration
+|-
+|Glue
+|from kazoo configuration
+|-
+|Param_Directions
+|DOCUMENTATION MISSING
+|-
+|Is_Timer
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Param_Encodings
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|Interface view filename
+|-
+|IF_Property_Values
+|DOCUMENTATION MISSING
+|-
+|Language
+|Implementation language of the function
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Remote_Function_Names
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Remote_Languages
+|DOCUMENTATION MISSING
+|-
+|Param_ASN1_Modules
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|RI_Port_Names
+|DOCUMENTATION MISSING
+|-
+|Param_Types
+|DOCUMENTATION MISSING
+|-
+|Remote_Interface_Names
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|Value of command line flag --check-dataview
+|-
+|Use_POHIC
+|Value of command line flag --polyorb-hi-c (or -p)
+|-
+|Other_Files
+|List of AADL files passed to the command line
+|-
+|Data_View
+|Data view filename
+|-
+|Param_Basic_Types
+|DOCUMENTATION MISSING
+|-
+|Target
+|Value of command line flag --target=Target
+|-
+|Priority
+|DOCUMENTATION MISSING
+|-
+|Dispatch_Offset_ms
+|DOCUMENTATION MISSING
+|-
+|Stack_Size_In_Bytes
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|List of available component types
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Coord.Y
+|DOCUMENTATION MISSING
+|-
+|Coord.X
+|DOCUMENTATION MISSING
+|-
+|Pro_Instance_Of
+|DOCUMENTATION MISSING
+|-
+|IF_Offset
+|DOCUMENTATION MISSING
+|-
+|IF_Stack_Size
+|DOCUMENTATION MISSING
+|-
+|IF_Priority
+|DOCUMENTATION MISSING
+|}
+=== templates/concurrency_view/sub/pi.tmplt ===
+The template pi.tmplt is evaluated many times for every protected and unprotected provided interface.
+The result of every evaluation is joined to one string and passed as a parameter to block.tmplt
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the interface
+|-
+|Kind
+|The RCM Kind
+|-
+|Parent_Function
+|The name of the function
+|-
+|Param_Names
+|List of parameter names
+|-
+|Param_Types
+| &#8627; Corresponding parameter types
+|-
+|Param_Directions
+| &#8627; Corresponding direction
+|-
+|Is_Timer
+|DOCUMENTATION MISSING
+|-
+|Param_Encodings
+|DOCUMENTATION MISSING
+|-
+|Caller_Is_Local
+|DOCUMENTATION MISSING
+|-
+|IF_Property_Values
+|DOCUMENTATION MISSING
+|-
+|Queue_Size
+|DOCUMENTATION MISSING
+|-
+|Language
+|Implementation language of the function
+|-
+|Protected_Block_Name
+|DOCUMENTATION MISSING
+|-
+|Remote_Languages
+|DOCUMENTATION MISSING
+|-
+|Param_ASN1_Modules
+|DOCUMENTATION MISSING
+|-
+|Partition_Name
+|DOCUMENTATION MISSING
+|-
+|Calling_Threads
+|DOCUMENTATION MISSING
+|-
+|IF_Property_Names
+|DOCUMENTATION MISSING
+|-
+|Period
+|DOCUMENTATION MISSING
+|-
+|Remote_Interface_Names
+|DOCUMENTATION MISSING
+|-
+|WCET
+|DOCUMENTATION MISSING
+|-
+|Remote_Function_Names
+|DOCUMENTATION MISSING
+|-
+|Param_Basic_Types
+|DOCUMENTATION MISSING
+|-
+|Coord.Y
+|DOCUMENTATION MISSING
+|-
+|Coord.X
+|DOCUMENTATION MISSING
+|-
+|IF_Offset
+|DOCUMENTATION MISSING
+|-
+|IF_Priority
+|DOCUMENTATION MISSING
+|-
+|IF_Stack_Size
+|DOCUMENTATION MISSING
+|}
+=== templates/concurrency_view/sub/ri.tmplt ===
+The template ri.tmplt is evaluated many times for every required interface.
+The result of every evaluation is koined to one string and passed as a parameter to block.tmplt
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|The name of the interface
+|-
+|Kind
+|The RCM Kind
+|-
+|Parent_Function
+|The name of the function
+|-
+|Param_Names
+|List of parameter names
+|-
+|Param_Types
+|Corresponding parameter types
+|-
+|Param_Directions
+|Corresponding direction
+|-
+|Is_Timer
+|DOCUMENTATION MISSING
+|-
+|Param_Encodings
+|DOCUMENTATION MISSING
+|-
+|IF_Property_Values
+|DOCUMENTATION MISSING
+|-
+|Queue_Size
+|DOCUMENTATION MISSING
+|-
+|Language
+|DOCUMENTATION MISSING
+|-
+|Remote_Languages
+|DOCUMENTATION MISSING
+|-
+|Param_ASN1_Modules
+|DOCUMENTATION MISSING
+|-
+|Partition_Name
+|DOCUMENTATION MISSING
+|-
+|Calling_Threads
+|DOCUMENTATION MISSING
+|-
+|IF_Property_Names
+|DOCUMENTATION MISSING
+|-
+|Period
+|DOCUMENTATION MISSING
+|-
+|Remote_Interface_Names
+|DOCUMENTATION MISSING
+|-
+|WCET
+|DOCUMENTATION MISSING
+|-
+|Remote_Function_Names
+|DOCUMENTATION MISSING
+|-
+|Param_Basic_Types
+|DOCUMENTATION MISSING
+|-
+|Coord.Y
+|DOCUMENTATION MISSING
+|-
+|Coord.X
+|DOCUMENTATION MISSING
+|-
+|IF_Offset
+|DOCUMENTATION MISSING
+|-
+|IF_Priority
+|DOCUMENTATION MISSING
+|-
+|IF_Stack_Size
+|DOCUMENTATION MISSING
+|}
+=== templates/concurrency_view/sub/block.tmplt ===
+This template is evaluated for every block.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|Protected block name
+|-
+|Language
+|Implementation language
+|-
+|Calling_Threads
+|List of calling threads
+|-
+|Protected_PIs
+|Protected Provided interfaces (from pi.tmplt)
+|-
+|Unprotected_PIs
+|Unprotected Provided interfaces (from pi.tmplt)
+|-
+|Required
+|Required interfaces (from ri.tmplt)
+|-
+|List_Of_PIs
+|List of all provided interfaces (names only)
+|-
+|List_Of_ASync_RIs
+|Vector tag: name of asynchronous RIs
+|-
+|ASync_RI_Param_Name
+|  &#8627; corresponding parameter Name
+|-
+|ASync_RI_Param_Type
+|  &#8627; corresponding parameter ASN.1 type
+|-
+|RIs_Have_Params
+|DOCUMENTATION MISSING
+|-
+|List_Of_Sync_RIs
+|List of synchronous RIs
+|-
+|List_Of_ASync_PIs
+|Vector tag: name of asynchronous PIs
+|-
+|ASync_PI_Kind
+|  &#8627; CYCLIC_OPERATION or SPORADIC_OPERATION
+|-
+|ASync_PI_Is_Connected
+|  &#8627; Flag set to true if PI is connected
+|-
+|ASync_PI_Param_Name
+|  &#8627; corresponding parameter Name
+|-
+|ASync_PI_Param_Type
+|  &#8627; corresponding parameter ASN.1 type
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Property_Names
+|Vector tag: AADL Property name
+|-
+|Property_Values
+|  &#8627; corresponding AADL property value
+|-
+|Skeletons
+|Command line flag (--gw)
+|-
+|Interface_View
+|Interface view filename
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|CP_Names
+|Vector tag: context parameter names
+|-
+|CP_Values
+|  &#8627; value
+|-
+|CP_Asn1Modules
+|  &#8627; ASN.1 module
+|-
+|CP_Asn1Filenames
+|  &#8627; ASN.1 file name
+|-
+|CP_Types
+|  &#8627; Context parameter ASN.1 type
+|-
+|Deployment_View
+|Path/name of Deployment view file
+|-
+|No_Stdlib_Flag
+|command line flag --no-stdlib
+|-
+|Glue
+|command line flag --glue
+|-
+|Partition_Name
+|Name of the partition containing this function
+|-
+|Async_RIs_Parent
+|DOCUMENTATION MISSING
+|-
+|Zip_File
+|DOCUMENTATION MISSING
+|-
+|Node_Name
+|DOCUMENTATION MISSING
+|-
+|List_Of_Sync_PIs
+|DOCUMENTATION MISSING
+|-
+|Has_Context
+|True if function has context parameters
+|-
+|Output_Dir
+|Output folder (by default: work)
+|-
+|PIs_Have_Params
+|DOCUMENTATION MISSING
+|-
+|Timers
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|Value of command line flag --check-dataview
+|-
+|Use_POHIC
+|Value of command line flag --polyorb-hi-c (or -p)
+|-
+|Other_Files
+|List of AADL files passed to the command line
+|-
+|Sync_RIs_Parent
+|DOCUMENTATION MISSING
+|-
+|List_Of_RIs
+|List of required interface
+|-
+|Data_View
+|Data view filename
+|-
+|Target
+|Value of command line flag --target=Target
+|-
+|Shared_Types
+|List of available component types
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Is_Type
+|True if function is a function type
+|-
+|Instance_Of
+|Name of instance or empty string
+|-
+|Debug_Flag
+|if -g is set in the command line
+|-
+|Is_Shared_Type
+|True if component is an instance of a function in the shared types folder
+|-
+|Coord.Y2
+|DOCUMENTATION MISSING
+|-
+|Coord.Y1
+|DOCUMENTATION MISSING
+|-
+|Coord.X2
+|DOCUMENTATION MISSING
+|-
+|Coord.X1
+|DOCUMENTATION MISSING
+|}
+
+=== templates/concurrency_view/sub/partition.tmplt ===
+This file is evaluated for every partition.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Name
+|Partition name (usually the name of the binary)
+|-
+|Threads
+|Code generated for the threads
+|-
+|Thread_Names
+|Tag: list of thread names
+|-
+|Node_Name
+|Name of the node containing this partition
+|-
+|Blocks
+|Code generated for protected functions
+|-
+|Block_Names
+|Tag: list of block (user functions) names
+|-
+|Coverage
+|True if user requested code coverage enable
+|-
+|Package_Name
+|AADL Package name for the target (e.g. ocarina_porocessors_x86)
+|-
+|CPU_Name
+|CPU AADL Identifier (e.g. x86_inst)
+|-
+|CPU_Family
+|CPU Kind (e.g. leon3)
+|-
+|CPU_Instance
+|AADL component instance (e.g. rtems_posix)
+|-
+|CPU_Platform
+|AADL CPU_Platform (e.g. PLATFORM_NATIVE)
+|-
+|CPU_Classifier
+|AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+|-
+|VP_Name
+|Virtual processor name on which the partition is bounded
+|-
+|VP_Platform
+|Virtual processor platform (e.g. PLATFORM_AIR)
+|-
+|VP_Classifier
+|Virtual processor classifier
+|-
+|Bound_Functions
+|List of user functions from Interface view
+|-
+|Thread_Src_Name
+|Vector tag : connection thread name (source)
+|-
+|Thread_Dst_Name
+| &#8627; connection thread name (destination)
+|-
+|Thread_Src_Port
+| &#8627; connection port name (source)
+|-
+|Thread_Dst_Port
+| &#8627; connection port name (dest)
+|-
+|In_Port_Names
+|Vector tag: input ports of the partition
+|-
+|In_Port_Thread_Name
+| &#8627; corresponding thread inside the partition
+|-
+|In_Port_Type_Name
+| &#8627; corresponding parameter type name (optional)
+|-
+|Out_Port_Names
+|Vector tag: output ports of the partition
+|-
+|Out_Port_Type_Name
+| &#8627; corresponding parameter type name (optional)
+|-
+|Part_Out_Port_Name
+|Vector tag: output ports of the partition (can be several times the same)
+|-
+|Connected_Threads
+| &#8627; Corresponding thread connected to it
+|-
+|Block_Instance_Of
+|If the block is an instance: function type name
+|-
+|Thread_Has_Param
+|DOCUMENTATION MISSING
+|-
+|Memory_Region
+|Used for TSP
+|-
+|VP_Package_Name
+|Used for TSP
+|-
+|Ada_Runtime
+|If relevant name of the Ada runtime for this platform
+|-
+|Block_Languages
+|For each block: implementation language
+|-
+|VP_Duration
+|Used for TSP
+|-
+|Device_Names
+|Name of the driver instance
+|-
+|Device_Driver_Names
+|  &#8627; Identifier of the device as defined in ocarina_component.aadl
+|-
+|Device_CPU
+|  &#8627; Label of the processor in the node hosting this driver
+|-
+|Device_Bus_Name
+|  &#8627; Name of the bus connected to this driver
+|-
+|Device_Init
+|  &#8627; name of the function (symbol) in charge of the driver initialisation
+|-
+|Device_Send_Function
+|  &#8627; Name of the driver "send" function as defined in the AADL model
+|-
+|Device_AADL_Pkg
+|  &#8627; AADL package containing the driver (deploymentview::dv::someName)
+|-
+|Device_ASN1_Module
+|  &#8627; Name of the ASN.1 module containing the type used for the driver configuration
+|-
+|Device_Port_Name
+|  &#8627; Port name used by the driver to connect to the bus
+|-
+|Device_Config
+|  &#8627; Configuration string in ASN.1 Value Notation for the driver
+|-
+|Device_ASN1_File
+|  &#8627; Path the the ASN.1 file containing the type for the driver configuration
+|-
+|Device_Classifier
+|  &#8627; e.g. deploymentview::dv::pb2::ethernet2.others
+|-
+|Device_Language
+|  &#8627; Implementation language for the device driver
+|-
+|Device_ASN1_Sort
+|  &#8627; ASN.1 type name for the device driver configuration
+|-
+|Out_Port_Remote_Function
+|DOCUMENTATION MISSING
+|-
+|In_Port_Queue_Size
+|DOCUMENTATION MISSING
+|-
+|Block_FPGAConf
+|DOCUMENTATION MISSING
+|-
+|Out_Port_Remote_Port_Name
+|DOCUMENTATION MISSING
+|-
+|Out_Port_Remote_Partition
+|DOCUMENTATION MISSING
+|-
+|Out_Port_Queue_Size
+|DOCUMENTATION MISSING
+|-
+|Block_Is_Shared_Type
+|True if parent of the instance is a shared component
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Property_Names
+|DOCUMENTATION MISSING
+|-
+|Property_Values
+|DOCUMENTATION MISSING
+|-
+|Block_Default_Codegen
+|DOCUMENTATION MISSING
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Target
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|DOCUMENTATION MISSING
+|-
+|Use_POHIC
+|DOCUMENTATION MISSING
+|-
+|Data_View
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|In_Port_Encoding_Name
+|DOCUMENTATION MISSING
+|-
+|Out_Port_Encoding_Name
+|DOCUMENTATION MISSING
+|}
+=== templates/concurrency_view/sub/node.tmplt ===
+This file is evaluated for every node. The result of this file is saved to the file with name returned by filenode.tmplt. The result is also used as a parameter for system.tmplt.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Node_Name
+|Name of the node from deployment view
+|-
+|Partition_Names
+|Tag listing the partitions in this node
+|-
+|Has_Memory
+|Boolean flag indicating that a memory is defined for this node
+|-
+|Partitions
+|List of rendered code for partitions
+|-
+|VP_Names
+|Vector tag: list of virtual processors on this node
+|-
+|VP_Package_Names
+| &#8627; Corresponding package name
+|-
+|VP_Platforms
+| &#8627; Corresponding platform name
+|-
+|VP_Classifiers
+| &#8627; Corresponding aadl classifier
+|-
+|Package_Name
+|DOCUMENTATION MISSING
+|-
+|CPU_Family
+|DOCUMENTATION MISSING
+|-
+|CPU_Classifier
+|AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+|-
+|CPU_Name
+|DOCUMENTATION MISSING
+|-
+|CPU_Platform
+|DOCUMENTATION MISSING
+|-
+|Ada_Runtime
+|DOCUMENTATION MISSING
+|-
+|CPU_Instance
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|DOCUMENTATION MISSING
+|-
+|Data_View
+|DOCUMENTATION MISSING
+|-
+|Shared_Lib_Dir
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|DOCUMENTATION MISSING
+|-
+|Other_Files
+|DOCUMENTATION MISSING
+|-
+|Target
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Use_POHIC
+|DOCUMENTATION MISSING
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Shared_Types
+|DOCUMENTATION MISSING
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|Block_Instance_Of
+|If the block is an instance: function type name
+|-
+|Block_Languages
+|DOCUMENTATION MISSING
+|-
+|Block_Names
+|DOCUMENTATION MISSING
+|-
+|Device_Names
+|Name of the driver instance
+|-
+|Device_Driver_Names
+|  &#8627; Identifier of the device as defined in ocarina_component.aadl
+|-
+|Device_CPU
+|  &#8627; Label of the processor in the node hosting this driver
+|-
+|Device_Bus_Name
+|  &#8627; Name of the bus connected to this driver
+|-
+|Device_Init
+|  &#8627; name of the function (symbol) in charge of the driver initialisation
+|-
+|Device_Send_Function
+|  &#8627; Name of the driver "send" function as defined in the AADL model
+|-
+|Device_AADL_Pkg
+|  &#8627; AADL package containing the driver (deploymentview::dv::someName)
+|-
+|Device_ASN1_Module
+|  &#8627; Name of the ASN.1 module containing the type used for the driver configuration
+|-
+|Device_Port_Name
+|  &#8627; Port name used by the driver to connect to the bus
+|-
+|Device_Config
+|  &#8627; Configuration string in ASN.1 Value Notation for the driver
+|-
+|Device_ASN1_File
+|  &#8627; Path the the ASN.1 file containing the type for the driver configuration
+|-
+|Device_Classifier
+|  &#8627; e.g. deploymentview::dv::pb2::ethernet2.others
+|-
+|Device_Language
+|  &#8627; Implementation language for the device driver
+|-
+|Device_ASN1_Sort
+|  &#8627; ASN.1 type name for the device driver configuration
+|-
+|Block_Is_Passive
+|DOCUMENTATION MISSING
+|}
+=== templates/concurrency_view/sub/system.tmplt ===
+This file is evaluated for every node. The result of this file is save to the file with name returned by 
+filesys.tmplt.
+{| class="wikitable"
+!Parameter name
+!Description
+|-
+|Nodes
+|Code generated for the nodes
+|-
+|Node_Names
+|Vector Tag of node names
+|-
+|Node_CPU
+| &#8627; Corresponding CPU name (e.g. x86_linux)
+|-
+|Node_Platform
+| &#8627; Corresponding platform (e.g. PLATFORM_AIR)
+|-
+|Node_CPU_Classifier
+| &#8627; Corresponding CPU Classifier (ocarina...::x86_linux)
+|-
+|Node_Major_Frame
+| &#8627; Corresponding Time in milliseconds allocated to the CPU (TSP only)
+|-
+|Partition_Names
+|Vector Tag of partition names
+|-
+|Partition_Node
+| &#8627; Corresponding node name
+|-
+|Partition_CPU
+| &#8627; Corresponding CPU name
+|-
+|Partition_Duration
+| &#8627; Corresponding time allocation (TSP only)
+|-
+|Partition_VP
+| &#8627; Corresponding Virtual processor binding (TSP only)
+|-
+|Threads
+|Code generated for the threads (from thread.tmplt)
+|-
+|Thread_Names
+|List of all threads in the complete system
+|-
+|Target_Packages
+|List of all target package names in the complete system
+|-
+|Part_Source_Name
+|Inter-partition connections : partition source name (vector tag)
+|-
+|Part_Source_Port
+| &#8627; Corresponding port name
+|-
+|Part_Dest_Name
+| &#8627; Corresponding name of the remote partition
+|-
+|Part_Dest_Port
+| &#8627; Corresponding name of the port on the remote partition
+|-
+|Bus_Names
+|Vector tag: busses present in the system
+|-
+|Bus_AADL_Package
+| &#8627; Corresponding AADL Package
+|-
+|Bus_Classifier
+| &#8627; Corresponding AADL classifier
+|-
+|Bus_Properties
+| &#8627; Corresponding AADL properties (from bus.tmplt)
+|-
+|Device_Names
+|Name of the driver instance
+|-
+|Device_Driver_Names
+|  &#8627; Identifier of the device as defined in ocarina_component.aadl
+|-
+|Device_CPU
+|  &#8627; Label of the processor in the node hosting this driver
+|-
+|Device_Bus_Name
+|  &#8627; Name of the bus connected to this driver
+|-
+|Device_Init
+|  &#8627; name of the function (symbol) in charge of the driver initialisation
+|-
+|Device_Send_Function
+|  &#8627; Name of the driver "send" function as defined in the AADL model
+|-
+|Device_AADL_Pkg
+|  &#8627; AADL package containing the driver (deploymentview::dv::someName)
+|-
+|Device_ASN1_Module
+|  &#8627; Name of the ASN.1 module containing the type used for the driver configuration
+|-
+|Device_Port_Name
+|  &#8627; Port name used by the driver to connect to the bus
+|-
+|Device_Config
+|  &#8627; Configuration string in ASN.1 Value Notation for the driver
+|-
+|Device_ASN1_File
+|  &#8627; Path the the ASN.1 file containing the type for the driver configuration
+|-
+|Device_Classifier
+|  &#8627; e.g. deploymentview::dv::pb2::ethernet2.others
+|-
+|Device_Language
+|  &#8627; Implementation language for the device driver
+|-
+|Device_ASN1_Sort
+|  &#8627; ASN.1 type name for the device driver configuration
+|-
+|Unique_Dev_ASN1_Files
+|List of ASN.1 files/module/type for device configuration with no duplicates (vector tag)
+|-
+|Unique_Dev_ASN1_Mod
+| &#8627;  corresponding asn1 module
+|-
+|Unique_Dev_ASN1_Sorts
+| &#8627;  type name
+|-
+|Connect_From_Part
+|Vector tag - bus connection: partition source
+|-
+|Connect_Via_Bus
+| &#8627; bus name
+|-
+|Connect_Port_Name
+| &#8627; port name
+|-
+|Debug_Flag
+|DOCUMENTATION MISSING
+|-
+|Timer_Resolution
+|DOCUMENTATION MISSING
+|-
+|Skeletons
+|DOCUMENTATION MISSING
+|-
+|Interface_View
+|Interface view filename
+|-
+|Binary_Path
+|DOCUMENTATION MISSING
+|-
+|Block_Names
+|DOCUMENTATION MISSING
+|-
+|Block_Instance_Of
+|If the block is an instance: function type name
+|-
+|Deployment_View
+|DOCUMENTATION MISSING
+|-
+|No_Stdlib_Flag
+|DOCUMENTATION MISSING
+|-
+|Glue
+|DOCUMENTATION MISSING
+|-
+|Output_Dir
+|DOCUMENTATION MISSING
+|-
+|Node_Has_Memory
+|DOCUMENTATION MISSING
+|-
+|Check_Data_View
+|Value of command line flag --check-dataview
+|-
+|Use_POHIC
+|Value of command line flag --polyorb-hi-c (or -p)
+|-
+|Other_Files
+|List of AADL files passed to the command line
+|-
+|Data_View
+|Data view filename
+|-
+|Target
+|Value of command line flag --target=Target
+|-
+|Shared_Types
+|Complete list of available component types
+|-
+|Shared_Lib_Dir
+|Folder hosting the shared component types
+|-
+|Used_Shared_Types
+|List of actually used shared component types
+|-
+|Block_Languages
+|DOCUMENTATION MISSING
+|-
+|Device_Node_Name
+|DOCUMENTATION MISSING
+|-
+|Device_Partition
+|DOCUMENTATION MISSING
+|}

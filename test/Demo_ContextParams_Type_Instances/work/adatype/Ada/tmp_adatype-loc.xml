@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Locations >
+  <Project>
+    <vfs_file>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/tmp_adatype.gpr</vfs_file>
+    <file_marker column=" 1" line=" 1" >
+      <vfs_project>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/tmp_adatype.gpr</vfs_project>
+      <vfs_file>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/src/adatype.ads</vfs_file>
+    </file_marker>
+    <file_marker column=" 46" line=" 7" >
+      <vfs_project>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/tmp_adatype.gpr</vfs_project>
+      <vfs_file>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/src/adatype.adb</vfs_file>
+    </file_marker>
+    <file_marker column=" 44" line=" 5" >
+      <vfs_project>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/tmp_adatype.gpr</vfs_project>
+      <vfs_file>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/src/adatype.adb</vfs_file>
+    </file_marker>
+    <file_marker current="true" column=" 46" line=" 7" >
+      <vfs_project>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/tmp_adatype.gpr</vfs_project>
+      <vfs_file>/home/taste/tool-src/kazoo/test/Demo_ContextParams_Type_Instances/work/adatype/Ada/src/adatype.adb</vfs_file>
+    </file_marker>
+  </Project>
+</Locations>

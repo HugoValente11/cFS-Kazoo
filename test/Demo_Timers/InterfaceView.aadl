@@ -1,0 +1,364 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::gui
+PUBLIC
+
+WITH interfaceview::IV::Function2;
+WITH interfaceview::IV::ada_fct;
+WITH interfaceview::IV::sdl_fct;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM RI_PI1
+FEATURES
+  toto : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => NATIVE;
+  };
+END RI_PI1;
+
+SUBPROGRAM IMPLEMENTATION RI_PI1.others
+END RI_PI1.others;
+
+SUBPROGRAM RI_start_ada_timer
+FEATURES
+  toto : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => UPER;
+  };
+END RI_start_ada_timer;
+
+SUBPROGRAM IMPLEMENTATION RI_start_ada_timer.others
+END RI_start_ada_timer.others;
+
+SUBPROGRAM RI_start_sdl_timer
+FEATURES
+  toto : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => UPER;
+  };
+END RI_start_sdl_timer;
+
+SUBPROGRAM IMPLEMENTATION RI_start_sdl_timer.others
+END RI_start_sdl_timer.others;
+
+SUBPROGRAM PI_C_Timer_Expired
+END PI_C_Timer_Expired;
+
+SUBPROGRAM IMPLEMENTATION PI_C_Timer_Expired.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_C_Timer_Expired.others;
+
+SUBPROGRAM PI_Ada_Timer_Expired
+END PI_Ada_Timer_Expired;
+
+SUBPROGRAM IMPLEMENTATION PI_Ada_Timer_Expired.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Ada_Timer_Expired.others;
+
+SUBPROGRAM PI_SDL_Timer1_Expired
+END PI_SDL_Timer1_Expired;
+
+SUBPROGRAM IMPLEMENTATION PI_SDL_Timer1_Expired.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_SDL_Timer1_Expired.others;
+
+SUBPROGRAM PI_SDL_Timer2_Expired
+END PI_SDL_Timer2_Expired;
+
+SUBPROGRAM IMPLEMENTATION PI_SDL_Timer2_Expired.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_SDL_Timer2_Expired.others;
+
+SYSTEM gui
+FEATURES
+  RI_PI1 : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_PI1.others {
+    Taste::coordinates => "1149 651";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "PI1";
+    Taste::labelInheritance => "true";
+  };
+  RI_start_ada_timer : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::ada_fct::PI_start_ada_timer.others {
+    Taste::coordinates => "1047 1195";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "start_ada_timer";
+    Taste::labelInheritance => "true";
+  };
+  RI_start_sdl_timer : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::sdl_fct::PI_start_sdl_timer.others {
+    Taste::coordinates => "398 1195";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "start_sdl_timer";
+    Taste::labelInheritance => "true";
+  };
+  PI_C_Timer_Expired : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_C_Timer_Expired.others {
+    Taste::coordinates => "1149 814";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "C_Timer_Expired";
+  };
+  PI_Ada_Timer_Expired : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_Ada_Timer_Expired.others {
+    Taste::coordinates => "1149 1102";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "Ada_Timer_Expired";
+  };
+  PI_SDL_Timer1_Expired : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_SDL_Timer1_Expired.others {
+    Taste::coordinates => "598 1195";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "SDL_Timer1_Expired";
+  };
+  PI_SDL_Timer2_Expired : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_SDL_Timer2_Expired.others {
+    Taste::coordinates => "848 1195";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "SDL_Timer2_Expired";
+  };
+PROPERTIES
+  Source_Language => (GUI);
+  Taste::Active_Interfaces => enabled;
+END gui;
+
+SYSTEM IMPLEMENTATION gui.others
+END gui.others;
+
+END interfaceview::IV::gui;
+
+PACKAGE interfaceview::IV::Function2
+PUBLIC
+
+WITH interfaceview::IV::gui;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_PI1
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_PI1;
+
+SUBPROGRAM IMPLEMENTATION PI_PI1.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_PI1.others;
+
+SUBPROGRAM RI_C_Timer_Expired
+END RI_C_Timer_Expired;
+
+SUBPROGRAM IMPLEMENTATION RI_C_Timer_Expired.others
+END RI_C_Timer_Expired.others;
+
+SYSTEM Function2
+FEATURES
+  PI_PI1 : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_PI1.others {
+    Taste::coordinates => "1693 692";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "PI1";
+  };
+  RI_C_Timer_Expired : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_C_Timer_Expired.others {
+    Taste::coordinates => "1693 870";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "C_Timer_Expired";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (C);
+  Taste::Active_Interfaces => enabled;
+END Function2;
+
+SYSTEM IMPLEMENTATION Function2.others
+SUBCOMPONENTS
+  my_timer : DATA DataView::Timer {
+    Taste::FS_Default_Value => "toto";
+    Access_Right => read_only;
+  };
+END Function2.others;
+
+END interfaceview::IV::Function2;
+
+PACKAGE interfaceview::IV::ada_fct
+PUBLIC
+
+WITH interfaceview::IV::gui;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_start_ada_timer
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_start_ada_timer;
+
+SUBPROGRAM IMPLEMENTATION PI_start_ada_timer.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_start_ada_timer.others;
+
+SUBPROGRAM RI_Ada_Timer_Expired
+END RI_Ada_Timer_Expired;
+
+SUBPROGRAM IMPLEMENTATION RI_Ada_Timer_Expired.others
+END RI_Ada_Timer_Expired.others;
+
+SYSTEM ada_fct
+FEATURES
+  PI_start_ada_timer : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::ada_fct::PI_start_ada_timer.others {
+    Taste::coordinates => "1641 1508";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "start_ada_timer";
+  };
+  RI_Ada_Timer_Expired : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_Ada_Timer_Expired.others {
+    Taste::coordinates => "1641 1340";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Ada_Timer_Expired";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (Ada);
+  Taste::Active_Interfaces => enabled;
+END ada_fct;
+
+SYSTEM IMPLEMENTATION ada_fct.others
+SUBCOMPONENTS
+  ada_timer : DATA DataView::Timer {
+    Taste::FS_Default_Value => "hop";
+    Access_Right => read_only;
+  };
+END ada_fct.others;
+
+END interfaceview::IV::ada_fct;
+
+PACKAGE interfaceview::IV::sdl_fct
+PUBLIC
+
+WITH interfaceview::IV::gui;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_start_sdl_timer
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_start_sdl_timer;
+
+SUBPROGRAM IMPLEMENTATION PI_start_sdl_timer.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_start_sdl_timer.others;
+
+SUBPROGRAM RI_SDL_Timer1_Expired
+END RI_SDL_Timer1_Expired;
+
+SUBPROGRAM IMPLEMENTATION RI_SDL_Timer1_Expired.others
+END RI_SDL_Timer1_Expired.others;
+
+SUBPROGRAM RI_SDL_Timer2_Expired
+END RI_SDL_Timer2_Expired;
+
+SUBPROGRAM IMPLEMENTATION RI_SDL_Timer2_Expired.others
+END RI_SDL_Timer2_Expired.others;
+
+SYSTEM sdl_fct
+FEATURES
+  PI_start_sdl_timer : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::sdl_fct::PI_start_sdl_timer.others {
+    Taste::coordinates => "413 1520";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "start_sdl_timer";
+  };
+  RI_SDL_Timer1_Expired : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_SDL_Timer1_Expired.others {
+    Taste::coordinates => "583 1520";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "SDL_Timer1_Expired";
+    Taste::labelInheritance => "true";
+  };
+  RI_SDL_Timer2_Expired : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::gui::PI_SDL_Timer2_Expired.others {
+    Taste::coordinates => "727 1520";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "SDL_Timer2_Expired";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => enabled;
+END sdl_fct;
+
+SYSTEM IMPLEMENTATION sdl_fct.others
+SUBCOMPONENTS
+  sdl_timer : DATA DataView::Timer {
+    Taste::FS_Default_Value => "toto";
+    Access_Right => read_only;
+  };
+  fast_timer : DATA DataView::Timer {
+    Taste::FS_Default_Value => "hello";
+    Access_Right => read_only;
+  };
+END sdl_fct.others;
+
+END interfaceview::IV::sdl_fct;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::gui;
+WITH interfaceview::IV::Function2;
+WITH interfaceview::IV::ada_fct;
+WITH interfaceview::IV::sdl_fct;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  gui : SYSTEM interfaceview::IV::gui::gui.others {
+    Taste::coordinates => "287 462 1149 1195";
+  };
+  Function2 : SYSTEM interfaceview::IV::Function2::Function2.others {
+    Taste::coordinates => "1693 518 2498 1231";
+  };
+  ada_fct : SYSTEM interfaceview::IV::ada_fct::ada_fct.others {
+    Taste::coordinates => "1641 1308 2606 2077";
+  };
+  sdl_fct : SYSTEM interfaceview::IV::sdl_fct::sdl_fct.others {
+    Taste::coordinates => "263 1520 1140 1976";
+  };
+CONNECTIONS
+  gui_RI_PI1_Function2_PI_PI1 : SUBPROGRAM ACCESS Function2.PI_PI1 -> gui.RI_PI1 {
+    Taste::coordinates => "1149 651 1485 651 1485 692 1693 692";
+  };
+  gui_RI_start_ada_timer_ada_fct_PI_start_ada_timer : SUBPROGRAM ACCESS ada_fct.PI_start_ada_timer -> gui.RI_start_ada_timer {
+    Taste::coordinates => "1047 1195 1047 1508 1641 1508";
+  };
+  gui_RI_start_sdl_timer_sdl_fct_PI_start_sdl_timer : SUBPROGRAM ACCESS sdl_fct.PI_start_sdl_timer -> gui.RI_start_sdl_timer {
+    Taste::coordinates => "398 1195 398 1423 413 1423 413 1520";
+  };
+  Function2_RI_C_Timer_Expired_gui_PI_C_Timer_Expired : SUBPROGRAM ACCESS gui.PI_C_Timer_Expired -> Function2.RI_C_Timer_Expired {
+    Taste::coordinates => "1693 870 1421 870 1421 814 1149 814";
+  };
+  ada_fct_RI_Ada_Timer_Expired_gui_PI_Ada_Timer_Expired : SUBPROGRAM ACCESS gui.PI_Ada_Timer_Expired -> ada_fct.RI_Ada_Timer_Expired {
+    Taste::coordinates => "1641 1340 1395 1340 1395 1102 1149 1102";
+  };
+  sdl_fct_RI_SDL_Timer1_Expired_gui_PI_SDL_Timer1_Expired : SUBPROGRAM ACCESS gui.PI_SDL_Timer1_Expired -> sdl_fct.RI_SDL_Timer1_Expired {
+    Taste::coordinates => "583 1520 583 1357 598 1357 598 1195";
+  };
+  sdl_fct_RI_SDL_Timer2_Expired_gui_PI_SDL_Timer2_Expired : SUBPROGRAM ACCESS gui.PI_SDL_Timer2_Expired -> sdl_fct.RI_SDL_Timer2_Expired {
+    Taste::coordinates => "727 1520 727 1357 848 1357 848 1195";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 2970 2100";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

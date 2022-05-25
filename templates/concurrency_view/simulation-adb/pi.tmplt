@@ -1,0 +1,69 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fri.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_pi.ascii
+@@TABLE@@
+   @@IF@@ @_Remote_Languages_@ = GUI
+    @@SET@@ Remote_GUI = TRUE
+   @@END_IF@@
+@@END_TABLE@@
+@@IF@@ @_Remote_GUI_@ = TRUE
+procedure Exhaust_@_CAPITALIZE:Name_@
+  (Global_State : in out asn1SccSystem_State;
+   Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                    Limit_Reached : out Boolean)) is
+  @@IF@@ @_Param_Types'Length_@ > 0
+   Iterator     : @_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@_Pkg.Instance;
+   Param        : asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@;
+  @@END_IF@@
+   Original_State : constant asn1SccSystem_State := Global_State;
+   Event          : asn1SccObservable_Event
+                     (Kind => Input_Event_PRESENT);
+   Limit_Reached  : Boolean;
+begin
+   --  Put_Line ("Exhausing interface @_Name_@");
+   --  Create an event to store as an edge of the state graph
+   Event.Input_Event.Source := asn1SccEnv;
+   Event.Input_Event.Dest   := asn1Scc@_CAPITALIZE:Parent_Function_@;
+   Event.Input_Event.Event  :=
+      (Kind => @_CAPITALIZE:Parent_Function_@_PRESENT,
+       @_CAPITALIZE:Parent_Function_@ =>
+          (Kind   => Msg_IN_PRESENT,
+           Msg_In => (Kind => @_CAPITALIZE:Name_@_PRESENT, others => <>)));
+
+  @@IF@@ @_Param_Types'Length_@ > 0
+   for Each of Iterator loop
+      --  Iterate exhaustively over the interface parameter
+      Param := @_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@_Pkg.To_ASN1 (Each);
+      Event.Input_Event.Event.@_CAPITALIZE:Parent_Function_@.Msg_In.@_Name_@.@_Param_Names_@ := Param;
+
+      --  Execute the provided interface
+      --  @_CAPITALIZE:Parent_Function_@_PI.@_CAPITALIZE:Name_@ (@_CAPITALIZE:Param_Names_@ => Param, Global_State => Global_State);
+
+      --  the Callback will call the observers, then execute the event
+      --  (which may have been altered by the observers), and then
+      --  process all the new events possibly generated during this execution
+      --  If a new state is generated at the end, it will be added to the graph
+      Callback (Event, Limit_Reached);
+
+      --  Restore previous state
+      Global_State := Original_State;
+      exit when Limit_Reached;
+   end loop;
+  @@ELSE@@
+   --  Execute the provided interface
+   @_CAPITALIZE:Parent_Function_@_PI.@_CAPITALIZE:Name_@ (Global_State);
+   Callback (Event, Limit_Reached);
+
+   --  Restore previous state
+   Global_State := Original_State;
+  @@END_IF@@
+end Exhaust_@_CAPITALIZE:Name_@;
+@@ELSE@@
+procedure Exhaust_@_CAPITALIZE:Name_@
+   (Global_State : in out asn1SccSystem_State;
+    Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                     Limit_Reached : out Boolean))
+is null;
+@@END_IF@@

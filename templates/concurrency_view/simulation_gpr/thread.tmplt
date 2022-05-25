@@ -1,0 +1,25 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fthread.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_thread.ascii
+@@TABLE'TERSE@@
+"@_LOWER:REPLACE_ALL(-/_):Param_ASN1_Modules_@.ads",
+@@END_TABLE@@
+@@IF@@ @_Language_@ = SDL or @_Language_@ = Ada
+"@_LOWER:Pro_Block_Name_@.ads",
+"@_LOWER:Pro_Block_Name_@_ri.ads",
+"@_LOWER:Pro_Block_Name_@_pi.ads",
+"@_LOWER:Pro_Block_Name_@_events.ads",
+@@END_IF@@
+@@IF@@ @_Language_@ = GUI
+"@_LOWER:Pro_Block_Name_@_pi.ads",
+"@_LOWER:Pro_Block_Name_@_events.ads",
+@@END_IF@@
+@@IF@@ @_Language_@ = SDL
+ @@IF@@ @_Pro_Instance_Of_@ = ""
+"@_LOWER:Pro_Block_Name_@_datamodel.ads",
+ @@ELSE@@
+"@_LOWER:Pro_Instance_Of_@_datamodel.ads",
+ @@END_IF@@
+@@END_IF@@

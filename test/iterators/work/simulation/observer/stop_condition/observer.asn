@@ -1,0 +1,168 @@
+Iterators-Types DEFINITIONS ::=
+BEGIN
+
+T-Null ::= SEQUENCE {}
+
+T-Int ::= INTEGER (0..4)
+
+T-SeqOf ::= SEQUENCE (SIZE (1..4)) OF T-Int
+
+END
+ 
+
+
+
+TASTE-BasicTypes DEFINITIONS ::=
+BEGIN
+
+-- Set of TASTE predefined basic types
+
+T-Int32 ::=  INTEGER (-2147483648 .. 2147483647)
+
+T-UInt32 ::= INTEGER (0 .. 4294967295)
+
+T-Int8 ::= INTEGER (-128 .. 127)
+
+T-UInt8 ::= INTEGER (0 .. 255)
+
+T-Boolean ::= BOOLEAN
+
+T-Null-Record ::= SEQUENCE {}
+
+END
+
+
+Simulation-DataView DEFINITIONS ::=
+BEGIN
+   IMPORTS
+      
+      --  ASN.1 modules used by thread another_function_do_something
+      T-UInt32 FROM TASTE-BasicTypes
+      
+      --  ASN.1 modules used by thread orchestrator_pulse
+      T-Int FROM Iterators-Types
+      
+      
+      
+      -- Import generic integer type (used for timers)
+      T-UInt32 FROM TASTE-BasicTypes
+      --  Import the SDL function states needed for the global system state
+      Another-function-Context FROM Another-function-Datamodel
+      Orchestrator-Context     FROM Orchestrator-Datamodel
+   ;
+
+   
+   
+   
+   Another-Function-Event ::= CHOICE {
+      msg-in CHOICE {
+         do-something SEQUENCE { param1 T-UInt32 }
+      }
+   }
+   
+   Orchestrator-Event ::= CHOICE {
+      msg-in CHOICE {
+         pulse SEQUENCE { p1 T-Int }
+      },
+      msg-out CHOICE {
+         do-something  SEQUENCE { param1 T-UInt32 },
+         paramesstogui SEQUENCE {   }
+      }
+   }
+   
+   Simulator-Gui-Event ::= CHOICE {
+      msg-in CHOICE {
+         poll          SEQUENCE {   },
+         paramesstogui SEQUENCE {   }
+      },
+      msg-out CHOICE {
+         pulse SEQUENCE { p1 T-Int }
+      }
+   }
+   
+
+   --  List all the TASTE functions present in the system
+   PID ::= ENUMERATED {
+        env, another-function, orchestrator, simulator-gui
+   }
+
+   --  Current observer state flag (used by model checkers)
+   Observer-State-Kind ::= ENUMERATED {
+      regular-state,
+      error-state,
+      ignore-state,
+      success-state
+   }
+
+   --  Event related to the execution of a PI or call of a RI in the functional code
+   Function-Event ::= CHOICE {
+      another-function Another-Function-Event,
+      orchestrator     Orchestrator-Event,
+      simulator-gui    Simulator-Gui-Event
+   }
+
+   --  Event at interface level (PI or RI), including source and destination ID
+   Interface-Event ::= SEQUENCE {
+      source PID,
+      dest   PID,
+      event  Function-Event
+   }
+
+   --  Event sent to the observers
+   Observable-Event ::= CHOICE {
+      no-event        SEQUENCE {},
+      system-startup  SEQUENCE {},
+      input-event     Interface-Event,   --  input event is evaluated after the transition
+      output-event    Interface-Event,   --  output event is evaluated before the message is sent
+      unhandled-input Interface-Event    --  message received in a state where it is not expected
+   }
+
+   --  constant that can be used to refer to the absence of an input/output event
+   nothing Observable-Event ::= no-event : {}
+
+   --  Define a queue of events, corresponding to the input queue for each function
+   max-events INTEGER ::= 10
+   Events-Ty ::= SEQUENCE (SIZE (0 .. max-events)) OF Observable-Event
+
+   --  Global system state (excluding observers, which are defined later)
+   System-State ::= SEQUENCE {
+      --  Message queues
+      another-function-queue Events-Ty (SIZE (0..2)),
+      orchestrator-queue     Events-Ty (SIZE (0..2)),
+
+      another-function  Another-function-Context,
+      orchestrator      Orchestrator-Context
+   }
+END
+Orchestrator-Datamodel DEFINITIONS ::=
+BEGIN
+IMPORTS
+   T-Null, T-Int, T-SeqOf FROM Iterators-Types
+   T-Int32, T-UInt32, T-Int8, T-UInt8, T-Boolean, T-Null-Record FROM TASTE-BasicTypes;
+
+Orchestrator-States ::= ENUMERATED {all-done, step-2, wait}
+
+Orchestrator-Context ::= SEQUENCE {
+   state Orchestrator-States,
+   init-done BOOLEAN,
+   t T-Int,
+   counter T-Int,
+   magic-number T-Int32
+}
+
+END
+Another-function-Datamodel DEFINITIONS ::=
+BEGIN
+IMPORTS
+   T-Null, T-Int, T-SeqOf FROM Iterators-Types
+   T-Int32, T-UInt32, T-Int8, T-UInt8, T-Boolean, T-Null-Record FROM TASTE-BasicTypes;
+
+Another-function-States ::= ENUMERATED {one}
+
+Another-function-Context ::= SEQUENCE {
+   state Another-function-States,
+   init-done BOOLEAN,
+   param1 T-UInt32
+}
+
+END

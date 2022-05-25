@@ -1,0 +1,32 @@
+KAZOO=../../kazoo
+
+all: test-parse
+	cp input_data/hello.c work/hello/C/src && \
+	    cp input_data/read.c work/read/C/src && \
+	    cp input_data/function1.c work/function1/C/src && \
+	    cp input_data/function2.c work/function2/C/src && \
+	$(MAKE) -C work
+
+work/glue_built: test-parse
+
+test-parse: clean
+	$(KAZOO) --gw -p \
+	         -o work \
+	         --glue \
+		 --no-stdlib \
+	         --debug \
+		 ../common/libhw.aadl
+
+
+gdb: clean
+	gdb --args $(KAZOO) --gw -p \
+	               -o work \
+	               --glue \
+		 --no-stdlib \
+		 ../common/libhw.aadl \
+		       --debug
+
+clean:
+	rm -rf work
+
+.PHONY: clean test-parse gdb

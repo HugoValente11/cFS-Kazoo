@@ -1,0 +1,161 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::HELLO_WORLD
+PUBLIC
+
+WITH interfaceview::IV::SdlFunction;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_hello_world
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_hello_world;
+
+SUBPROGRAM IMPLEMENTATION PI_hello_world.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 500 ms;
+END PI_hello_world.others;
+
+SUBPROGRAM RI_doSomething
+END RI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION RI_doSomething.others
+END RI_doSomething.others;
+
+SYSTEM HELLO_WORLD
+FEATURES
+  PI_hello_world : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::HELLO_WORLD::PI_hello_world.others {
+    Taste::coordinates => "111895 70756";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 900 ms;
+    Taste::InterfaceName => "hello_world";
+  };
+  RI_doSomething : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::SdlFunction::PI_doSomething.others {
+    Taste::coordinates => "140435 82271";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "doSomething";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (C);
+  Taste::Active_Interfaces => any;
+END HELLO_WORLD;
+
+SYSTEM IMPLEMENTATION HELLO_WORLD.others
+END HELLO_WORLD.others;
+
+END interfaceview::IV::HELLO_WORLD;
+
+PACKAGE interfaceview::IV::SdlFunction
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_doSomething
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION PI_doSomething.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_doSomething.others;
+
+SYSTEM SdlFunction
+FEATURES
+  PI_doSomething : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::SdlFunction::PI_doSomething.others {
+    Taste::coordinates => "166726 84097";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "doSomething";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END SdlFunction;
+
+SYSTEM IMPLEMENTATION SdlFunction.others
+END SdlFunction.others;
+
+END interfaceview::IV::SdlFunction;
+
+PACKAGE interfaceview::IV::Function1
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_pulse
+END PI_pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_pulse.others;
+
+SYSTEM Function1
+FEATURES
+  PI_pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function1::PI_pulse.others {
+    Taste::coordinates => "157569 49878";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::InterfaceName => "pulse";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Function1;
+
+SYSTEM IMPLEMENTATION Function1.others
+END Function1.others;
+
+END interfaceview::IV::Function1;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::HELLO_WORLD;
+WITH interfaceview::IV::SdlFunction;
+WITH interfaceview::IV::Function1;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  HELLO_WORLD : SYSTEM interfaceview::IV::HELLO_WORLD::HELLO_WORLD.others {
+    Taste::coordinates => "84682 70756 140435 117525";
+  };
+  SdlFunction : SYSTEM interfaceview::IV::SdlFunction::SdlFunction.others {
+    Taste::coordinates => "166726 79793 194177 106706";
+  };
+  Function1 : SYSTEM interfaceview::IV::Function1::Function1.others {
+    Taste::coordinates => "157569 40286 188960 64876";
+  };
+CONNECTIONS
+  HELLO_WORLD_RI_doSomething_SdlFunction_PI_doSomething : SUBPROGRAM ACCESS SdlFunction.PI_doSomething -> HELLO_WORLD.RI_doSomething {
+    Taste::coordinates => "140435 82271 159232 82271 159232 84097 166726 84097";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

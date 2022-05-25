@@ -1,0 +1,12 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Sdlfunction;
+    /* CIF START (320, 10), (70, 35) */
+    START;
+        /* CIF PROCEDURECALL (280, 65), (149, 35) */
+        call writeln ('[SDL] Hello');
+        /* CIF NEXTSTATE (320, 115), (70, 35) */
+        NEXTSTATE Wait;
+    /* CIF state (450, 10), (70, 35) */
+    state Wait;
+    endstate;
+endprocess Sdlfunction;

@@ -1,0 +1,19 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Another_Function;
+    /* CIF TEXT (268, 0), (267, 111) */
+    -- Text area for declarations and comments
+    
+    dcl param1 T_UInt32;
+    /* CIF ENDTEXT */
+    /* CIF START (148, 70), (70, 35) */
+    START;
+        /* CIF NEXTSTATE (148, 120), (70, 35) */
+        NEXTSTATE one;
+    /* CIF state (148, 120), (70, 35) */
+    state one;
+        /* CIF input (100, 175), (160, 35) */
+        input do_something(param1);
+            /* CIF NEXTSTATE (145, 230), (70, 35) */
+            NEXTSTATE one;
+    endstate;
+endprocess Another_Function;

@@ -1,0 +1,20 @@
+MBSE2020-DATAVIEW DEFINITIONS ::=
+BEGIN
+IMPORTS T-Int32, T-UInt32, T-Int8, T-UInt8, T-Boolean FROM TASTE-BasicTypes;
+
+ 
+ Picture ::= OCTET STRING (SIZE (1..255))
+
+ Completion-Status ::= ENUMERATED { success, failure }
+ 
+ FDIR-Event ::= ENUMERATED {no-error, undervoltage }
+
+ Housekeeping-Data ::= SEQUENCE {
+     events     FDIR-Event,
+     status     Completion-Status
+ } 
+ 
+ Mission-Timeline ::= BOOLEAN
+
+END
+

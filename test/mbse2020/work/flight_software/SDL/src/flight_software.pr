@@ -1,0 +1,85 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Flight_Software;
+    state Operational;
+    substructure
+            /* CIF START (71, 56), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (40, 111), (132, 35) */
+                NEXTSTATE Wait_For_Timeline;
+            /* CIF state (121, 393), (92, 35) */
+            state Navigation;
+                /* CIF input (113, 448), (108, 35) */
+                input True_Anomaly;
+                    /* CIF PROCEDURECALL (62, 503), (210, 35) */
+                    call writeln('reached true anomaly');
+                    /* CIF output (116, 553), (102, 35) */
+                    output Take_Picture;
+                    /* CIF NEXTSTATE (112, 608), (110, 35) */
+                    NEXTSTATE Taking_Picture;
+            endstate;
+            /* CIF state (273, 69), (110, 35) */
+            state Taking_Picture;
+                /* CIF input (256, 124), (144, 40) */
+                input Completion_Report
+(report);
+                    /* CIF PROCEDURECALL (222, 184), (212, 35) */
+                    call writeln('got completion report');
+                    /* CIF output (263, 234), (130, 56) */
+                    output Housekeeping
+ ({events no_error,
+ status report});
+                    /* CIF NEXTSTATE (264, 310), (128, 35) */
+                    NEXTSTATE Wait_for_timeline;
+            endstate;
+            /* CIF state (40, 111), (132, 35) */
+            state Wait_For_Timeline;
+                /* CIF input (30, 166), (150, 40) */
+                input Set_Mission_Timeline
+(Timeline);
+                    /* CIF PROCEDURECALL (0, 226), (211, 35) */
+                    call writeln('new timeline received');
+                    /* CIF PROCEDURECALL (26, 276), (158, 40) */
+                    call SET_timer
+(1000, True_Anomaly);
+                    /* CIF NEXTSTATE (58, 336), (94, 35) */
+                    NEXTSTATE Navigation;
+            endstate;
+    endsubstructure;
+    /* CIF TEXT (1, 9), (252, 250) */
+    -- Timers defined in the interface view
+    -- Use SET_TIMER (value, timer name)
+    -- and RESET_TIMER (timer name) in a
+    -- PROCEDURE CALL symbol to use them
+    timer true_anomaly;
+    
+    dcl Timeline Mission_Timeline;
+    
+    dcl Report Completion_Status;
+    
+    dcl dummy T_Boolean;
+    /* CIF ENDTEXT */
+    /* CIF START (348, 10), (70, 35) */
+    START;
+        /* CIF NEXTSTATE (332, 60), (101, 35) */
+        NEXTSTATE Operational;
+    /* CIF state (135, 308), (70, 35) */
+    state Failure;
+        /* CIF input (110, 363), (118, 35) */
+        input Reboot(dummy);
+            /* CIF NEXTSTATE (123, 418), (93, 35) */
+            NEXTSTATE Operational;
+    endstate;
+    /* CIF state (332, 60), (101, 35) */
+    state Operational;
+        /* CIF input (328, 115), (103, 35) */
+        input Undervoltage;
+            /* CIF PROCEDURECALL (270, 170), (220, 35) */
+            call writeln ('undervoltage detected');
+            /* CIF output (335, 220), (89, 35) */
+            output Switch_Off;
+            /* CIF output (215, 275), (329, 35) */
+            output Housekeeping({events undervoltage, status failure});
+            /* CIF NEXTSTATE (345, 325), (70, 35) */
+            NEXTSTATE Failure;
+    endstate;
+endprocess Flight_Software;

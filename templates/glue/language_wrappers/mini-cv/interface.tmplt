@@ -1,0 +1,76 @@
+@@-- The documentation of the templates is there:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_skeletons_sub_interface.ascii
+SUBPROGRAM @_Name_@
+@@IF@@ @_EXIST:Param_Names_@
+FEATURES
+@@INLINE(   )(\n   )(\n)@@
+   @@TABLE@@
+      @@IF@@ (@_Param_Directions_@ = "PARAM_IN" and @_Direction_@ = "PI") or (@_Param_Directions_@ = "PARAM_OUT" and @_Direction_@ = "RI")
+         @_Param_Names_@ : IN PARAMETER DataView::@_REPLACE_ALL(-/_):Param_Types_@ {encoding=>@_Param_Encodings_@;};
+      @@ELSE@@
+         @_Param_Names_@ : OUT PARAMETER DataView::@_REPLACE_ALL(-/_):Param_Types_@ {encoding=>@_Param_Encodings_@;};
+      @@END_IF@@
+   @@END_TABLE@@
+@@END_INLINE@@
+@@ELSIF@@ @_Language_@ = GUI and @_LOWER:Name_@ /= poll
+@@-- Add dummy parameter to parameterless GUI interfaces
+FEATURES
+  @@IF@@ @_Direction_@ = PI
+   no_param : IN PARAMETER DataView::T_Null_Record {encoding=>NATIVE;};
+  @@ELSE@@
+   no_param : OUT PARAMETER DataView::T_Null_Record {encoding=>NATIVE;};
+  @@END_IF@@
+@@END_IF@@
+END @_Name_@;
+
+@@IF@@ @_Language_@ = "GUI" and @_Direction_@ = "PI"
+SUBPROGRAM IMPLEMENTATION @_Name_@.GUI_PI
+@@ELSIF@@ @_Language_@ = "GUI" and @_Direction_@ = "RI"
+SUBPROGRAM IMPLEMENTATION @_Name_@.GUI_RI
+@@ELSIF@@ @_Language_@ = "VHDL_BRAVE"
+SUBPROGRAM IMPLEMENTATION @_Name_@.VHDL
+@@ELSIF@@ @_Language_@ = "Blackbox_C" or @_Language_@ = Timer_Manager
+SUBPROGRAM IMPLEMENTATION @_Name_@.C
+@@ELSIF@@ @_Language_@ = SDL
+SUBPROGRAM IMPLEMENTATION @_Name_@.Ada
+@@ELSE@@
+SUBPROGRAM IMPLEMENTATION @_Name_@.@_Language_@
+@@END_IF@@
+PROPERTIES
+   FV_Name => "@_LOWER:Parent_Function_@";
+@@IF@@ @_Language_@ = "GUI" and @_Direction_@ = "PI"
+   Source_Language => GUI_PI;
+@@ELSIF@@ @_Language_@ = "GUI" and @_Direction_@ = "RI"
+   Source_Language => GUI_RI;
+@@ELSIF@@ @_Language_@ = "VHDL_BRAVE"
+   Source_Language => VHDL;
+@@ELSIF@@ @_Language_@ = "Blackbox_C" or @_Language_@ = CPP or @_Language_@ = Timer_Manager
+   Source_Language => C;
+@@ELSIF@@ @_Language_@ = SIMULINK
+   Source_Language => Simulink;  @@-- aadl2glueC is case sensitive here
+@@ELSIF@@ @_Language_@ = SDL
+   Source_Language => Ada;
+@@ELSE@@
+   Source_Language => @_Language_@;
+@@END_IF@@
+   @@INLINE(   )(\n   )(\n)@@
+      @@TABLE@@
+         @_Property_Names_@ => "@_Property_Values_@";
+      @@END_TABLE@@
+   @@END_INLINE@@
+@@IF@@ @_Language_@ = "GUI" and @_Direction_@ = "PI"
+END @_Name_@.GUI_PI;
+@@ELSIF@@ @_Language_@ = "GUI" and @_Direction_@ = "RI"
+END @_Name_@.GUI_RI;
+@@ELSIF@@ @_Language_@ = "VHDL_BRAVE"
+END @_Name_@.VHDL;
+@@ELSIF@@ @_Language_@ = "Blackbox_C" or @_Language_@ = Timer_Manager
+END @_Name_@.C;
+@@ELSIF@@ @_Language_@ = SDL
+END @_Name_@.Ada;
+@@ELSE@@
+END @_Name_@.@_Language_@;
+@@END_IF@@

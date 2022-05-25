@@ -1,0 +1,35 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fnode.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_node.ascii
+# This file is generated for Generic Linux partition
+#  @_Node_Name_@ @_CPU_Name_@ @_Ada_Runtime_@ @_CPU_Platform_@ @_CPU_Classifier_@
+
+@@INLINE(.PHONY: all clean partitions )( )()@@
+@@TABLE@@
+partition_@_LOWER:Partition_Names_@
+runtime_@_LOWER:Partition_Names_@
+@@END_TABLE@@
+@@END_INLINE@@
+
+all: partitions
+
+@@INLINE(partitions: )( )()@@
+partition_@_LOWER:Partition_Names_@
+@@END_INLINE@@
+
+@@TABLE@@
+partition_@_LOWER:Partition_Names_@: runtime_@_LOWER:Partition_Names_@
+	gprbuild -R -p -P @_LOWER:Partition_Names_@.gpr -XCFG="Release" -cargs:C -DSTATIC=""
+@@END_TABLE@@
+
+clean:
+@@TABLE@@
+	gprclean -P @_LOWER:Partition_Names_@.gpr
+@@END_TABLE@@
+
+@@TABLE@@
+runtime_@_LOWER:Partition_Names_@:
+	sh ./runtime_@_LOWER:Partition_Names_@.sh
+@@END_TABLE@@

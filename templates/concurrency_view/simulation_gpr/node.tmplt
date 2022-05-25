@@ -1,0 +1,19 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fnode.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_node.ascii
+all:	simulate
+
+simulate:
+	# Configure gprbuild to use GCC toolchain even if LLVM is installed
+	gprconfig --batch --config=Ada,,default,,GNAT --config=C,,default,,GCC --config=C++,,default,,G++ || :
+@@TABLE@@
+	ADA_PROJECT_PATH=~/.local/share/gpr:${ADA_PROJECT_PATH} gprbuild -p -P @_Partition_Names_@_simulator.gpr -XCFG="Debug" -cargs:C -DSTATIC=""
+	ADA_PROJECT_PATH=~/.local/share/gpr:${ADA_PROJECT_PATH} gprinstall -f --install-name=@_Partition_Names_@_simulator -p --prefix=../../simulation/ @_Partition_Names_@_simulator.gpr
+@@END_TABLE@@
+
+clean:
+@@TABLE@@
+	rm -rf @_LOWER:Partition_Names_@_obj
+@@END_TABLE@@

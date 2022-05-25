@@ -1,0 +1,17 @@
+Context-cpptype DEFINITIONS ::=
+BEGIN
+   IMPORTS
+      T-INTEGER FROM DataView;
+
+--  Group all context parameters of this function in a record
+Context-cpptype ::= SEQUENCE {
+   foo T-INTEGER
+
+}
+
+--  Declare a constant with the values set by the user in the interface view
+cpptype-ctxt Context-cpptype ::= {
+   foo 42
+
+}
+END

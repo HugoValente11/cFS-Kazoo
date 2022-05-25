@@ -1,0 +1,68 @@
+package @_CAPITALIZE:Thread_Name_@_Thread
+public
+   with Deployment;
+   with Process_Package;
+   with Dataview;
+
+thread @_CAPITALIZE:Thread_Name_@
+@@IF@@ @_RCM_@ /= "CYCLIC_OPERATION" or @_Remote_Threads'Length_@ > 0
+features
+@@END_IF@@
+@@IF@@ @_RCM_@ /= "CYCLIC_OPERATION"
+   @@INLINE(   )()()@@
+      @@IF@@ @_Param_Names'Length_@ > 0
+         INPORT_@_CAPITALIZE:Entry_Port_Name_@ : in event data port DataView::@_REPLACE_ALL((-)/_):Param_Types_@_Buffer.impl
+      @@ELSE@@
+         INPORT_@_CAPITALIZE:Entry_Port_Name_@ : in event port
+      @@END_IF@@
+      @@END_INLINE@@
+      { Compute_Execution_Time => @_WCET_@ ms .. @_WCET_@ ms;
+        Queue_Size => @_Queue_Size_@;
+@@IF@@ @_Use_POHIC_@
+        Compute_Entrypoint_Source_Text => "call_@_LOWER:Thread_Name_@"; };
+@@ELSE@@
+        Compute_Entrypoint_Source_Text => "@_CAPITALIZE:Partition_Name_@_TASTE_Interface.@_CAPITALIZE:Thread_Name_@_@_Entry_Port_Name_@"; };
+@@END_IF@@
+@@END_IF@@
+   @@TABLE@@
+@@INLINE(   )()()@@
+@@IF@@ @_Remote_PI_Sorts_@ /= ""
+   OUTPORT_@_CAPITALIZE:RI_Port_Names_@ : out event data port DataView::@_REPLACE_ALL((-)/_):Remote_PI_Sorts_@_Buffer.impl;
+@@ELSE@@
+   OUTPORT_@_CAPITALIZE:RI_Port_Names_@ : out event port;
+@@END_IF@@
+@@END_INLINE@@
+   @@END_TABLE@@
+end @_CAPITALIZE:Thread_Name_@;
+
+thread implementation @_CAPITALIZE:Thread_Name_@.others
+properties
+@@IF@@ @_Use_POHIC_@
+   Activate_Entrypoint_Source_Text => "init_@_LOWER:Pro_Block_Name_@";
+@@ELSE@@
+   Activate_Entrypoint_Source_Text => "@_CAPITALIZE:Partition_Name_@_TASTE_Interface.@_CAPITALIZE:Thread_Name_@_Init";
+@@END_IF@@
+@@INLINE(   )(\n   )()@@
+@@IF@@ @_RCM_@ = "SPORADIC_OPERATION"
+   Dispatch_Protocol                 => Sporadic;
+@@ELSE@@
+@@IF@@ @_Use_POHIC_@
+   Compute_Entrypoint_Source_Text    => "call_@_LOWER:Thread_Name_@";
+@@ELSE@@
+   Compute_Entrypoint_Source_Text    => "@_CAPITALIZE:Partition_Name_@_TASTE_Interface.@_CAPITALIZE:Thread_Name_@_@_Entry_Port_Name_@";
+@@END_IF@@
+   Dispatch_Protocol                 => Periodic;
+@@END_IF@@
+@@END_INLINE@@
+@@IF@@ @_TRIM:Period_@ /= "0"
+   Period                            => @_TRIM:Period_@ ms;
+@@ELSE@@
+   Period                            => 1 ms;
+@@END_IF@@ 
+   Dispatch_Offset                   =>  @_TRIM:Dispatch_Offset_ms_@ ms;
+   Compute_Execution_Time            => @_WCET_@ ms .. @_WCET_@ ms;
+   Stack_Size                        => @_Stack_Size_In_Bytes_@ Bytes;
+   Priority                          => @_Priority_@;
+end @_CAPITALIZE:Thread_Name_@.others;
+
+end @_CAPITALIZE:Thread_Name_@_Thread;

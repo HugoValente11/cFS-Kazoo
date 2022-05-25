@@ -1,0 +1,22 @@
+#!/bin/bash
+# This scripts tries to convert a legacy TASTE project
+# based on an Ellidiss-created AADL Interface View into
+# a Space Creator project (both Kazoo-based)
+
+# Get the current folder name
+PROJECT_NAME=$(pwd | sed 's,^.*/[0-9]*,,g')
+
+# initialize a new space creator project (create Makefile, etc.)
+space-creator init $PROJECT_NAME
+
+# copy the converted interface view to the space creator folder
+cp work/Dump/spacecreator_conversion/interfaceview.xml $PROJECT_NAME/
+
+# gather all ASN.1 files used by the project
+kazoo --check-dataview 2>&1 | grep "Using ASN.1" | cut -d : -f 2 | xargs cat > $PROJECT_NAME/$PROJECT_NAME.asn
+
+# generate empty skeletons to have all folders in place
+make -C $PROJECT_NAME skeletons
+
+# copy content of all functions in the new folders
+@_Functions'Indent_@

@@ -1,0 +1,163 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::Function1
+PUBLIC
+
+WITH interfaceview::IV::Function2;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_trigger
+END PI_trigger;
+
+SUBPROGRAM IMPLEMENTATION PI_trigger.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_trigger.others;
+
+SUBPROGRAM RI_check
+FEATURES
+  a : IN PARAMETER DataView::T_Int32 {
+    Taste::encoding => NATIVE;
+  };
+END RI_check;
+
+SUBPROGRAM IMPLEMENTATION RI_check.others
+END RI_check.others;
+
+SUBPROGRAM PI_op
+FEATURES
+  a : IN PARAMETER DataView::T_Int32 {
+    Taste::encoding => NATIVE;
+  };
+END PI_op;
+
+SUBPROGRAM IMPLEMENTATION PI_op.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_op.others;
+
+SYSTEM Function1
+FEATURES
+  PI_trigger : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function1::PI_trigger.others {
+    Taste::coordinates => "107085 75431";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 5000 ms;
+    Taste::InterfaceName => "trigger";
+  };
+  RI_check : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_check.others {
+    Taste::coordinates => "163145 84881";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "check";
+    Taste::labelInheritance => "true";
+  };
+  PI_op : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function1::PI_op.others {
+    Taste::coordinates => "163145 122681";
+    Taste::RCMoperationKind => protected;
+    Taste::InterfaceName => "op";
+  };
+PROPERTIES
+  Source_Language => (C);
+  Taste::Active_Interfaces => any;
+END Function1;
+
+SYSTEM IMPLEMENTATION Function1.others
+END Function1.others;
+
+END interfaceview::IV::Function1;
+
+PACKAGE interfaceview::IV::Function2
+PUBLIC
+
+WITH interfaceview::IV::Function1;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_check
+FEATURES
+  a : IN PARAMETER DataView::T_Int32 {
+    Taste::encoding => NATIVE;
+  };
+END PI_check;
+
+SUBPROGRAM IMPLEMENTATION PI_check.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_check.others;
+
+SUBPROGRAM RI_op
+FEATURES
+  a : IN PARAMETER DataView::T_Int32 {
+    Taste::encoding => NATIVE;
+  };
+END RI_op;
+
+SUBPROGRAM IMPLEMENTATION RI_op.others
+END RI_op.others;
+
+SYSTEM Function2
+FEATURES
+  PI_check : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_check.others {
+    Taste::coordinates => "205349 88976";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "check";
+  };
+  RI_op : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function1::PI_op.others {
+    Taste::coordinates => "205349 122051";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "op";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (C);
+  Taste::Active_Interfaces => any;
+END Function2;
+
+SYSTEM IMPLEMENTATION Function2.others
+END Function2.others;
+
+END interfaceview::IV::Function2;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::Function1;
+WITH interfaceview::IV::Function2;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  Function1 : SYSTEM interfaceview::IV::Function1::Function1.others {
+    Taste::coordinates => "100785 75431 163145 149917";
+  };
+  Function2 : SYSTEM interfaceview::IV::Function2::Function2.others {
+    Taste::coordinates => "205349 77951 274481 152752";
+  };
+CONNECTIONS
+  Function1_RI_check_Function2_PI_check : SUBPROGRAM ACCESS Function2.PI_check -> Function1.RI_check {
+    Taste::coordinates => "163145 84881 184247 84881 184247 88976 205349 88976";
+  };
+  Function2_RI_op_Function1_PI_op : SUBPROGRAM ACCESS Function1.PI_op -> Function2.RI_op {
+    Taste::coordinates => "205349 122051 184247 122051 184247 122681 163145 122681";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

@@ -1,0 +1,80 @@
+@@-- The documentation of the templates is there:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_skeletons_sub_interface.ascii
+@@IF@@ @_EXIST:Param_Names_@
+
+procedure @_CAPITALIZE:Name_@
+@@INLINE(   \()(;\n    )(\) is)@@
+   @@TABLE'ALIGN_ON("out")@@
+      @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+         @_CAPITALIZE:Param_Names_@ : in out asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@
+      @@ELSE@@
+         @_CAPITALIZE:Param_Names_@ : out asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@
+      @@END_IF@@
+   @@END_TABLE@@
+@@END_INLINE@@
+@@ELSE@@
+
+procedure @_CAPITALIZE:Name_@ is
+@@END_IF@@
+@@IF@@ @_Target_@ = SIMU
+@@IF@@ @_Kind_@ = SPORADIC_OPERATION
+   --  Generate an event to the simulator for the output
+   @@TABLE@@
+   Event_Out_@_CAPITALIZE:Remote_Function_Names_@ : asn1SccObservable_Event (Kind => Output_Event_PRESENT);
+   @@END_TABLE@@
+begin
+@@TABLE@@
+   Event_Out_@_CAPITALIZE:Remote_Function_Names_@.Output_Event :=
+     (Source => asn1scc@_CAPITALIZE:Parent_Function_@,
+      Dest   => asn1scc@_CAPITALIZE:Remote_Function_Names_@,
+      Event  => (Kind => @_CAPITALIZE:Parent_Function_@_PRESENT,
+                 @_CAPITALIZE:Parent_Function_@ =>
+                   (Kind   => Msg_Out_PRESENT,
+                    Msg_Out =>
+                       (Kind => @_CAPITALIZE:Name_@_PRESENT,
+@@IF@@ @_EXIST:Param_Names_@
+                  @_CAPITALIZE:Name_@ =>
+@@INLINE(                        \()(, )(\)\)\)\)\);)@@
+      @@TABLE@@
+      @_CAPITALIZE:Param_Names_@ => @_CAPITALIZE:Param_Names_@
+      @@END_TABLE@@@
+@@END_INLINE@@
+@@ELSE@@
+                     @_CAPITALIZE:Name_@ => (null record)))));
+@@END_IF@@
+   Push_Event (Event_Out_@_CAPITALIZE:Remote_Function_Names_@);
+@@END_TABLE@@
+
+@@ELSE@@
+@@-- Non-sporadic call
+begin
+   null;  -- TODO: implement event for synchronous calls (or direct call and no event?)
+@@END_IF@@
+@@ELSE@@
+@@-- Non-simulation targets
+   procedure C_@_CAPITALIZE:Name_@
+@@INLINE(      \()(;\n       )(\))@@
+   @@TABLE'ALIGN_ON("out")@@
+      @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+         @_CAPITALIZE:Param_Names_@ : in out asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@
+      @@ELSE@@
+         @_CAPITALIZE:Param_Names_@ : out asn1Scc@_CAPITALIZE:REPLACE_ALL(-/_):Param_Types_@
+      @@END_IF@@
+   @@END_TABLE@@
+@@END_INLINE@@
+      with Import,
+           Convention => C,
+           Link_Name  => "@_LOWER:Parent_Function_@_RI_@_Name_@";
+begin
+@@IF@@ @_EXIST:Param_Names_@
+      C_@_CAPITALIZE:Name_@ (@_Param_Names_@);
+@@ELSE@@
+@@-- No Params
+      C_@_CAPITALIZE:Name_@;
+@@END_IF@@
+@@END_IF@@
+end @_CAPITALIZE:Name_@;
+

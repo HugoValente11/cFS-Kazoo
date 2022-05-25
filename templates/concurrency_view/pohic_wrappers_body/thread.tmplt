@@ -1,0 +1,32 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fri.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_thread.ascii
+#include "@_LOWER:Pro_Block_Name_@_vm_if.h"
+
+// Function called by the middleware when task is ready to run
+@@INLINE()(\n)(\n{)@@
+   @@IF@@ @_Param_Names'Length_@ > 0
+      @@TABLE@@
+         void call_@_LOWER:Thread_Name_@ (__po_hi_task_id sender_pid, dataview__@_REPLACE_ALL((-)/_):LOWER:Param_Types_@_buffer_impl buf)
+      @@END_TABLE@@
+   @@ELSE@@
+      void call_@_LOWER:Thread_Name_@ (__po_hi_task_id sender_pid)
+   @@END_IF@@
+@@END_INLINE@@
+   (void)sender_pid; // sender id is not used for now
+
+   @@IF@@ @_Need_Mutex_@
+    extern process_package__taste_protected_object @_LOWER:Pro_Block_Name_@_protected;
+   __po_hi_protected_lock (@_LOWER:Pro_Block_Name_@_protected.protected_id);
+   @@END_IF@@
+   @@IF@@ @_Param_Names'Length_@ > 0
+   @_Thread_Name_@ (buf.buffer, buf.length);
+   @@ELSE@@
+   @_Thread_Name_@();
+   @@END_IF@@
+   @@IF@@ @_Need_Mutex_@
+   __po_hi_protected_unlock (@_LOWER:Pro_Block_Name_@_protected.protected_id);
+   @@END_IF@@
+}

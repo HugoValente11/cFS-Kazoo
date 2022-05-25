@@ -1,0 +1,150 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Language_@            : The implementation language of the function
+@@-- @_Property_Names_@      : All AADL properties (names) associated to the function
+@@-- @_Property_Values_@     : ... and corresponding values
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
+@@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
+@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@
+@@IF@@ @_Direction_@ = "PI"
+    char msg[] = "@_Message_Content_@\n";
+    @_UPPER:Parent_Function_@_Data.MsgId = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID;
+    @_UPPER:Parent_Function_@_Data.Size = @_Message_Size_@;
+
+    CFE_MSG_Init(&@_UPPER:Parent_Function_@_Data.MsgPtr, @_UPPER:Parent_Function_@_Data.MsgId, @_UPPER:Parent_Function_@_Data.Size);
+
+    char *ptr = CFE_SB_GetUserData ( &@_UPPER:Parent_Function_@_Data.MsgPtr);
+
+    status = CFE_SB_MessageStringSet(ptr,
+                                     msg,
+                                     sizeof(msg),
+                                     sizeof(msg));
+    CFE_ES_WriteToSysLog("Sent message? RC = %lu\n",
+                             (unsigned long)status);
+
+    status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_Data.MsgPtr, false);
+    CFE_ES_WriteToSysLog("Sent message? RC = %lu\n",
+                             (unsigned long)status);
+
+@@ELSE@@ 
+ /* Print here message properties of PI
+ @_Message_ID_@
+ @_Message_Content_@
+ @_Message_Size_@
+ @_Event_Name_@
+ */ 
+    /*
+    ** Create Software Bus message pipe.
+    */
+    @_UPPER:Parent_Function_@_Data.PipeDepth = @_UPPER:Parent_Function_@_PIPE_DEPTH;
+
+    strcpy(@_UPPER:Parent_Function_@_Data.PipeName, "@_UPPER:Parent_Function_@_COM_PIPE");
+    CFE_ES_WriteToSysLog("Nombre de la COM_PIPE de @_UPPER:Parent_Function_@_APP= %s", @_UPPER:Parent_Function_@_Data.PipeName);
+
+    status = CFE_SB_CreatePipe(&@_UPPER:Parent_Function_@_Data.CommandPipe,
+                               @_UPPER:Parent_Function_@_Data.PipeDepth,
+                               @_UPPER:Parent_Function_@_Data.PipeName);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("TX App: Error creating communication pipe,210, TX_app.c, RC = 0x%08lX\n",
+                             (unsigned long)status);
+        
+    }  
+
+    //Subscribe to TX_APP_COMMUNICATION_MID     0x0@_Message_ID_@ msg id
+    
+    status = CFE_SB_Subscribe(0x0@_Message_ID_@,
+                              @_UPPER:Parent_Function_@_Data.CommandPipe);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("@_UPPER:Parent_Function_@ App: Error Subscribing to communication pipe, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
+       
+
+
+    // Fix segmentation fault comes from here
+    CFE_SB_Buffer_t* buffer;
+
+    // buffer->Msg = @_UPPER:Parent_Function_@_Data.MsgPtr;
+
+    status = CFE_SB_ReceiveBuffer(&buffer,
+                           @_UPPER:Parent_Function_@_Data.CommandPipe,
+                           CFE_SB_PEND_FOREVER);
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("@_UPPER:Parent_Function_@ App: Error ReceiveBuffer, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
+
+    //@_UPPER:Parent_Function_@_Data.HkBuf.MsgHdr = *@_UPPER:Parent_Function_@_Data.MsgPtr;
+    //--------------Voy a comprobar distintos parámetros del paquete con sus metodos-------
+
+
+    status = CFE_MSG_GetMsgId(&buffer->Msg, &@_UPPER:Parent_Function_@_Data.MsgId);
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("@_UPPER:Parent_Function_@ App: Error GetMsgId, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
+
+
+    int MsgIdInteger=CFE_SB_MsgIdToValue(@_UPPER:Parent_Function_@_Data.MsgId);
+    CFE_ES_WriteToSysLog("El CFE_SB_MsgIdToValue en @_UPPER:Parent_Function_@ devuelve: %i", MsgIdInteger);
+
+
+    if (status == CFE_SUCCESS)
+    {
+
+        char * c = CFE_SB_GetUserData (&buffer->Msg);
+       
+        CFE_ES_WriteToSysLog("El mensaje recibido es: %s", c);                            
+
+       
+    }
+    else
+    {
+        CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_PIPE_ERR_EID,
+                          CFE_EVS_EventType_ERROR,
+                          "@_UPPER:Parent_Function_@ APP: SB Pipe Read Error, App Will Exit");
+
+        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+    }
+
+    //Borro la pipe para liberar recursos
+    status = CFE_SB_DeletePipe (@_UPPER:Parent_Function_@_Data.CommandPipe);
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("@_UPPER:Parent_Function_@ App: Error Deleting the pipe, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
+@@END_IF@@

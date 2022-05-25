@@ -1,0 +1,117 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type deploymentview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE deploymentview::DV::Node1
+PUBLIC
+
+WITH Taste;
+WITH Deployment;
+WITH TASTE_DV_Properties;
+WITH deploymentview::DV;
+WITH Memory_Properties;
+WITH ARINC653;
+PROCESS x86_partition
+END x86_partition;
+
+PROCESS IMPLEMENTATION x86_partition.others
+END x86_partition.others;
+
+END deploymentview::DV::Node1;
+
+PACKAGE deploymentview::DV
+PUBLIC
+
+WITH interfaceview::IV::Publisher2;
+WITH interfaceview::IV::Publisher1;
+WITH interfaceview::IV::Subscriber1;
+WITH interfaceview::IV::Subscriber2;
+WITH interfaceview::IV::Subscriber3;
+WITH interfaceview::IV::GUI_Operator;
+WITH interfaceview::IV::Sub1_Broker;
+WITH interfaceview::IV::Sub2_Broker;
+WITH interfaceview::IV::Pubs_Broker;
+WITH interfaceview::IV::Sub3_Broker;
+WITH ocarina_processors_x86;
+WITH deploymentview::DV::Node1;
+WITH Taste;
+WITH Deployment;
+WITH interfaceview::IV;
+WITH TASTE_DV_Properties;
+SYSTEM Node1
+END Node1;
+
+SYSTEM IMPLEMENTATION Node1.others
+SUBCOMPONENTS
+  IV_Publisher2 : SYSTEM interfaceview::IV::Publisher2::Publisher2.others {
+    Taste::FunctionName => "Publisher2";
+  };
+  IV_Publisher1 : SYSTEM interfaceview::IV::Publisher1::Publisher1.others {
+    Taste::FunctionName => "Publisher1";
+  };
+  IV_Subscriber1 : SYSTEM interfaceview::IV::Subscriber1::Subscriber1.others {
+    Taste::FunctionName => "Subscriber1";
+  };
+  IV_Subscriber2 : SYSTEM interfaceview::IV::Subscriber2::Subscriber2.others {
+    Taste::FunctionName => "Subscriber2";
+  };
+  IV_Subscriber3 : SYSTEM interfaceview::IV::Subscriber3::Subscriber3.others {
+    Taste::FunctionName => "Subscriber3";
+  };
+  IV_GUI_Operator : SYSTEM interfaceview::IV::GUI_Operator::GUI_Operator.others {
+    Taste::FunctionName => "GUI_Operator";
+  };
+  IV_Sub1_Broker : SYSTEM interfaceview::IV::Sub1_Broker::Sub1_Broker.others {
+    Taste::FunctionName => "Sub1_Broker";
+  };
+  IV_Sub2_Broker : SYSTEM interfaceview::IV::Sub2_Broker::Sub2_Broker.others {
+    Taste::FunctionName => "Sub2_Broker";
+  };
+  IV_Pubs_Broker : SYSTEM interfaceview::IV::Pubs_Broker::Pubs_Broker.others {
+    Taste::FunctionName => "Pubs_Broker";
+  };
+  IV_Sub3_Broker : SYSTEM interfaceview::IV::Sub3_Broker::Sub3_Broker.others {
+    Taste::FunctionName => "Sub3_Broker";
+  };
+  x86_partition : PROCESS deploymentview::DV::Node1::x86_partition.others {
+    Taste::coordinates => "114979 70786 160749 101560";
+    Deployment::Port_Number => 0;
+  };
+  x86_linux : PROCESSOR ocarina_processors_x86::x86.linux {
+    Taste::coordinates => "109258 61993 166470 105956";
+  };
+PROPERTIES
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Publisher2;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Publisher1;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Subscriber1;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Subscriber2;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Subscriber3;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_GUI_Operator;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Sub1_Broker;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Sub2_Broker;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Pubs_Broker;
+  Taste::APLC_Binding => (reference (x86_partition)) APPLIES TO IV_Sub3_Broker;
+  Actual_Processor_Binding => (reference (x86_linux)) APPLIES TO x86_partition;
+END Node1.others;
+
+SYSTEM deploymentview
+END deploymentview;
+
+SYSTEM IMPLEMENTATION deploymentview.others
+SUBCOMPONENTS
+  Node1 : SYSTEM Node1.others {
+    Taste::coordinates => "102106 49432 173621 112236";
+  };
+  interfaceview : SYSTEM interfaceview::IV::interfaceview.others;
+END deploymentview.others;
+
+PROPERTIES
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+  Taste::interfaceView => "InterfaceView.aadl";
+  Taste::HWLibraries => ("/home/taste/tool-inst/share/ocarina/AADLv2/ocarina_components.aadl");
+END deploymentview::DV;
+

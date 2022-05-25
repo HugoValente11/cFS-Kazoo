@@ -1,0 +1,158 @@
+/*******************************************************************************
+**
+**      GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**      Copyright (c) 2006-2019 United States Government as represented by
+**      the Administrator of the National Aeronautics and Space Administration.
+**      All Rights Reserved.
+**
+**      Licensed under the Apache License, Version 2.0 (the "License");
+**      you may not use this file except in compliance with the License.
+**      You may obtain a copy of the License at
+**
+**        http://www.apache.org/licenses/LICENSE-2.0
+**
+**      Unless required by applicable law or agreed to in writing, software
+**      distributed under the License is distributed on an "AS IS" BASIS,
+**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**      See the License for the specific language governing permissions and
+**      limitations under the License.
+**
+*******************************************************************************/
+@@SET@@ TABLES_ENABLED = FALSE
+@@SET@@ MESSAGES_ENABLED = True
+@@SET@@ DATASTORE_ENABLED = TRUE
+@@IF@@ @_DataStore_@ = "YES"
+// Datastore value
+// @_DataStore_@
+@@END_IF@@
+
+/**
+ * @file
+ *
+ * Main header file for the SAMPLE application
+ */
+
+#ifndef @_UPPER:Name_@_H
+#define @_UPPER:Name_@_H
+
+/*
+** Required header files.
+*/
+#include "cfe.h"
+#include "cfe_error.h"
+#include "cfe_evs.h"
+#include "cfe_sb.h"
+#include "cfe_es.h"
+#include "dataview-uniq.h"
+
+#include "@_LOWER:Name_@_app_perfids.h"
+#include "@_LOWER:Name_@_app_msgids.h"
+#include "@_LOWER:Name_@_app_msg.h"
+
+/***********************************************************************/
+#define @_UPPER:Name_@_PIPE_DEPTH 32 /* Depth of the Command Pipe for Application */
+
+@@IF@@ @_TABLES_ENABLED_@
+#define @_UPPER:Name_@_NUMBER_OF_TABLES 1 /* Number of Table(s) */
+
+/* Define filenames of default data images for tables */
+#define @_UPPER:Name_@_TABLE_FILE "/cf/@_LOWER:Name_@_tbl.tbl"
+
+#define @_UPPER:Name_@_TABLE_OUT_OF_RANGE_ERR_CODE -1
+
+#define @_UPPER:Name_@_TBL_ELEMENT_1_MAX 10
+@@END_IF@@
+/************************************************************************
+** Type Definitions
+*************************************************************************/
+
+/*
+** Global Data
+*/
+typedef struct
+{
+    /*
+    ** Command interface counters...
+    */
+    uint8 CmdCounter;
+    uint8 ErrCounter;
+
+    /*
+    ** Housekeeping telemetry packet...
+    */
+    @_UPPER:Name_@_HkTlm_t HkTlm;
+
+    /*
+    ** Run Status variable used in the main processing loop
+    */
+    uint32 RunStatus;
+
+    /*
+    ** Operational data (not reported in housekeeping)...
+    */
+    CFE_SB_PipeId_t CommandPipe;
+
+    /*
+    ** Initialization data (not reported in housekeeping)...
+    */
+    char   PipeName[CFE_MISSION_MAX_API_LEN];
+    uint16 PipeDepth;
+
+@@IF@@ @_MESSAGES_ENABLED_@
+@@IF@@ @_EXIST:List_Of_RIs_@
+    //For the message:
+    CFE_SB_Buffer_t * Buffer;
+    CFE_MSG_Message_t MsgPtr;
+    CFE_SB_MsgId_t MsgId;
+    CFE_MSG_Size_t Size;
+@@ELSIF@@ @_EXIST:List_Of_PIs_@
+    @_Receive_Messages_@
+    //For the message:
+    CFE_MSG_Message_t MsgPtr;
+    CFE_SB_MsgId_t MsgId;
+    CFE_MSG_Size_t Size;
+@@END_IF@@
+    @_Required_Interfaces_@
+    @_Provided_Interfaces_@
+@@END_IF@@
+
+@@IF@@ @_DATASTORE_ENABLED_@
+    /*
+    ** Data store properties
+    */
+    CFE_ES_CDSHandle_t CDSHandlePtr;
+    int MAX_STORE_LENGTH;
+@@END_IF@@
+
+    CFE_EVS_BinFilter_t EventFilters[@_UPPER:Name_@_EVENT_COUNTS];
+    @@IF@@ @_TABLES_ENABLED_@
+    CFE_TBL_Handle_t    TblHandles[@_UPPER:Name_@_NUMBER_OF_TABLES];
+    @@END_IF@@
+
+} @_UPPER:Name_@_Data_t;
+
+/****************************************************************************/
+/*
+** Local function prototypes.
+**
+** Note: Except for the entry point (@_UPPER:Name_@_Main), these
+**       functions are not called from any other source module.
+*/
+void  @_UPPER:Name_@_APP_Main(void);
+int32 @_UPPER:Name_@_Init(void);
+void  @_UPPER:Name_@_ProcessCommandPacket(CFE_SB_Buffer_t *SBBufPtr);
+void  @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr);
+int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg);
+int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg);
+int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg);
+@@IF@@ @_TABLES_ENABLED_@
+int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg);
+void  @_UPPER:Name_@_GetCrc(const char *TableName);
+
+int32 @_UPPER:Name_@_TblValidationFunc(void *TblData);
+@@END_IF@@
+
+bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLength);
+
+#endif /* @_UPPER:Name_@_H */

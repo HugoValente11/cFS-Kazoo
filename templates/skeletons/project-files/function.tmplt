@@ -1,0 +1,27 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_skeletons_sub_function.ascii
+@@--
+@@IF@@ @_Instance_Of_@ = ""
+@@IF@@ @_Language_@ = C
+@_Deployment_View_@ This is my _Deployment_View
+SOURCES += work/@_LOWER:Name_@/C/src/*.c
+SOURCES += work/@_LOWER:Name_@/fsw/src/*.c
+HEADERS += work/@_LOWER:Name_@/C/src/*.h
+HEADERS += work/@_LOWER:Name_@/fsw/src/*.h
+HEADERS += work/@_LOWER:Name_@/fsw/platform_inc/*.h
+@@ELSIF@@ @_Language_@ = Ada
+SOURCES += work/@_LOWER:Name_@/Ada/src/@_LOWER:Name_@.adb
+HEADERS += work/@_LOWER:Name_@/Ada/src/@_LOWER:Name_@.ads
+@@ELSIF@@ @_Language_@ = SDL
+SOURCES += work/@_LOWER:Name_@/SDL/src/@_LOWER:Name_@.pr
+SOURCES += work/@_LOWER:Name_@/SDL/code/@_LOWER:Name_@.adb
+SOURCES += work/@_LOWER:Name_@/SDL/code/@_LOWER:Name_@.ads
+@@ELSIF@@ @_Language_@ = CPP
+SOURCES += work/@_LOWER:Name_@/CPP/src/@_LOWER:Name_@.cc
+HEADERS += work/@_LOWER:Name_@/CPP/src/@_LOWER:Name_@.h
+SOURCES += work/@_LOWER:Name_@/CPP/src/@_LOWER:Name_@_state.h
+@@ELSIF@@ @_Language_@ = GUI
+SOURCES += work/@_LOWER:Name_@/GUI/src/UserWidgets.py
+@@END_IF@@
+@@END_IF@@

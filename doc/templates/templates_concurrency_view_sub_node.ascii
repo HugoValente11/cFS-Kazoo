@@ -1,0 +1,123 @@
+templates/concurrency_view/sub/node.tmplt
+
+This file is evaluated for every node. The result of this file is saved
+to the file with name returned by filenode.tmplt. The result is also
+used as a parameter for system.tmplt.
+
++----------------------+----------------------------------------------+
+| Parameter name       | Description                                  |
++======================+==============================================+
+| Node_Name            | Name of the node from deployment view        |
++----------------------+----------------------------------------------+
+| Partition_Names      | Tag listing the partitions in this node      |
++----------------------+----------------------------------------------+
+| Has_Memory           | Boolean flag indicating that a memory is     |
+|                      | defined for this node                        |
++----------------------+----------------------------------------------+
+| Partitions           | List of rendered code for partitions         |
++----------------------+----------------------------------------------+
+| VP_Names             | Vector tag: list of virtual processors on    |
+|                      | this node                                    |
++----------------------+----------------------------------------------+
+| VP_Package_Names     | ↳ Corresponding package name                 |
++----------------------+----------------------------------------------+
+| VP_Platforms         | ↳ Corresponding platform name                |
++----------------------+----------------------------------------------+
+| VP_Classifiers       | ↳ Corresponding aadl classifier              |
++----------------------+----------------------------------------------+
+| Package_Name         | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| CPU_Family           | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| CPU_Classifier       | AADL CPU Classifier (e.g.                    |
+|                      | ocarina_processors_x86::x86.linux)           |
++----------------------+----------------------------------------------+
+| CPU_Name             | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| CPU_Platform         | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Ada_Runtime          | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| CPU_Instance         | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Timer_Resolution     | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Interface_View       | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Data_View            | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Shared_Lib_Dir       | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Check_Data_View      | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Other_Files          | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Target               | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Output_Dir           | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Deployment_View      | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Binary_Path          | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Use_POHIC            | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Debug_Flag           | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| No_Stdlib_Flag       | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Shared_Types         | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Skeletons            | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Glue                 | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Block_Instance_Of    | If the block is an instance: function type   |
+|                      | name                                         |
++----------------------+----------------------------------------------+
+| Block_Languages      | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Block_Names          | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+
+| Device_Names         | Name of the driver instance                  |
++----------------------+----------------------------------------------+
+| Device_Driver_Names  | ↳ Identifier of the device as defined in     |
+|                      | ocarina_component.aadl                       |
++----------------------+----------------------------------------------+
+| Device_CPU           | ↳ Label of the processor in the node hosting |
+|                      | this driver                                  |
++----------------------+----------------------------------------------+
+| Device_Bus_Name      | ↳ Name of the bus connected to this driver   |
++----------------------+----------------------------------------------+
+| Device_Init          | ↳ name of the function (symbol) in charge of |
+|                      | the driver initialisation                    |
++----------------------+----------------------------------------------+
+| Device_Send_Function | ↳ Name of the driver "send" function as      |
+|                      | defined in the AADL model                    |
++----------------------+----------------------------------------------+
+| Device_AADL_Pkg      | ↳ AADL package containing the driver         |
+|                      | (deploymentview::dv::someName)               |
++----------------------+----------------------------------------------+
+| Device_ASN1_Module   | ↳ Name of the ASN.1 module containing the    |
+|                      | type used for the driver configuration       |
++----------------------+----------------------------------------------+
+| Device_Port_Name     | ↳ Port name used by the driver to connect to |
+|                      | the bus                                      |
++----------------------+----------------------------------------------+
+| Device_Config        | ↳ Configuration string in ASN.1 Value        |
+|                      | Notation for the driver                      |
++----------------------+----------------------------------------------+
+| Device_ASN1_File     | ↳ Path the the ASN.1 file containing the     |
+|                      | type for the driver configuration            |
++----------------------+----------------------------------------------+
+| Device_Classifier    | ↳ e.g.                                       |
+|                      | deploymentview::dv::pb2::ethernet2.others    |
++----------------------+----------------------------------------------+
+| Device_Language      | ↳ Implementation language for the device     |
+|                      | driver                                       |
++----------------------+----------------------------------------------+
+| Device_ASN1_Sort     | ↳ ASN.1 type name for the device driver      |
+|                      | configuration                                |
++----------------------+----------------------------------------------+
+| Block_Is_Passive     | DOCUMENTATION MISSING                        |
++----------------------+----------------------------------------------+

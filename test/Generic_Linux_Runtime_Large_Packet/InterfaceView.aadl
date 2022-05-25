@@ -1,0 +1,172 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::Controller
+PUBLIC
+
+WITH interfaceview::IV::Actuator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_trigger_work
+END PI_trigger_work;
+
+SUBPROGRAM IMPLEMENTATION PI_trigger_work.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_trigger_work.others;
+
+SUBPROGRAM PI_result
+FEATURES
+  r : IN PARAMETER DataView::BigParameter {
+    Taste::encoding => ACN;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_result;
+
+SUBPROGRAM IMPLEMENTATION PI_result.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_result.others;
+
+SUBPROGRAM RI_work
+FEATURES
+  a : IN PARAMETER DataView::LargeUint32 {
+    Taste::encoding => ACN;
+  };
+END RI_work;
+
+SUBPROGRAM IMPLEMENTATION RI_work.others
+END RI_work.others;
+
+SYSTEM Controller
+FEATURES
+  PI_trigger_work : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Controller::PI_trigger_work.others {
+    Taste::coordinates => "110874 51279";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 5000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "trigger_work";
+  };
+  PI_result : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Controller::PI_result.others {
+    Taste::coordinates => "135684 103962";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "result";
+  };
+  RI_work : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Actuator::PI_work.others {
+    Taste::coordinates => "135684 62554";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "work";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END Controller;
+
+SYSTEM IMPLEMENTATION Controller.others
+END Controller.others;
+
+END interfaceview::IV::Controller;
+
+PACKAGE interfaceview::IV::Actuator
+PUBLIC
+
+WITH interfaceview::IV::Controller;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_work
+FEATURES
+  a : IN PARAMETER DataView::LargeUint32 {
+    Taste::encoding => ACN;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_work;
+
+SUBPROGRAM IMPLEMENTATION PI_work.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_work.others;
+
+SUBPROGRAM RI_result
+FEATURES
+  r : IN PARAMETER DataView::BigParameter {
+    Taste::encoding => ACN;
+  };
+END RI_result;
+
+SUBPROGRAM IMPLEMENTATION RI_result.others
+END RI_result.others;
+
+SYSTEM Actuator
+FEATURES
+  PI_work : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Actuator::PI_work.others {
+    Taste::coordinates => "193650 62596";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "work";
+  };
+  RI_result : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Controller::PI_result.others {
+    Taste::coordinates => "193650 105364";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "result";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (C);
+  Taste::Active_Interfaces => any;
+END Actuator;
+
+SYSTEM IMPLEMENTATION Actuator.others
+END Actuator.others;
+
+END interfaceview::IV::Actuator;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::Controller;
+WITH interfaceview::IV::Actuator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  Controller : SYSTEM interfaceview::IV::Controller::Controller.others {
+    Taste::coordinates => "91434 51279 135684 118836";
+  };
+  Actuator : SYSTEM interfaceview::IV::Actuator::Actuator.others {
+    Taste::coordinates => "193650 52876 247698 119755";
+  };
+CONNECTIONS
+  Actuator_RI_result_Controller_PI_result : SUBPROGRAM ACCESS Controller.PI_result -> Actuator.RI_result {
+    Taste::coordinates => "193650 105364 160887 105364 160887 103962 135684 103962";
+  };
+  Controller_RI_work_Actuator_PI_work : SUBPROGRAM ACCESS Actuator.PI_work -> Controller.RI_work {
+    Taste::coordinates => "135684 62554 160887 62554 160887 62596 193650 62596";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

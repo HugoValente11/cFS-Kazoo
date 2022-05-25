@@ -1,0 +1,55 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Payload;
+    /* CIF TEXT (625, 101), (267, 209) */
+    -- Text area for declarations and comments
+    
+    dcl pic Picture := 'Raw data';
+    /* CIF ENDTEXT */
+    /* CIF START (246, 9), (70, 35) */
+    START;
+        /* CIF NEXTSTATE (246, 59), (70, 35) */
+        NEXTSTATE On;
+    /* CIF state (246, 59), (70, 35) */
+    state On;
+        /* CIF input (231, 114), (98, 35) */
+        input Take_Picture;
+            /* CIF decision (246, 169), (70, 50) */
+            decision any;
+                /* CIF ANSWER (113, 239), (73, 24) */
+                ('success'):
+                    /* CIF PROCEDURECALL (37, 283), (226, 35) */
+                    call writeln('[payload] storing picture');
+                    /* CIF output (104, 333), (92, 35) */
+                    output Picture(pic);
+                    /* CIF NEXTSTATE (111, 388), (77, 35) */
+                    NEXTSTATE Wait_Ack;
+                /* CIF ANSWER (358, 239), (70, 24) */
+                ('error'):
+                    /* CIF output (298, 283), (188, 35) */
+                    output Completion_Report (failure);
+                    /* CIF PROCEDURECALL (274, 338), (237, 35) */
+                    call writeln('[payload] reporting failure');
+                    /* CIF NEXTSTATE (358, 388), (70, 35) */
+                    NEXTSTATE On;
+            enddecision;
+    endstate;
+    /* CIF state (651, 384), (70, 35) */
+    state Off;
+    endstate;
+    /* CIF state (532, 276), (70, 35) */
+    state *;
+        /* CIF input (522, 331), (89, 35) */
+        input Switch_Off;
+            /* CIF NEXTSTATE (532, 386), (70, 35) */
+            NEXTSTATE Off;
+    endstate;
+    /* CIF state (486, 10), (77, 35) */
+    state Wait_Ack;
+        /* CIF input (494, 65), (64, 35) */
+        input Ack;
+            /* CIF output (428, 120), (195, 35) */
+            output Completion_Report (Success);
+            /* CIF NEXTSTATE (491, 175), (70, 35) */
+            NEXTSTATE On;
+    endstate;
+endprocess Payload;

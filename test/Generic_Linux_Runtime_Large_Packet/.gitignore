@@ -1,0 +1,20 @@
+# Ignore whole work directory
+work/*
+
+# Except CONTROLLER source files
+!work/controller
+work/controller/*
+!work/controller/SDL
+work/controller/SDL/*
+!work/controller/SDL/src
+work/controller/SDL/src/*
+!work/controller/SDL/src/controller.pr
+
+# Except ACTUATOR source files
+!work/actuator
+work/actuator/*
+!work/actuator/C
+work/actuator/C/*
+!work/actuator/C/src
+work/actuator/C/src/*
+!work/actuator/C/src/actuator.c

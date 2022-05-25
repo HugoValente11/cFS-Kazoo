@@ -1,0 +1,52 @@
+/*******************************************************************************
+**
+**      GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**      Copyright (c) 2006-2019 United States Government as represented by
+**      the Administrator of the National Aeronautics and Space Administration.
+**      All Rights Reserved.
+**
+**      Licensed under the Apache License, Version 2.0 (the "License");
+**      you may not use this file except in compliance with the License.
+**      You may obtain a copy of the License at
+**
+**        http://www.apache.org/licenses/LICENSE-2.0
+**
+**      Unless required by applicable law or agreed to in writing, software
+**      distributed under the License is distributed on an "AS IS" BASIS,
+**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**      See the License for the specific language governing permissions and
+**      limitations under the License.
+**
+** File: @_LOWER:Name_@.c
+**
+** Purpose:
+**   This file contains the source code for the Sample App.
+**
+*******************************************************************************/
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the function
+@@-- @_Language_@            : The implementation language
+@@-- @_Zip_File_@            : Optional zip file containing the source code
+@@-- @_List_Of_PIs_@         : List of all Provided Interfaces (just names)
+@@-- @_List_Of_RIs_@         : List of all Required Interfaces (just names)
+@@-- @_List_Of_Sync_PIs@     : List of synchronous Provided Interfaces
+@@-- @_List_Of_Sync_RIs@     : List of synchronous Required Interfaces
+@@-- @_List_Of_ASync_PIs@    : List of asynchronous Provided Interfaces
+@@-- @_List_Of_ASync_RIs@    : List of asynchronous Required Interfaces
+@@-- @_ASN1_Modules_@        : List of ASN.1 Modules names
+@@-- @_ASN1_Files_@          : List of ASN.1 Files with path
+@@-- @_Timers_@              : List of timers (just names)
+@@-- @_Has_Context_@         : Flag, True if there are context parameters
+@@-- @_CP_Names_@            : List of Context Parameter names
+@@-- @_CP_Types_@            : List of Context Parameter types
+@@-- @_Provided_Interfaces_@ : From template: Provided interfaces with params
+@@-- @_Required_Interfaces_@ : From template: Required interfaces with params
+@@-- @_Property_Names_@      : List of User-defined properties (names)
+@@-- @_Property_Values_@     : List of User-defined properties (values)
+@@-- @_Is_Type_@             : Flag, True if function is a component type
+@@-- @_Instance_Of_@         : Optional name of component type
+@_Name_@
+@_List_Of_PIs_@         : List of all Provided Interfaces (just names)
+@_List_Of_RIs_@         : List of all Required Interfaces (just names)

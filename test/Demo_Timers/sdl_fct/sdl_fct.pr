@@ -1,0 +1,78 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process sdl_fct;
+    /* CIF TEXT (0, 221), (236, 152) */
+    -- Declare your variables
+    
+    
+    TIMER sdl_timer;
+    
+    timer fast_timer;
+    
+    dcl counter T_UInt8 := 0;
+    /* CIF ENDTEXT */
+    /* CIF START (190, 26), (100, 50) */
+    START;
+        /* CIF NEXTSTATE (190, 91), (100, 50) */
+        NEXTSTATE Wait;
+    /* CIF state (674, 92), (147, 50) */
+    state Waiting_for_timer;
+        /* CIF input (773, 162), (100, 50) */
+        input sdl_timer;
+            /* CIF PROCEDURECALL (703, 227), (239, 50) */
+            call writeln
+('[SDL] 4-seconds timer expired!');
+            /* CIF output (750, 297), (145, 35) */
+            output SDL_Timer2_Expired;
+            /* CIF NEXTSTATE (773, 347), (100, 50) */
+            NEXTSTATE Wait;
+        /* CIF input (533, 162), (132, 50) */
+        input start_sdl_timer;
+            /* CIF PROCEDURECALL (505, 227), (188, 50) */
+            call writeln
+('Stopping all SDL timers!');
+            /* CIF PROCEDURECALL (508, 292), (181, 50) */
+            call reset_timer(sdl_timer);
+            /* CIF PROCEDURECALL (508, 362), (182, 35) */
+            call Reset_timer(fast_timer);
+            /* CIF task (550, 417), (98, 35) */
+            task counter := 0;
+            /* CIF NEXTSTATE (549, 467), (100, 50) */
+            NEXTSTATE Wait;
+    endstate;
+    /* CIF state (335, 92), (100, 50) */
+    state Wait;
+        /* CIF input (319, 162), (132, 50) */
+        input start_sdl_timer;
+            /* CIF PROCEDURECALL (277, 227), (216, 50) */
+            call writeln
+('[SDL] Timeout in 4 seconds!');
+            /* CIF PROCEDURECALL (279, 292), (211, 50) */
+            call set_timer(4000, sdl_timer);
+            /* CIF PROCEDURECALL (279, 362), (211, 50) */
+            call set_timer(10, fast_timer);
+            /* CIF NEXTSTATE (311, 427), (147, 50) */
+            NEXTSTATE Waiting_for_timer;
+    endstate;
+    /* CIF state (1110, 149), (70, 35) */
+    state *;
+        /* CIF input (1100, 204), (89, 35) */
+        input fast_timer;
+            /* CIF task (1029, 259), (231, 35) */
+            task counter := (counter + 1) mod 255;
+            /* CIF decision (1097, 314), (95, 50) */
+            decision counter = 0;
+                /* CIF ANSWER (1023, 384), (70, 24) */
+                (true):
+                    /* CIF PROCEDURECALL (926, 428), (263, 35) */
+                    call writeln('Counter timer expired!');
+                    /* CIF output (985, 483), (145, 35) */
+                    output SDL_Timer1_Expired;
+                /* CIF ANSWER (1262, 384), (70, 24) */
+                (false):
+                    /* CIF PROCEDURECALL (1199, 423), (195, 40) */
+                    call set_timer(10, fast_timer);
+            enddecision;
+            /* CIF NEXTSTATE (1109, 534), (70, 35) */
+            NEXTSTATE -;
+    endstate;
+endprocess sdl_fct;

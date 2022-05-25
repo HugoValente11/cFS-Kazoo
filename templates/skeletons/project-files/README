@@ -1,0 +1,1 @@
+Generate .pro files for Space Creator, listing the source code files (per language) to be included in the project file and therefore editable via Qt Creator

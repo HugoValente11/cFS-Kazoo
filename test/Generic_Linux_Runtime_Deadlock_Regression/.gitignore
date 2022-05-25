@@ -1,0 +1,20 @@
+# Ignore whole work directory
+work/*
+
+# Except FUNCTION1 source files
+!work/function1
+work/function1/*
+!work/function1/C
+work/function1/C/*
+!work/function1/C/src
+work/function1/C/src/*
+!work/function1/C/src/function1.c
+
+# Except FUNCTION2 source files
+!work/function2
+work/function2/*
+!work/function2/C
+work/function2/C/*
+!work/function2/C/src
+work/function2/C/src/*
+!work/function2/C/src/function2.c

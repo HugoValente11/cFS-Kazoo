@@ -1,0 +1,3 @@
+@@IF@@ @_Language_@ = GUI
+TRUE
+@@END_IF@@

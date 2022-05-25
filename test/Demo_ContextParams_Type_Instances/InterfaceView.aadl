@@ -1,0 +1,377 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::AdaType
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SYSTEM AdaType
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::AdaType::PI_Pulse.others {
+    Taste::coordinates => "286 157";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+PROPERTIES
+  Source_Language => (Ada);
+  Taste::Active_Interfaces => any;
+  Taste::is_Component_Type => true;
+END AdaType;
+
+SYSTEM IMPLEMENTATION AdaType.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "42";
+    Access_Right => read_only;
+  };
+END AdaType.others;
+
+END interfaceview::IV::AdaType;
+
+PACKAGE interfaceview::IV::CppType
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SUBPROGRAM PI_worker
+FEATURES
+  a : IN PARAMETER DataView::T_INTEGER {
+    Taste::encoding => NATIVE;
+  };
+END PI_worker;
+
+SUBPROGRAM IMPLEMENTATION PI_worker.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_worker.others;
+
+SYSTEM CppType
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::CppType::PI_Pulse.others {
+    Taste::coordinates => "949 180";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+  PI_worker : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::CppType::PI_worker.others {
+    Taste::coordinates => "1167 446";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "worker";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+  Taste::is_Component_Type => true;
+END CppType;
+
+SYSTEM IMPLEMENTATION CppType.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "42";
+    Access_Right => read_only;
+  };
+END CppType.others;
+
+END interfaceview::IV::CppType;
+
+PACKAGE interfaceview::IV::SDLType
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SUBPROGRAM RI_doSomething
+FEATURES
+  a : IN PARAMETER DataView::T_INTEGER {
+    Taste::encoding => NATIVE;
+  };
+END RI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION RI_doSomething.others
+END RI_doSomething.others;
+
+SYSTEM SDLType
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::SDLType::PI_Pulse.others {
+    Taste::coordinates => "1607 167";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+  RI_doSomething : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::SDLType::RI_doSomething.others {
+    Taste::coordinates => "1782 444";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "doSomething";
+    Taste::labelInheritance => "false";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+  Taste::is_Component_Type => true;
+END SDLType;
+
+SYSTEM IMPLEMENTATION SDLType.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "42";
+    Access_Right => read_only;
+  };
+END SDLType.others;
+
+END interfaceview::IV::SDLType;
+
+PACKAGE interfaceview::IV::AdaInstance
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+WITH interfaceview::IV::AdaType;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SYSTEM AdaInstance
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::AdaInstance::PI_Pulse.others {
+    Taste::coordinates => "290 680";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+PROPERTIES
+  Source_Language => (Ada);
+  Taste::Active_Interfaces => any;
+  Taste::is_Instance_Of => "interfaceview::IV::AdaType::AdaType.others";
+  Taste::is_Instance_Of2 => classifier(interfaceview::IV::AdaType::AdaType.others);
+END AdaInstance;
+
+SYSTEM IMPLEMENTATION AdaInstance.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "1";
+    Access_Right => read_only;
+  };
+END AdaInstance.others;
+
+END interfaceview::IV::AdaInstance;
+
+PACKAGE interfaceview::IV::CppInstance
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+WITH interfaceview::IV::CppType;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SUBPROGRAM PI_worker
+FEATURES
+  a : IN PARAMETER DataView::T_INTEGER {
+    Taste::encoding => NATIVE;
+  };
+END PI_worker;
+
+SUBPROGRAM IMPLEMENTATION PI_worker.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_worker.others;
+
+SYSTEM CppInstance
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::CppInstance::PI_Pulse.others {
+    Taste::coordinates => "982 708";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+  PI_worker : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::CppInstance::PI_worker.others {
+    Taste::coordinates => "1389 840";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "worker";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+  Taste::is_Instance_Of => "interfaceview::IV::CppType::CppType.others";
+  Taste::is_Instance_Of2 => classifier(interfaceview::IV::CppType::CppType.others);
+END CppInstance;
+
+SYSTEM IMPLEMENTATION CppInstance.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "2";
+    Access_Right => read_only;
+  };
+END CppInstance.others;
+
+END interfaceview::IV::CppInstance;
+
+PACKAGE interfaceview::IV::SDLInstance
+PUBLIC
+
+WITH interfaceview::IV::CppInstance;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+WITH interfaceview::IV::SDLType;
+SUBPROGRAM PI_Pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_Pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Pulse.others;
+
+SUBPROGRAM RI_doSomething
+FEATURES
+  a : IN PARAMETER DataView::T_INTEGER {
+    Taste::encoding => NATIVE;
+  };
+END RI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION RI_doSomething.others
+END RI_doSomething.others;
+
+SYSTEM SDLInstance
+FEATURES
+  PI_Pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::SDLInstance::PI_Pulse.others {
+    Taste::coordinates => "1596 719";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Pulse";
+  };
+  RI_doSomething : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::CppInstance::PI_worker.others {
+    Taste::coordinates => "1596 836";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "doSomething";
+    Taste::labelInheritance => "false";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+  Taste::is_Instance_Of => "interfaceview::IV::SDLType::SDLType.others";
+  Taste::is_Instance_Of2 => classifier(interfaceview::IV::SDLType::SDLType.others);
+END SDLInstance;
+
+SYSTEM IMPLEMENTATION SDLInstance.others
+SUBCOMPONENTS
+  foo : DATA DataView::T_INTEGER {
+    Taste::FS_Default_Value => "3";
+    Access_Right => read_only;
+  };
+END SDLInstance.others;
+
+END interfaceview::IV::SDLInstance;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::AdaType;
+WITH interfaceview::IV::CppType;
+WITH interfaceview::IV::SDLType;
+WITH interfaceview::IV::AdaInstance;
+WITH interfaceview::IV::CppInstance;
+WITH interfaceview::IV::SDLInstance;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  AdaType : SYSTEM interfaceview::IV::AdaType::AdaType.others {
+    Taste::coordinates => "286 52 774 433";
+  };
+  CppType : SYSTEM interfaceview::IV::CppType::CppType.others {
+    Taste::coordinates => "949 62 1451 446";
+  };
+  SDLType : SYSTEM interfaceview::IV::SDLType::SDLType.others {
+    Taste::coordinates => "1607 60 2108 444";
+  };
+  AdaInstance : SYSTEM interfaceview::IV::AdaInstance::AdaInstance.others {
+    Taste::coordinates => "290 585 729 928";
+  };
+  CppInstance : SYSTEM interfaceview::IV::CppInstance::CppInstance.others {
+    Taste::coordinates => "982 612 1389 923";
+  };
+  SDLInstance : SYSTEM interfaceview::IV::SDLInstance::SDLInstance.others {
+    Taste::coordinates => "1596 628 2020 953";
+  };
+CONNECTIONS
+  SDLInstance_RI_doSomething_CppInstance_PI_worker : SUBPROGRAM ACCESS CppInstance.PI_worker -> SDLInstance.RI_doSomething {
+    Taste::coordinates => "1596 836 1492 836 1492 840 1389 840";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 2970 2100";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

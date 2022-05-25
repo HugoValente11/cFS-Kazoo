@@ -1,0 +1,3 @@
+@@IF@@ @_Language_@ = SIMULINK or @_Language_@ = QGenC or @_Language_@ = QGenAda
+TRUE
+@@END_IF@@

@@ -1,0 +1,19 @@
+/* CIF PROCESS (255, 51), (150, 75) */
+process type Sdltype;
+    /* CIF START (320, 10), (70, 35) */
+    START;
+        /* CIF NEXTSTATE (320, 60), (70, 35) */
+        NEXTSTATE Wait;
+    /* CIF state (320, 60), (70, 35) */
+    state Wait;
+        /* CIF input (320, 115), (70, 35) */
+        input Pulse;
+            /* CIF PROCEDURECALL (248, 170), (213, 40) */
+            call writeln('SDL: ', sdltype_ctxt.foo);
+            /* CIF NEXTSTATE (320, 230), (70, 35) */
+            NEXTSTATE wait;
+    endstate;
+    /* CIF state (450, 10), (70, 35) */
+    state Wait;
+    endstate;
+endprocess type Sdltype;

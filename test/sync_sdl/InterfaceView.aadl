@@ -1,0 +1,211 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::Function1
+PUBLIC
+
+WITH interfaceview::IV::Function2;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_pulse
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_pulse.others;
+
+SUBPROGRAM RI_getData
+FEATURES
+  p1 : OUT PARAMETER DataView::MyInteger {
+    Taste::encoding => NATIVE;
+  };
+END RI_getData;
+
+SUBPROGRAM IMPLEMENTATION RI_getData.others
+END RI_getData.others;
+
+SUBPROGRAM RI_setData
+FEATURES
+  p1 : IN PARAMETER DataView::MyInteger {
+    Taste::encoding => NATIVE;
+  };
+  p2 : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => NATIVE;
+  };
+END RI_setData;
+
+SUBPROGRAM IMPLEMENTATION RI_setData.others
+END RI_setData.others;
+
+SUBPROGRAM RI_doSomething
+END RI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION RI_doSomething.others
+END RI_doSomething.others;
+
+SYSTEM Function1
+FEATURES
+  PI_pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function1::PI_pulse.others {
+    Taste::coordinates => "91995 47437";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "pulse";
+  };
+  RI_getData : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_getData.others {
+    Taste::coordinates => "114056 48309";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "getData";
+    Taste::labelInheritance => "true";
+  };
+  RI_setData : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_setData.others {
+    Taste::coordinates => "114056 50925";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "setData";
+    Taste::labelInheritance => "true";
+  };
+  RI_doSomething : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_doSomething.others {
+    Taste::coordinates => "114056 54413";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "doSomething";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END Function1;
+
+SYSTEM IMPLEMENTATION Function1.others
+END Function1.others;
+
+END interfaceview::IV::Function1;
+
+PACKAGE interfaceview::IV::Function2
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_getData
+FEATURES
+  p1 : OUT PARAMETER DataView::MyInteger {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_getData;
+
+SUBPROGRAM IMPLEMENTATION PI_getData.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_getData.others;
+
+SUBPROGRAM PI_setData
+FEATURES
+  p1 : IN PARAMETER DataView::MyInteger {
+    Taste::encoding => NATIVE;
+  };
+  p2 : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_setData;
+
+SUBPROGRAM IMPLEMENTATION PI_setData.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_setData.others;
+
+SUBPROGRAM PI_doSomething
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_doSomething;
+
+SUBPROGRAM IMPLEMENTATION PI_doSomething.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_doSomething.others;
+
+SYSTEM Function2
+FEATURES
+  PI_getData : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_getData.others {
+    Taste::coordinates => "131060 48134";
+    Taste::RCMoperationKind => protected;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "getData";
+  };
+  PI_setData : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_setData.others {
+    Taste::coordinates => "131060 50750";
+    Taste::RCMoperationKind => protected;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "setData";
+  };
+  PI_doSomething : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Function2::PI_doSomething.others {
+    Taste::coordinates => "131060 55110";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "doSomething";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END Function2;
+
+SYSTEM IMPLEMENTATION Function2.others
+END Function2.others;
+
+END interfaceview::IV::Function2;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::Function1;
+WITH interfaceview::IV::Function2;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  Function1 : SYSTEM interfaceview::IV::Function1::Function1.others {
+    Taste::coordinates => "91995 45693 114056 59819";
+  };
+  Function2 : SYSTEM interfaceview::IV::Function2::Function2.others {
+    Taste::coordinates => "131060 45518 151291 59557";
+  };
+CONNECTIONS
+  Function1_RI_getData_Function2_PI_getData : SUBPROGRAM ACCESS Function2.PI_getData -> Function1.RI_getData {
+    Taste::coordinates => "114056 48309 122035 48309 122035 48134 131060 48134";
+  };
+  Function1_RI_setData_Function2_PI_setData : SUBPROGRAM ACCESS Function2.PI_setData -> Function1.RI_setData {
+    Taste::coordinates => "114056 50925 122035 50925 122035 50750 131060 50750";
+  };
+  Function1_RI_doSomething_Function2_PI_doSomething : SUBPROGRAM ACCESS Function2.PI_doSomething -> Function1.RI_doSomething {
+    Taste::coordinates => "114056 54413 122601 54413 122601 55110 131060 55110";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

@@ -1,0 +1,3 @@
+@@IF@@ not @_Is_Type_@ and (@_Language_@ = C or @_Language_@ = GUI or @_Language_@ = Ada or @_Language_@ = VDM or @_Language_@ = QGenAda or @_Language_@ = QGenC or @_Language_@ = RTDS or @_Language_@ = CPP or @_Language_@ = SDL or @_Language_@ = Blackbox_C or @_Language_@ = MicroPython or @_Language_@ = SIMULINK or @_Language_@ = Timer_Manager)
+TRUE
+@@END_IF@@

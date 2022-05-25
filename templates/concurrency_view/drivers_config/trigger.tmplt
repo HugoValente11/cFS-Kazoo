@@ -1,0 +1,4 @@
+@@-- Generate drivers_config.asn if the system has more than one node
+@@IF@@ @_Is_Distributed_@
+TRUE
+@@END_IF@@

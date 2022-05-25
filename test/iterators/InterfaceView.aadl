@@ -1,0 +1,210 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::orchestrator
+PUBLIC
+
+WITH interfaceview::IV::simulator_gui;
+WITH interfaceview::IV::another_function;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_pulse
+FEATURES
+  p1 : IN PARAMETER DataView::T_Int {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_pulse;
+
+SUBPROGRAM IMPLEMENTATION PI_pulse.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_pulse.others;
+
+SUBPROGRAM RI_paramesstogui
+END RI_paramesstogui;
+
+SUBPROGRAM IMPLEMENTATION RI_paramesstogui.others
+END RI_paramesstogui.others;
+
+SUBPROGRAM RI_do_something
+FEATURES
+  param1 : IN PARAMETER DataView::T_UInt32 {
+    Taste::encoding => NATIVE;
+  };
+END RI_do_something;
+
+SUBPROGRAM IMPLEMENTATION RI_do_something.others
+END RI_do_something.others;
+
+SYSTEM orchestrator
+FEATURES
+  PI_pulse : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::orchestrator::PI_pulse.others {
+    Taste::coordinates => "157343 68382";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "pulse";
+  };
+  RI_paramesstogui : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::simulator_gui::PI_paramesstogui.others {
+    Taste::coordinates => "157343 81798";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "paramesstogui";
+    Taste::labelInheritance => "true";
+  };
+  RI_do_something : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::another_function::PI_do_something.others {
+    Taste::coordinates => "195417 115007";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "do_something";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END orchestrator;
+
+SYSTEM IMPLEMENTATION orchestrator.others
+END orchestrator.others;
+
+END interfaceview::IV::orchestrator;
+
+PACKAGE interfaceview::IV::simulator_gui
+PUBLIC
+
+WITH interfaceview::IV::orchestrator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_paramesstogui
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_paramesstogui;
+
+SUBPROGRAM IMPLEMENTATION PI_paramesstogui.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_paramesstogui.others;
+
+SUBPROGRAM RI_pulse
+FEATURES
+  p1 : IN PARAMETER DataView::T_Int {
+    Taste::encoding => NATIVE;
+  };
+END RI_pulse;
+
+SUBPROGRAM IMPLEMENTATION RI_pulse.others
+END RI_pulse.others;
+
+SYSTEM simulator_gui
+FEATURES
+  PI_paramesstogui : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::simulator_gui::PI_paramesstogui.others {
+    Taste::coordinates => "119740 83208";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "paramesstogui";
+  };
+  RI_pulse : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::orchestrator::PI_pulse.others {
+    Taste::coordinates => "119740 66705";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "pulse";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (GUI);
+  Taste::Active_Interfaces => any;
+END simulator_gui;
+
+SYSTEM IMPLEMENTATION simulator_gui.others
+END simulator_gui.others;
+
+END interfaceview::IV::simulator_gui;
+
+PACKAGE interfaceview::IV::another_function
+PUBLIC
+
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_do_something
+FEATURES
+  param1 : IN PARAMETER DataView::T_UInt32 {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_do_something;
+
+SUBPROGRAM IMPLEMENTATION PI_do_something.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_do_something.others;
+
+SYSTEM another_function
+FEATURES
+  PI_do_something : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::another_function::PI_do_something.others {
+    Taste::coordinates => "195324 130628";
+    Taste::RCMoperationKind => sporadic;
+    Taste::InterfaceName => "do_something";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END another_function;
+
+SYSTEM IMPLEMENTATION another_function.others
+END another_function.others;
+
+END interfaceview::IV::another_function;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::orchestrator;
+WITH interfaceview::IV::simulator_gui;
+WITH interfaceview::IV::another_function;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  orchestrator : SYSTEM interfaceview::IV::orchestrator::orchestrator.others {
+    Taste::coordinates => "157343 40599 273432 115007";
+  };
+  simulator_gui : SYSTEM interfaceview::IV::simulator_gui::simulator_gui.others {
+    Taste::coordinates => "33291 42009 119740 110860";
+  };
+  another_function : SYSTEM interfaceview::IV::another_function::another_function.others {
+    Taste::coordinates => "174060 130628 254069 171430";
+  };
+CONNECTIONS
+  simulator_gui_RI_pulse_orchestrator_PI_pulse : SUBPROGRAM ACCESS orchestrator.PI_pulse -> simulator_gui.RI_pulse {
+    Taste::coordinates => "119740 66705 136103 66705 136103 68382 157343 68382";
+  };
+  orchestrator_RI_paramesstogui_simulator_gui_PI_paramesstogui : SUBPROGRAM ACCESS simulator_gui.PI_paramesstogui -> orchestrator.RI_paramesstogui {
+    Taste::coordinates => "157343 81798 138541 81798 138541 83208 119740 83208";
+  };
+  orchestrator_RI_do_something_another_function_PI_do_something : SUBPROGRAM ACCESS another_function.PI_do_something -> orchestrator.RI_do_something {
+    Taste::coordinates => "195417 115007 195417 122817 195324 122817 195324 130628";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

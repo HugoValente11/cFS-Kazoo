@@ -1,0 +1,43 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fnode.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_block.ascii
+
+with Simulation_DataView; use Simulation_Dataview;
+
+@@-- pi/ri.tmplt contains the relevant "with" clauses for ASN.1 modules:
+@_Protected_PIs_@
+@_Unprotected_PIs_@
+@_Required_@
+
+with @_CAPITALIZE:Name_@_PI;
+
+package @_CAPITALIZE:Name_@_Events is
+
+   procedure Startup (Global_State : in out asn1SccSystem_State)
+      renames @_CAPITALIZE:Name_@_PI.Startup;
+
+   --  Process event: execute the provided interface for Input events
+   --  Only report output events
+   procedure Process_Event (Event        :        asn1sccObservable_Event;
+                            Global_State : in out asn1SccSystem_State);
+
+   procedure Print_Event (Event : asn1scc@_CAPITALIZE:Name_@_Event);
+
+@@IF@@ @_Language_@ = GUI
+   --  For exhaustive simulation:
+   procedure Exhaust_Interfaces
+      (Global_State : in out asn1SccSystem_State;
+       Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                        Limit_Reached : out Boolean));
+
+private
+  @@TABLE@@
+   procedure Exhaust_@_CAPITALIZE:List_Of_ASync_RIs_@
+      (Global_State : in out asn1SccSystem_State;
+       Callback     : access procedure (Event         : asn1SccObservable_Event;
+                                        Limit_Reached : out Boolean));
+  @@END_TABLE@@
+@@END_IF@@
+end @_CAPITALIZE:Name_@_Events;

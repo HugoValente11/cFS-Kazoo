@@ -1,0 +1,498 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::Flight_Software
+PUBLIC
+
+WITH interfaceview::IV::Ground_Segment;
+WITH interfaceview::IV::Payload;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Undervoltage
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Undervoltage;
+
+SUBPROGRAM IMPLEMENTATION PI_Undervoltage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Undervoltage.others;
+
+SUBPROGRAM PI_Set_Mission_Timeline
+FEATURES
+  mt : IN PARAMETER DataView::Mission_Timeline {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Set_Mission_Timeline;
+
+SUBPROGRAM IMPLEMENTATION PI_Set_Mission_Timeline.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Set_Mission_Timeline.others;
+
+SUBPROGRAM PI_Completion_Report
+FEATURES
+  report : IN PARAMETER DataView::Completion_Status {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Completion_Report;
+
+SUBPROGRAM IMPLEMENTATION PI_Completion_Report.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Completion_Report.others;
+
+SUBPROGRAM PI_reboot
+FEATURES
+  dummy : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_reboot;
+
+SUBPROGRAM IMPLEMENTATION PI_reboot.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_reboot.others;
+
+SUBPROGRAM RI_Housekeeping
+FEATURES
+  hk : IN PARAMETER DataView::Housekeeping_Data {
+    Taste::encoding => NATIVE;
+  };
+END RI_Housekeeping;
+
+SUBPROGRAM IMPLEMENTATION RI_Housekeeping.others
+END RI_Housekeeping.others;
+
+SUBPROGRAM RI_Switch_Off
+END RI_Switch_Off;
+
+SUBPROGRAM IMPLEMENTATION RI_Switch_Off.others
+END RI_Switch_Off.others;
+
+SUBPROGRAM RI_Take_Picture
+END RI_Take_Picture;
+
+SUBPROGRAM IMPLEMENTATION RI_Take_Picture.others
+END RI_Take_Picture.others;
+
+SYSTEM Flight_Software
+FEATURES
+  PI_Undervoltage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Undervoltage.others {
+    Taste::coordinates => "98266 71494";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Undervoltage";
+  };
+  PI_Set_Mission_Timeline : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Set_Mission_Timeline.others {
+    Taste::coordinates => "115115 93069";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Set_Mission_Timeline";
+  };
+  PI_Completion_Report : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Completion_Report.others {
+    Taste::coordinates => "124091 79369";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Completion_Report";
+  };
+  PI_reboot : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_reboot.others {
+    Taste::coordinates => "88659 82519";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "reboot";
+  };
+  RI_Housekeeping : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Ground_Segment::PI_Housekeeping.others {
+    Taste::coordinates => "95273 93069";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Housekeeping";
+    Taste::labelInheritance => "true";
+  };
+  RI_Switch_Off : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Switch_Off.others {
+    Taste::coordinates => "124091 74644";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Switch_Off";
+    Taste::labelInheritance => "true";
+  };
+  RI_Take_Picture : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Take_Picture.others {
+    Taste::coordinates => "124091 85669";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Take_Picture";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END Flight_Software;
+
+SYSTEM IMPLEMENTATION Flight_Software.others
+SUBCOMPONENTS
+  true_anomaly : DATA DataView::Timer {
+    Taste::FS_Default_Value => "0";
+    Access_Right => read_only;
+  };
+END Flight_Software.others;
+
+END interfaceview::IV::Flight_Software;
+
+PACKAGE interfaceview::IV::Ground_Segment
+PUBLIC
+
+WITH interfaceview::IV::Flight_Software;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Housekeeping
+FEATURES
+  hk : IN PARAMETER DataView::Housekeeping_Data {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Housekeeping;
+
+SUBPROGRAM IMPLEMENTATION PI_Housekeeping.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Housekeeping.others;
+
+SUBPROGRAM RI_Set_Mission_Timeline
+FEATURES
+  mt : IN PARAMETER DataView::Mission_Timeline {
+    Taste::encoding => NATIVE;
+  };
+END RI_Set_Mission_Timeline;
+
+SUBPROGRAM IMPLEMENTATION RI_Set_Mission_Timeline.others
+END RI_Set_Mission_Timeline.others;
+
+SUBPROGRAM RI_reboot
+FEATURES
+  dummy : IN PARAMETER DataView::T_Boolean {
+    Taste::encoding => NATIVE;
+  };
+END RI_reboot;
+
+SUBPROGRAM IMPLEMENTATION RI_reboot.others
+END RI_reboot.others;
+
+SYSTEM Ground_Segment
+FEATURES
+  PI_Housekeeping : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Ground_Segment::PI_Housekeeping.others {
+    Taste::coordinates => "95274 108186";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Housekeeping";
+  };
+  RI_Set_Mission_Timeline : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Set_Mission_Timeline.others {
+    Taste::coordinates => "115119 108186";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Set_Mission_Timeline";
+    Taste::labelInheritance => "true";
+  };
+  RI_reboot : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_reboot.others {
+    Taste::coordinates => "87557 117636";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "reboot";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (GUI);
+  Taste::Active_Interfaces => enabled;
+END Ground_Segment;
+
+SYSTEM IMPLEMENTATION Ground_Segment.others
+END Ground_Segment.others;
+
+END interfaceview::IV::Ground_Segment;
+
+PACKAGE interfaceview::IV::FDIR
+PUBLIC
+
+WITH interfaceview::IV::Flight_Software;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Periodic_Check
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Periodic_Check;
+
+SUBPROGRAM IMPLEMENTATION PI_Periodic_Check.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Periodic_Check.others;
+
+SUBPROGRAM RI_Undervoltage
+END RI_Undervoltage;
+
+SUBPROGRAM IMPLEMENTATION RI_Undervoltage.others
+END RI_Undervoltage.others;
+
+SYSTEM FDIR
+FEATURES
+  PI_Periodic_Check : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::FDIR::PI_Periodic_Check.others {
+    Taste::coordinates => "163460 51340";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 120000 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Periodic_Check";
+  };
+  RI_Undervoltage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Undervoltage.others {
+    Taste::coordinates => "131020 49133";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Undervoltage";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END FDIR;
+
+SYSTEM IMPLEMENTATION FDIR.others
+END FDIR.others;
+
+END interfaceview::IV::FDIR;
+
+PACKAGE interfaceview::IV::Payload
+PUBLIC
+
+WITH interfaceview::IV::Flight_Software;
+WITH interfaceview::IV::Mass_Memory;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Switch_Off
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Switch_Off;
+
+SUBPROGRAM IMPLEMENTATION PI_Switch_Off.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Switch_Off.others;
+
+SUBPROGRAM PI_Take_Picture
+END PI_Take_Picture;
+
+SUBPROGRAM IMPLEMENTATION PI_Take_Picture.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Take_Picture.others;
+
+SUBPROGRAM PI_Ack
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Ack;
+
+SUBPROGRAM IMPLEMENTATION PI_Ack.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Ack.others;
+
+SUBPROGRAM RI_Completion_Report
+FEATURES
+  report : IN PARAMETER DataView::Completion_Status {
+    Taste::encoding => NATIVE;
+  };
+END RI_Completion_Report;
+
+SUBPROGRAM IMPLEMENTATION RI_Completion_Report.others
+END RI_Completion_Report.others;
+
+SUBPROGRAM RI_Picture
+FEATURES
+  pic : IN PARAMETER DataView::Picture {
+    Taste::encoding => UPER;
+  };
+END RI_Picture;
+
+SUBPROGRAM IMPLEMENTATION RI_Picture.others
+END RI_Picture.others;
+
+SYSTEM Payload
+FEATURES
+  PI_Switch_Off : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Switch_Off.others {
+    Taste::coordinates => "155586 74959";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Switch_Off";
+  };
+  PI_Take_Picture : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Take_Picture.others {
+    Taste::coordinates => "155586 85984";
+    Taste::RCMoperationKind => sporadic;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Take_Picture";
+  };
+  PI_Ack : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Ack.others {
+    Taste::coordinates => "177948 92753";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Ack";
+  };
+  RI_Completion_Report : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Flight_Software::PI_Completion_Report.others {
+    Taste::coordinates => "155586 79684";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Completion_Report";
+    Taste::labelInheritance => "true";
+  };
+  RI_Picture : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Mass_Memory::PI_Picture.others {
+    Taste::coordinates => "163460 92753";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Picture";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (SDL);
+  Taste::Active_Interfaces => any;
+END Payload;
+
+SYSTEM IMPLEMENTATION Payload.others
+END Payload.others;
+
+END interfaceview::IV::Payload;
+
+PACKAGE interfaceview::IV::Mass_Memory
+PUBLIC
+
+WITH interfaceview::IV::Payload;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Picture
+FEATURES
+  pic : IN PARAMETER DataView::Picture {
+    Taste::encoding => UPER;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Picture;
+
+SUBPROGRAM IMPLEMENTATION PI_Picture.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Picture.others;
+
+SUBPROGRAM RI_Ack
+END RI_Ack;
+
+SUBPROGRAM IMPLEMENTATION RI_Ack.others
+END RI_Ack.others;
+
+SYSTEM Mass_Memory
+FEATURES
+  PI_Picture : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Mass_Memory::PI_Picture.others {
+    Taste::coordinates => "163304 108501";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Picture";
+  };
+  RI_Ack : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Payload::PI_Ack.others {
+    Taste::coordinates => "177952 108501";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Ack";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (Ada);
+  Taste::Active_Interfaces => any;
+END Mass_Memory;
+
+SYSTEM IMPLEMENTATION Mass_Memory.others
+END Mass_Memory.others;
+
+END interfaceview::IV::Mass_Memory;
+
+PACKAGE interfaceview::IV
+PUBLIC
+
+WITH interfaceview::IV::Flight_Software;
+WITH interfaceview::IV::Ground_Segment;
+WITH interfaceview::IV::FDIR;
+WITH interfaceview::IV::Payload;
+WITH interfaceview::IV::Mass_Memory;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  Flight_Software : SYSTEM interfaceview::IV::Flight_Software::Flight_Software.others {
+    Taste::coordinates => "88659 71494 124091 93069";
+  };
+  Ground_Segment : SYSTEM interfaceview::IV::Ground_Segment::Ground_Segment.others {
+    Taste::coordinates => "87557 108186 124091 127871";
+    Taste::Fill_Color => "#FFFF31";
+  };
+  FDIR : SYSTEM interfaceview::IV::FDIR::FDIR.others {
+    Taste::coordinates => "131020 45983 163460 65038";
+    Taste::Fill_Color => "#F9E29C";
+  };
+  Payload : SYSTEM interfaceview::IV::Payload::Payload.others {
+    Taste::coordinates => "155586 71809 186767 92753";
+  };
+  Mass_Memory : SYSTEM interfaceview::IV::Mass_Memory::Mass_Memory.others {
+    Taste::coordinates => "155587 108501 185192 126138";
+    Taste::Fill_Color => "#FFFF31";
+  };
+CONNECTIONS
+  FDIR_RI_Undervoltage_Flight_Software_PI_Undervoltage : SUBPROGRAM ACCESS Flight_Software.PI_Undervoltage -> FDIR.RI_Undervoltage {
+    Taste::coordinates => "131020 49133 98266 49133 98266 71494";
+  };
+  Ground_Segment_RI_Set_Mission_Timeline_Flight_Software_PI_Set_Mission_Timeline : SUBPROGRAM ACCESS Flight_Software.PI_Set_Mission_Timeline -> Ground_Segment.RI_Set_Mission_Timeline {
+    Taste::coordinates => "115119 108186 115119 100627 115115 100627 115115 93069";
+  };
+  Payload_RI_Completion_Report_Flight_Software_PI_Completion_Report : SUBPROGRAM ACCESS Flight_Software.PI_Completion_Report -> Payload.RI_Completion_Report {
+    Taste::coordinates => "155586 79684 139838 79684 139838 79369 124091 79369";
+  };
+  Ground_Segment_RI_reboot_Flight_Software_PI_reboot : SUBPROGRAM ACCESS Flight_Software.PI_reboot -> Ground_Segment.RI_reboot {
+    Taste::coordinates => "87557 117636 83904 117636 83904 82519 88659 82519";
+  };
+  Flight_Software_RI_Housekeeping_Ground_Segment_PI_Housekeeping : SUBPROGRAM ACCESS Ground_Segment.PI_Housekeeping -> Flight_Software.RI_Housekeeping {
+    Taste::coordinates => "95273 93069 95273 101493 95274 101493 95274 108186";
+  };
+  Flight_Software_RI_Switch_Off_Payload_PI_Switch_Off : SUBPROGRAM ACCESS Payload.PI_Switch_Off -> Flight_Software.RI_Switch_Off {
+    Taste::coordinates => "124091 74644 139838 74644 139838 74959 155586 74959";
+  };
+  Flight_Software_RI_Take_Picture_Payload_PI_Take_Picture : SUBPROGRAM ACCESS Payload.PI_Take_Picture -> Flight_Software.RI_Take_Picture {
+    Taste::coordinates => "124091 85669 139838 85669 139838 85984 155586 85984";
+  };
+  Mass_Memory_RI_Ack_Payload_PI_Ack : SUBPROGRAM ACCESS Payload.PI_Ack -> Mass_Memory.RI_Ack {
+    Taste::coordinates => "177952 108501 177952 100627 177948 100627 177948 92753";
+  };
+  Payload_RI_Picture_Mass_Memory_PI_Picture : SUBPROGRAM ACCESS Mass_Memory.PI_Picture -> Payload.RI_Picture {
+    Taste::coordinates => "163460 92753 163460 100627 163304 100627 163304 108501";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

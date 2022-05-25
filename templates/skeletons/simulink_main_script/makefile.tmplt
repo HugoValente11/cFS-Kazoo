@@ -1,0 +1,21 @@
+
+all: compile-linux
+
+clean:
+	rm -rf obj
+
+@@IF@@ @_Language_@ = QGenC
+generate-code:
+	mkdir -p code && \
+	   qgenc ../xmi/@_List_Of_PIs_@.xmi --gen-entrypoint --wrap-io --pre-process-xmi --clean --no-misra --language c --output code
+    :
+@@ELSIF@@ @_Language_@ = QGenAda
+generate-code:
+	mkdir -p code && \
+	   qgenc ../xmi/@_List_Of_PIs_@.xmi --gen-entrypoint --wrap-io --pre-process-xmi --clean --no-misra --language ada --output code
+    :
+@@END_IF@@
+
+compile-linux: generate-code
+	mkdir -p obj && cd obj && gcc -c ../src/*.c ../code/*.c ../wrappers/*.c 
+

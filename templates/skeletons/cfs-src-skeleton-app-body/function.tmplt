@@ -1,0 +1,596 @@
+/*******************************************************************************
+**
+**      GSC-18128-1, "Core Flight Executive Version 6.7"
+**
+**      Copyright (c) 2006-2019 United States Government as represented by
+**      the Administrator of the National Aeronautics and Space Administration.
+**      All Rights Reserved.
+**
+**      Licensed under the Apache License, Version 2.0 (the "License");
+**      you may not use this file except in compliance with the License.
+**      You may obtain a copy of the License at
+**
+**        http://www.apache.org/licenses/LICENSE-2.0
+**
+**      Unless required by applicable law or agreed to in writing, software
+**      distributed under the License is distributed on an "AS IS" BASIS,
+**      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+**      See the License for the specific language governing permissions and
+**      limitations under the License.
+**
+** File: @_LOWER:Name_@.c
+**
+** Purpose:
+**   This file contains the source code for the Sample App.
+**
+*******************************************************************************/
+@@SET@@ TABLES_ENABLED = False
+@@SET@@ EVENTS_ENABLED = True
+@@SET@@ MESSAGES_ENABLED = True
+@@IF@@ @_DataStore_@ = "YES"
+@@SET@@ DATASTORE_ENABLED = TRUE
+// Datastore value
+// @_DataStore_@
+@@END_IF@@
+
+/*
+** Include Files:
+*/
+#include "@_LOWER:Name_@_app_events.h"
+#include "@_LOWER:Name_@_app_version.h"
+#include "@_LOWER:Name_@_app.h"
+@@IF@@ @_TABLES_ENABLED_@
+#include "@_LOWER:Name_@_app_table.h"
+@@END_IF@@
+
+/* The sample_lib module provides the SAMPLE_LIB_Function() prototype */
+#include <string.h>
+
+/*
+** global data
+*/
+@_UPPER:Name_@_Data_t @_UPPER:Name_@_Data;
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
+/* @_UPPER:Name_@_AppMain() -- Application entry point and main process loop         */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
+void @_UPPER:Name_@_APP_Main(void)
+{
+    int32            status;
+    @@IF@@ @_List_Of_RIs'Length_@ = 0
+    CFE_SB_Buffer_t *SBBufPtr;
+    @@END_IF@@
+
+    /*
+    ** Create the first Performance Log entry
+    */
+    CFE_ES_PerfLogEntry(@_UPPER:Name_@_PERF_ID);
+
+    /*
+    ** Perform application specific initialization
+    ** If the Initialization fails, set the RunStatus to
+    ** CFE_ES_RunStatus_APP_ERROR and the App will not enter the RunLoop
+    */
+    status = @_UPPER:Name_@_Init();
+    if (status != CFE_SUCCESS)
+    {
+        @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+    }
+
+@@IF@@ @_EVENTS_ENABLED_@
+    // Send events
+    @_Send_Events_@
+@@END_IF@@
+
+@@IF@@ @_MESSAGES_ENABLED_@
+    // Send messages
+    @_Send_Messages_@
+
+    // Receive messages
+    @@IF@@ @_EXIST:List_Of_RIs_@
+    // Set variables
+    uint32 i = 1;
+    uint32 index;
+    @@END_IF@@
+    @_Receive_Messages_@
+@@END_IF@@
+
+@@IF@@ @_DATASTORE_ENABLED_@
+    // Datastore capabilities
+    @_UPPER:Name_@_Data.MAX_STORE_LENGTH = @_DataStoreSize_@;
+
+    // Memory pointers to load and store data
+    char store[] = "This is the test message stored";
+    char load[@_UPPER:Name_@_Data.MAX_STORE_LENGTH];
+
+    // Name of the Datastore
+    char cDSName[] = "@_LOWER:Name_@CDS";
+
+    // Register CDS
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
+    }
+
+    // Copy data to CDS
+    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_Data.CDSHandlePtr, store);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful copy to CDS");
+    }
+
+    // Read data from CDS
+    status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_Data.CDSHandlePtr);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error reading from CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful read from CDS");
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] The information loaded from CDS was: '%s'", load);
+    }
+
+@@END_IF@@
+
+@@IF@@ @_List_Of_RIs'Length_@ = 0
+    /*
+    ** SAMPLE Runloop
+    */
+    while (CFE_ES_RunLoop(&@_UPPER:Name_@_Data.RunStatus) == true)
+    {
+        /*
+        ** Performance Log Exit Stamp
+        */
+        CFE_ES_PerfLogExit(@_UPPER:Name_@_PERF_ID);
+
+        /* Pend on receipt of command packet */
+        status = CFE_SB_ReceiveBuffer(&SBBufPtr, @_UPPER:Name_@_Data.CommandPipe, CFE_SB_PEND_FOREVER);
+
+        /*
+        ** Performance Log Entry Stamp
+        */
+        CFE_ES_PerfLogEntry(@_UPPER:Name_@_PERF_ID);
+
+        if (status == CFE_SUCCESS)
+        {
+            @_UPPER:Name_@_ProcessCommandPacket(SBBufPtr);
+        }
+        else
+        {
+            CFE_EVS_SendEvent(@_UPPER:Name_@_PIPE_ERR_EID, CFE_EVS_EventType_ERROR,
+                              "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
+
+            @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        }
+    }
+    @@END_IF@@
+
+
+    /*
+    ** Performance Log Exit Stamp
+    */
+    CFE_ES_PerfLogExit(@_UPPER:Name_@_PERF_ID);
+
+    @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_EXIT;
+
+    CFE_ES_ExitApp(@_UPPER:Name_@_Data.RunStatus);
+
+} /* End of @_UPPER:Name_@_APP_Main() */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+/*                                                                            */
+/* @_UPPER:Name_@_Init() --  initialization                                       */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+int32 @_UPPER:Name_@_Init(void)
+{
+    int32 status;
+
+    @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_RUN;
+
+    /*
+    ** Initialize app command execution counters
+    */
+    @_UPPER:Name_@_Data.CmdCounter = 0;
+    @_UPPER:Name_@_Data.ErrCounter = 0;
+
+    /*
+    ** Initialize app configuration data
+    */
+    @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
+
+    strncpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_Data.PipeName));
+    @_UPPER:Name_@_Data.PipeName[sizeof(@_UPPER:Name_@_Data.PipeName) - 1] = 0;
+
+    /*
+    ** Initialize event filter table...
+    */
+    @_UPPER:Name_@_Data.EventFilters[0].EventID = @_UPPER:Name_@_STARTUP_INF_EID;
+    @_UPPER:Name_@_Data.EventFilters[0].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[1].EventID = @_UPPER:Name_@_COMMAND_ERR_EID;
+    @_UPPER:Name_@_Data.EventFilters[1].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[2].EventID = @_UPPER:Name_@_COMMANDNOP_INF_EID;
+    @_UPPER:Name_@_Data.EventFilters[2].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[3].EventID = @_UPPER:Name_@_COMMANDRST_INF_EID;
+    @_UPPER:Name_@_Data.EventFilters[3].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[4].EventID = @_UPPER:Name_@_INVALID_MSGID_ERR_EID;
+    @_UPPER:Name_@_Data.EventFilters[4].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[5].EventID = @_UPPER:Name_@_LEN_ERR_EID;
+    @_UPPER:Name_@_Data.EventFilters[5].Mask    = 0x0000;
+    @_UPPER:Name_@_Data.EventFilters[6].EventID = @_UPPER:Name_@_PIPE_ERR_EID;
+    @_UPPER:Name_@_Data.EventFilters[6].Mask    = 0x0000;
+    @@IF@@ @_EVENTS_ENABLED_@
+    @_Event_Filters_@
+    @@END_IF@@
+
+    /*
+    ** Register the events
+    */
+    status = CFE_EVS_Register(@_UPPER:Name_@_Data.EventFilters, @_UPPER:Name_@_EVENT_COUNTS, CFE_EVS_EventFilter_BINARY);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Registering Events, RC = 0x%08lX\n", (unsigned long)status);
+        return (status);
+    }
+
+    /*
+    ** Initialize housekeeping packet (clear user data area).
+    */
+    CFE_MSG_Init(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, CFE_SB_ValueToMsgId(@_UPPER:Name_@_HK_TLM_MID),
+                 sizeof(@_UPPER:Name_@_Data.HkTlm));
+
+    /*
+    ** Create Software Bus message pipe.
+    */
+    status = CFE_SB_CreatePipe(&@_UPPER:Name_@_Data.CommandPipe, @_UPPER:Name_@_Data.PipeDepth, @_UPPER:Name_@_Data.PipeName);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error creating pipe, RC = 0x%08lX\n", (unsigned long)status);
+        return (status);
+    }
+
+    /*
+    ** Subscribe to Housekeeping request commands
+    */
+    status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_SEND_HK_MID), @_UPPER:Name_@_Data.CommandPipe);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Subscribing to HK request, RC = 0x%08lX\n", (unsigned long)status);
+        return (status);
+    }
+
+    /*
+    ** Subscribe to ground command packets
+    */
+    status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_CMD_MID), @_UPPER:Name_@_Data.CommandPipe);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Subscribing to Command, RC = 0x%08lX\n", (unsigned long) status);
+
+        return (status);
+    }
+
+    @@IF@@ @_TABLES_ENABLED_@
+    /*
+    ** Register Table(s)
+    */
+    status = CFE_TBL_Register(&@_UPPER:Name_@_Data.TblHandles[0], "@_UPPER:Name_@AppTable", sizeof(@_UPPER:Name_@_Table_t),
+                              CFE_TBL_OPT_DEFAULT, @_UPPER:Name_@_TblValidationFunc);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Registering Table, RC = 0x%08lX\n", (unsigned long)status);
+
+        return (status);
+    }
+    else
+    {
+        status = CFE_TBL_Load(@_UPPER:Name_@_Data.TblHandles[0], CFE_TBL_SRC_FILE, @_UPPER:Name_@_TABLE_FILE);
+    }
+    @@END_IF@@
+
+    CFE_EVS_SendEvent(@_UPPER:Name_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@ App Initialized.%s",
+                      @_UPPER:Name_@_VERSION_STRING);
+
+    return (CFE_SUCCESS);
+
+} /* End of @_UPPER:Name_@_Init() */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*  Name:  @_UPPER:Name_@_ProcessCommandPacket                                    */
+/*                                                                            */
+/*  Purpose:                                                                  */
+/*     This routine will process any packet that is received on the @_UPPER:Name_@    */
+/*     command pipe.                                                          */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
+void @_UPPER:Name_@_ProcessCommandPacket(CFE_SB_Buffer_t *SBBufPtr)
+{
+    CFE_SB_MsgId_t MsgId = CFE_SB_INVALID_MSG_ID;
+
+    CFE_MSG_GetMsgId(&SBBufPtr->Msg, &MsgId);
+
+    switch (CFE_SB_MsgIdToValue(MsgId))
+    {
+        case @_UPPER:Name_@_CMD_MID:
+            @_UPPER:Name_@_ProcessGroundCommand(SBBufPtr);
+            break;
+
+        case @_UPPER:Name_@_SEND_HK_MID:
+            @_UPPER:Name_@_ReportHousekeeping((CFE_MSG_CommandHeader_t *)SBBufPtr);
+            break;
+
+        default:
+            CFE_EVS_SendEvent(@_UPPER:Name_@_INVALID_MSGID_ERR_EID, CFE_EVS_EventType_ERROR,
+                              "@_UPPER:Name_@: invalid command packet,MID = 0x%x", (unsigned int)CFE_SB_MsgIdToValue(MsgId));
+            break;
+    }
+
+    return;
+
+} /* End @_UPPER:Name_@_ProcessCommandPacket */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*                                                                            */
+/* @_UPPER:Name_@_ProcessGroundCommand() -- @_UPPER:Name_@ ground commands                */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+void @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr)
+{
+    CFE_MSG_FcnCode_t CommandCode = 0;
+
+    CFE_MSG_GetFcnCode(&SBBufPtr->Msg, &CommandCode);
+
+    /*
+    ** Process "known" @_UPPER:Name_@ app ground commands
+    */
+    switch (CommandCode)
+    {
+        case @_UPPER:Name_@_NOOP_CC:
+            if (@_UPPER:Name_@_VerifyCmdLength(&SBBufPtr->Msg, sizeof(@_UPPER:Name_@_NoopCmd_t)))
+            {
+                @_UPPER:Name_@_Noop((@_UPPER:Name_@_NoopCmd_t *)SBBufPtr);
+            }
+
+            break;
+
+        case @_UPPER:Name_@_RESET_COUNTERS_CC:
+            if (@_UPPER:Name_@_VerifyCmdLength(&SBBufPtr->Msg, sizeof(@_UPPER:Name_@_ResetCountersCmd_t)))
+            {
+                @_UPPER:Name_@_ResetCounters((@_UPPER:Name_@_ResetCountersCmd_t *)SBBufPtr);
+            }
+
+            break;
+
+        @@IF@@ @_TABLES_ENABLED_@
+        case @_UPPER:Name_@_PROCESS_CC:
+            if (@_UPPER:Name_@_VerifyCmdLength(&SBBufPtr->Msg, sizeof(@_UPPER:Name_@_ProcessCmd_t)))
+            {
+                @_UPPER:Name_@_Process((@_UPPER:Name_@_ProcessCmd_t *)SBBufPtr);
+            }
+
+            break;
+        @@END_IF@@
+
+        /* default case already found during FC vs length test */
+        default:
+            CFE_EVS_SendEvent(@_UPPER:Name_@_COMMAND_ERR_EID, CFE_EVS_EventType_ERROR,
+                              "Invalid ground command code: CC = %d", CommandCode);
+            break;
+    }
+
+    return;
+
+} /* End of @_UPPER:Name_@_ProcessGroundCommand() */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*  Name:  @_UPPER:Name_@_ReportHousekeeping                                          */
+/*                                                                            */
+/*  Purpose:                                                                  */
+/*         This function is triggered in response to a task telemetry request */
+/*         from the housekeeping task. This function will gather the Apps     */
+/*         telemetry, packetize it and send it to the housekeeping task via   */
+/*         the software bus                                                   */
+/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
+int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg)
+{
+    @@IF@@ @_TABLES_ENABLED_@
+    int i;
+    @@END_IF@@
+
+    /*
+    ** Get command execution counters...
+    */
+    @_UPPER:Name_@_Data.HkTlm.Payload.CommandErrorCounter = @_UPPER:Name_@_Data.ErrCounter;
+    @_UPPER:Name_@_Data.HkTlm.Payload.CommandCounter      = @_UPPER:Name_@_Data.CmdCounter;
+
+    /*
+    ** Send housekeeping telemetry packet...
+    */
+    CFE_SB_TimeStampMsg(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg);
+    CFE_SB_TransmitMsg(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, true);
+
+    @@IF@@ @_TABLES_ENABLED_@
+    /*
+    ** Manage any pending table loads, validations, etc.
+    */
+    for (i = 0; i < @_UPPER:Name_@_NUMBER_OF_TABLES; i++)
+    {
+        CFE_TBL_Manage(@_UPPER:Name_@_Data.TblHandles[i]);
+    }
+    @@END_IF@@
+
+    return CFE_SUCCESS;
+
+} /* End of @_UPPER:Name_@_ReportHousekeeping() */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*                                                                            */
+/* @_UPPER:Name_@_Noop -- @_UPPER:Name_@ NOOP commands                                        */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg)
+{
+
+    @_UPPER:Name_@_Data.CmdCounter++;
+
+    CFE_EVS_SendEvent(@_UPPER:Name_@_COMMANDNOP_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@: NOOP command %s",
+                      @_UPPER:Name_@_VERSION);
+
+    return CFE_SUCCESS;
+
+} /* End of @_UPPER:Name_@_Noop */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*  Name:  @_UPPER:Name_@_ResetCounters                                               */
+/*                                                                            */
+/*  Purpose:                                                                  */
+/*         This function resets all the global counter variables that are     */
+/*         part of the task telemetry.                                        */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
+int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg)
+{
+
+    @_UPPER:Name_@_Data.CmdCounter = 0;
+    @_UPPER:Name_@_Data.ErrCounter = 0;
+
+    CFE_EVS_SendEvent(@_UPPER:Name_@_COMMANDRST_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@: RESET command");
+
+    return CFE_SUCCESS;
+
+} /* End of @_UPPER:Name_@_ResetCounters() */
+
+@@IF@@ @_TABLES_ENABLED_@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*  Name:  @_UPPER:Name_@_Process                                                     */
+/*                                                                            */
+/*  Purpose:                                                                  */
+/*         This function Process Ground Station Command                       */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
+int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg)
+{
+    int32               status;
+    @_UPPER:Name_@_Table_t *TblPtr;
+    const char *        TableName = "@_UPPER:Name_@_APP_Main.@_UPPER:Name_@AppTable";
+
+    /* @_UPPER:Name_@ Use of Table */
+
+    status = CFE_TBL_GetAddress((void *)&TblPtr, @_UPPER:Name_@_Data.TblHandles[0]);
+
+    if (status < CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Fail to get table address: 0x%08lx", (unsigned long)status);
+        return status;
+    }
+
+    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Table Value 1: %d  Value 2: %d", TblPtr->Int1, TblPtr->Int2);
+
+    @_UPPER:Name_@_GetCrc(TableName);
+
+    status = CFE_TBL_ReleaseAddress(@_UPPER:Name_@_Data.TblHandles[0]);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Fail to release table address: 0x%08lx", (unsigned long)status);
+        return status;
+    }
+
+
+    return CFE_SUCCESS;
+
+} /* End of @_UPPER:Name_@_ProcessCC */
+@@END_IF@@
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*                                                                            */
+/* @_UPPER:Name_@_VerifyCmdLength() -- Verify command packet length                   */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLength)
+{
+    bool              result       = true;
+    size_t            ActualLength = 0;
+    CFE_SB_MsgId_t    MsgId        = CFE_SB_INVALID_MSG_ID;
+    CFE_MSG_FcnCode_t FcnCode      = 0;
+
+    CFE_MSG_GetSize(MsgPtr, &ActualLength);
+
+    /*
+    ** Verify the command packet length.
+    */
+    if (ExpectedLength != ActualLength)
+    {
+        CFE_MSG_GetMsgId(MsgPtr, &MsgId);
+        CFE_MSG_GetFcnCode(MsgPtr, &FcnCode);
+
+        CFE_EVS_SendEvent(@_UPPER:Name_@_LEN_ERR_EID, CFE_EVS_EventType_ERROR,
+                          "Invalid Msg length: ID = 0x%X,  CC = %u, Len = %u, Expected = %u",
+                          (unsigned int)CFE_SB_MsgIdToValue(MsgId), (unsigned int)FcnCode, (unsigned int)ActualLength,
+                          (unsigned int)ExpectedLength);
+
+        result = false;
+
+        @_UPPER:Name_@_Data.ErrCounter++;
+    }
+
+    return (result);
+
+} /* End of @_UPPER:Name_@_VerifyCmdLength() */
+
+@@IF@@ @_TABLES_ENABLED_@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Name_@_TblValidationFunc -- Verify contents of First Table      */
+/* buffer contents                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+int32 @_UPPER:Name_@_TblValidationFunc(void *TblData)
+{
+    int32               ReturnCode = CFE_SUCCESS;
+    @_UPPER:Name_@_Table_t *TblDataPtr = (@_UPPER:Name_@_Table_t *)TblData;
+
+    /*
+    ** @_UPPER:Name_@ Table Validation
+    */
+    if (TblDataPtr->Int1 > @_UPPER:Name_@_TBL_ELEMENT_1_MAX)
+    {
+        /* First element is out of range, return an appropriate error code */
+        ReturnCode = @_UPPER:Name_@_TABLE_OUT_OF_RANGE_ERR_CODE;
+    }
+
+    return ReturnCode;
+
+} /* End of @_UPPER:Name_@_TBLValidationFunc() */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Name_@_GetCrc -- Output CRC                                     */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Name_@_GetCrc(const char *TableName)
+{
+    int32          status;
+    uint32         Crc;
+    CFE_TBL_Info_t TblInfoPtr;
+
+    status = CFE_TBL_GetInfo(&TblInfoPtr, TableName);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Getting Table Info");
+    }
+    else
+    {
+        Crc = TblInfoPtr.Crc;
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CRC: 0x%08lX\n\n", (unsigned long)Crc);
+    }
+
+    return;
+
+} /* End of @_UPPER:Name_@_GetCrc */
+@@END_IF@@

@@ -1,0 +1,27 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The function name
+@@-- @_ASN1_Files_@          : List of all ASN.1 files
+@@-- @_ASN1_Modules_@        : List of all ASN.1 modules
+@@-- @_Is_Type_@             : Flag set to True for function type
+@@-- @_Instance_Of_@         : Name of function type if instance
+VISUAL?=kate
+CC?=gcc
+
+all: compile-linux
+
+clean:
+	rm -rf obj
+
+edit:
+	$(VISUAL) ../../dataview/C/dataview-uniq.h src/@_LOWER:Name_@.h src/@_LOWER:Name_@.c
+	$(MAKE) syntax-check
+
+syntax-check:
+	$(CC) -c -fsyntax-only ../../dataview/C/dataview-uniq.h src/@_LOWER:Name_@.h src/@_LOWER:Name_@.c -I../../dataview/C
+
+compile-linux:
+	mkdir -p obj && cd obj && gcc -c ../src/*.c
+	if [ -d wrappers ]; then cd obj && gcc -c ../wrappers/*.c; fi
+
+.PHONY: edit syntax-check compile-linux

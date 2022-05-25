@@ -1,0 +1,50 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Obsw;
+    /* CIF TEXT (673, 123), (291, 153) */
+    -- Text area for declarations and comments
+    
+    dcl p t_boolean;
+    
+    dcl inp t_uint32 := 42;
+    
+    dcl p2 t_boolean;
+    /* CIF ENDTEXT */
+    /* CIF START (341, 10), (70, 35) */
+    START;
+        /* CIF PROCEDURECALL (265, 65), (222, 35) */
+        call writeln ('[SDL] OBSW Startup');
+        /* CIF NEXTSTATE (341, 115), (70, 35) */
+        NEXTSTATE Wait;
+    /* CIF state (471, 10), (70, 35) */
+    state Wait;
+    endstate;
+    /* CIF state (341, 115), (70, 35) */
+    state Wait;
+        /* CIF input (145, 170), (78, 35) */
+        input Run(p);
+            /* CIF PROCEDURECALL (0, 225), (369, 35) */
+            call writeln('[SDL] Got RUN from the GUI with value: ', p);
+            /* CIF output (139, 275), (89, 35) */
+            output Result(42);
+            /* CIF NEXTSTATE (149, 325), (70, 35) */
+            NEXTSTATE wait;
+        /* CIF input (531, 170), (70, 35) */
+        input Pulse;
+            /* CIF PROCEDURECALL (501, 225), (129, 35) */
+            call guidance (inp, p);
+            /* CIF PROCEDURECALL (471, 275), (189, 35) */
+            call writeln('[SDL] Result: ', p);
+            /* CIF task (448, 330), (236, 35) */
+            task inp := if inp = 42 then 0 else 42 fi;
+            /* CIF PROCEDURECALL (493, 385), (145, 35) */
+            call Get_Pro_Data (p2);
+            /* CIF PROCEDURECALL (379, 435), (374, 35) */
+            call writeln('[SDL] Protected call result: ', p2);
+            /* CIF output (517, 490), (98, 35) */
+            output Result(inp);
+            /* CIF output (505, 545), (120, 35) */
+            output Gnc_Async (42);
+            /* CIF NEXTSTATE (531, 595), (70, 35) */
+            NEXTSTATE wait;
+    endstate;
+endprocess Obsw;

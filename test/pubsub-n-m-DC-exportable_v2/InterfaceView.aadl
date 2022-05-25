@@ -1,0 +1,1168 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type interfaceview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE interfaceview::IV::Publisher2
+PUBLIC
+
+WITH interfaceview::IV::Pubs_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Tick
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Tick;
+
+SUBPROGRAM IMPLEMENTATION PI_Tick.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 500 ms;
+END PI_Tick.others;
+
+SUBPROGRAM RI_PublishMessage
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_PublishMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_PublishMessage.others
+END RI_PublishMessage.others;
+
+SUBPROGRAM RI_CreateMessage
+FEATURES
+  messageId : IN PARAMETER DataView::MessageId {
+    Taste::encoding => UPER;
+  };
+END RI_CreateMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_CreateMessage.others
+END RI_CreateMessage.others;
+
+SYSTEM Publisher2
+FEATURES
+  PI_Tick : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Publisher2::PI_Tick.others {
+    Taste::coordinates => "10569 125823";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 2000 ms;
+    Taste::Deadline => 2000 ms;
+    Taste::InterfaceName => "Tick";
+  };
+  RI_PublishMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_PublishMessage.others {
+    Taste::coordinates => "37322 131680";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "PublishMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_CreateMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_CreateMessage.others {
+    Taste::coordinates => "37322 140341";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "CreateMessage";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Publisher2;
+
+SYSTEM IMPLEMENTATION Publisher2.others
+END Publisher2.others;
+
+END interfaceview::IV::Publisher2;
+
+PACKAGE interfaceview::IV::Publisher1
+PUBLIC
+
+WITH interfaceview::IV::Pubs_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Tick
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Tick;
+
+SUBPROGRAM IMPLEMENTATION PI_Tick.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 500 ms;
+END PI_Tick.others;
+
+SUBPROGRAM RI_PublishMessage
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_PublishMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_PublishMessage.others
+END RI_PublishMessage.others;
+
+SUBPROGRAM RI_CreateMessage
+FEATURES
+  messageId : IN PARAMETER DataView::MessageId {
+    Taste::encoding => UPER;
+  };
+END RI_CreateMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_CreateMessage.others
+END RI_CreateMessage.others;
+
+SYSTEM Publisher1
+FEATURES
+  PI_Tick : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Publisher1::PI_Tick.others {
+    Taste::coordinates => "9932 99998";
+    Taste::RCMoperationKind => cyclic;
+    Taste::RCMperiod => 1200 ms;
+    Taste::Deadline => 1200 ms;
+    Taste::InterfaceName => "Tick";
+  };
+  RI_PublishMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_PublishMessage.others {
+    Taste::coordinates => "37007 104894";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "PublishMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_CreateMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_CreateMessage.others {
+    Taste::coordinates => "37007 115445";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "CreateMessage";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Publisher1;
+
+SYSTEM IMPLEMENTATION Publisher1.others
+END Publisher1.others;
+
+END interfaceview::IV::Publisher1;
+
+PACKAGE interfaceview::IV::Subscriber1
+PUBLIC
+
+WITH interfaceview::IV::Sub1_Broker;
+WITH interfaceview::IV::GUI_Operator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_ReceiveMessage
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_ReceiveMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_ReceiveMessage.others;
+
+SUBPROGRAM PI_CtrlSub1
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_CtrlSub1;
+
+SUBPROGRAM IMPLEMENTATION PI_CtrlSub1.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_CtrlSub1.others;
+
+SUBPROGRAM RI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_SubscribeToMessage.others
+END RI_SubscribeToMessage.others;
+
+SUBPROGRAM RI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_UnsubscribeToMessage.others
+END RI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_Sub1Status
+FEATURES
+  sub1_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Sub1Status;
+
+SUBPROGRAM IMPLEMENTATION RI_Sub1Status.others
+END RI_Sub1Status.others;
+
+SYSTEM Subscriber1
+FEATURES
+  PI_ReceiveMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber1::PI_ReceiveMessage.others {
+    Taste::coordinates => "120026 138832";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "ReceiveMessage";
+  };
+  PI_CtrlSub1 : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber1::PI_CtrlSub1.others {
+    Taste::coordinates => "103625 119801";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "CtrlSub1";
+  };
+  RI_SubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "98608 138832";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "SubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_UnsubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "140823 138832";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Sub1Status : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub1Status.others {
+    Taste::coordinates => "138776 119801";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Sub1Status";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Subscriber1;
+
+SYSTEM IMPLEMENTATION Subscriber1.others
+END Subscriber1.others;
+
+END interfaceview::IV::Subscriber1;
+
+PACKAGE interfaceview::IV::Subscriber2
+PUBLIC
+
+WITH interfaceview::IV::Sub2_Broker;
+WITH interfaceview::IV::GUI_Operator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_ReceiveMessage
+FEATURES
+  statusInfo : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_ReceiveMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_ReceiveMessage.others;
+
+SUBPROGRAM PI_CtrlSub2
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_CtrlSub2;
+
+SUBPROGRAM IMPLEMENTATION PI_CtrlSub2.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_CtrlSub2.others;
+
+SUBPROGRAM RI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_SubscribeToMessage.others
+END RI_SubscribeToMessage.others;
+
+SUBPROGRAM RI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_UnsubscribeToMessage.others
+END RI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_Sub2Status
+FEATURES
+  sub2_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Sub2Status;
+
+SUBPROGRAM IMPLEMENTATION RI_Sub2Status.others
+END RI_Sub2Status.others;
+
+SYSTEM Subscriber2
+FEATURES
+  PI_ReceiveMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber2::PI_ReceiveMessage.others {
+    Taste::coordinates => "193209 138174";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "ReceiveMessage";
+  };
+  PI_CtrlSub2 : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber2::PI_CtrlSub2.others {
+    Taste::coordinates => "178107 119401";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "CtrlSub2";
+  };
+  RI_SubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "173479 138174";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "SubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_UnsubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "213695 138174";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Sub2Status : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub2Status.others {
+    Taste::coordinates => "215014 119401";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Sub2Status";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Subscriber2;
+
+SYSTEM IMPLEMENTATION Subscriber2.others
+END Subscriber2.others;
+
+END interfaceview::IV::Subscriber2;
+
+PACKAGE interfaceview::IV::Subscriber3
+PUBLIC
+
+WITH interfaceview::IV::Sub3_Broker;
+WITH interfaceview::IV::GUI_Operator;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_ReceiveMessage
+FEATURES
+  statusInfo : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_ReceiveMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_ReceiveMessage.others;
+
+SUBPROGRAM PI_CtrlSub3
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_CtrlSub3;
+
+SUBPROGRAM IMPLEMENTATION PI_CtrlSub3.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_CtrlSub3.others;
+
+SUBPROGRAM RI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_SubscribeToMessage.others
+END RI_SubscribeToMessage.others;
+
+SUBPROGRAM RI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+END RI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_UnsubscribeToMessage.others
+END RI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_Sub3Status
+FEATURES
+  sub3_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Sub3Status;
+
+SUBPROGRAM IMPLEMENTATION RI_Sub3Status.others
+END RI_Sub3Status.others;
+
+SYSTEM Subscriber3
+FEATURES
+  PI_ReceiveMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber3::PI_ReceiveMessage.others {
+    Taste::coordinates => "261537 138224";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "ReceiveMessage";
+  };
+  PI_CtrlSub3 : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Subscriber3::PI_CtrlSub3.others {
+    Taste::coordinates => "243496 119788";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "CtrlSub3";
+  };
+  RI_SubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "242422 138224";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "SubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_UnsubscribeToMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "283181 138224";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Sub3Status : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub3Status.others {
+    Taste::coordinates => "281123 119788";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Sub3Status";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Subscriber3;
+
+SYSTEM IMPLEMENTATION Subscriber3.others
+END Subscriber3.others;
+
+END interfaceview::IV::Subscriber3;
+
+PACKAGE interfaceview::IV::GUI_Operator
+PUBLIC
+
+WITH interfaceview::IV::Subscriber1;
+WITH interfaceview::IV::Subscriber2;
+WITH interfaceview::IV::Subscriber3;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Sub1Status
+FEATURES
+  sub1_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Sub1Status;
+
+SUBPROGRAM IMPLEMENTATION PI_Sub1Status.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_Sub1Status.others;
+
+SUBPROGRAM PI_Sub2Status
+FEATURES
+  sub2_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Sub2Status;
+
+SUBPROGRAM IMPLEMENTATION PI_Sub2Status.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_Sub2Status.others;
+
+SUBPROGRAM PI_Sub3Status
+FEATURES
+  sub3_status : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Sub3Status;
+
+SUBPROGRAM IMPLEMENTATION PI_Sub3Status.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_Sub3Status.others;
+
+SUBPROGRAM RI_CtrlSub1
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+END RI_CtrlSub1;
+
+SUBPROGRAM IMPLEMENTATION RI_CtrlSub1.others
+END RI_CtrlSub1.others;
+
+SUBPROGRAM RI_CtrlSub2
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+END RI_CtrlSub2;
+
+SUBPROGRAM IMPLEMENTATION RI_CtrlSub2.others
+END RI_CtrlSub2.others;
+
+SUBPROGRAM RI_CtrlSub3
+FEATURES
+  attach_detach : IN PARAMETER DataView::AttachDetach {
+    Taste::encoding => NATIVE;
+  };
+END RI_CtrlSub3;
+
+SUBPROGRAM IMPLEMENTATION RI_CtrlSub3.others
+END RI_CtrlSub3.others;
+
+SYSTEM GUI_Operator
+FEATURES
+  PI_Sub1Status : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub1Status.others {
+    Taste::coordinates => "138842 106762";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "Sub1Status";
+  };
+  PI_Sub2Status : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub2Status.others {
+    Taste::coordinates => "214766 106762";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "Sub2Status";
+  };
+  PI_Sub3Status : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::GUI_Operator::PI_Sub3Status.others {
+    Taste::coordinates => "280763 106762";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "Sub3Status";
+  };
+  RI_CtrlSub1 : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber1::PI_CtrlSub1.others {
+    Taste::coordinates => "110777 106762";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "CtrlSub1";
+    Taste::labelInheritance => "true";
+  };
+  RI_CtrlSub2 : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber2::PI_CtrlSub2.others {
+    Taste::coordinates => "178444 106762";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "CtrlSub2";
+    Taste::labelInheritance => "true";
+  };
+  RI_CtrlSub3 : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber3::PI_CtrlSub3.others {
+    Taste::coordinates => "243452 106762";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "CtrlSub3";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (GUI);
+  Taste::Active_Interfaces => any;
+END GUI_Operator;
+
+SYSTEM IMPLEMENTATION GUI_Operator.others
+END GUI_Operator.others;
+
+END interfaceview::IV::GUI_Operator;
+
+PACKAGE interfaceview::IV::Sub1_Broker
+PUBLIC
+
+WITH interfaceview::IV::Subscriber1;
+WITH interfaceview::IV::Sub2_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Notify;
+
+SUBPROGRAM IMPLEMENTATION PI_Notify.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Notify.others;
+
+SUBPROGRAM PI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_SubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_SubscribeToMessage.others;
+
+SUBPROGRAM PI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_UnsubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_ReceiveMessage
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_ReceiveMessage.others
+END RI_ReceiveMessage.others;
+
+SUBPROGRAM RI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Notify;
+
+SUBPROGRAM IMPLEMENTATION RI_Notify.others
+END RI_Notify.others;
+
+SYSTEM Sub1_Broker
+FEATURES
+  PI_Notify : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_Notify.others {
+    Taste::coordinates => "87084 191537";
+    Taste::RCMoperationKind => protected;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Notify";
+  };
+  PI_SubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "98483 168317";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "SubscribeToMessage";
+  };
+  PI_UnsubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "140726 168317";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+  };
+  RI_ReceiveMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber1::PI_ReceiveMessage.others {
+    Taste::coordinates => "119885 168317";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "ReceiveMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Notify : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_Notify.others {
+    Taste::coordinates => "153697 175248";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Notify";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Sub1_Broker;
+
+SYSTEM IMPLEMENTATION Sub1_Broker.others
+END Sub1_Broker.others;
+
+END interfaceview::IV::Sub1_Broker;
+
+PACKAGE interfaceview::IV::Sub2_Broker
+PUBLIC
+
+WITH interfaceview::IV::Subscriber2;
+WITH interfaceview::IV::Sub3_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Notify;
+
+SUBPROGRAM IMPLEMENTATION PI_Notify.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Notify.others;
+
+SUBPROGRAM PI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_SubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_SubscribeToMessage.others;
+
+SUBPROGRAM PI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_UnsubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_ReceiveMessage
+FEATURES
+  statusInfo : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_ReceiveMessage.others
+END RI_ReceiveMessage.others;
+
+SUBPROGRAM RI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Notify;
+
+SUBPROGRAM IMPLEMENTATION RI_Notify.others
+END RI_Notify.others;
+
+SYSTEM Sub2_Broker
+FEATURES
+  PI_Notify : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_Notify.others {
+    Taste::coordinates => "161098 190367";
+    Taste::RCMoperationKind => protected;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Notify";
+  };
+  PI_SubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "173696 168160";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "SubscribeToMessage";
+  };
+  PI_UnsubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub2_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "213705 168160";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+  };
+  RI_ReceiveMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber2::PI_ReceiveMessage.others {
+    Taste::coordinates => "193226 168160";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "ReceiveMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Notify : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_Notify.others {
+    Taste::coordinates => "225663 174954";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Notify";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Sub2_Broker;
+
+SYSTEM IMPLEMENTATION Sub2_Broker.others
+END Sub2_Broker.others;
+
+END interfaceview::IV::Sub2_Broker;
+
+PACKAGE interfaceview::IV::Pubs_Broker
+PUBLIC
+
+WITH interfaceview::IV::Sub1_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_PublishMessage
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 2;
+END PI_PublishMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_PublishMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_PublishMessage.others;
+
+SUBPROGRAM PI_CreateMessage
+FEATURES
+  messageId : IN PARAMETER DataView::MessageId {
+    Taste::encoding => UPER;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 2;
+END PI_CreateMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_CreateMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_CreateMessage.others;
+
+SUBPROGRAM RI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Notify;
+
+SUBPROGRAM IMPLEMENTATION RI_Notify.others
+END RI_Notify.others;
+
+SYSTEM Pubs_Broker
+FEATURES
+  PI_PublishMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_PublishMessage.others {
+    Taste::coordinates => "66287 167468";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "PublishMessage";
+  };
+  PI_CreateMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Pubs_Broker::PI_CreateMessage.others {
+    Taste::coordinates => "50803 167468";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "CreateMessage";
+  };
+  RI_Notify : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub1_Broker::PI_Notify.others {
+    Taste::coordinates => "76329 173992";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Notify";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Pubs_Broker;
+
+SYSTEM IMPLEMENTATION Pubs_Broker.others
+END Pubs_Broker.others;
+
+END interfaceview::IV::Pubs_Broker;
+
+PACKAGE interfaceview::IV::Sub3_Broker
+PUBLIC
+
+WITH interfaceview::IV::Subscriber3;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SUBPROGRAM PI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 1;
+END PI_Notify;
+
+SUBPROGRAM IMPLEMENTATION PI_Notify.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 0 ms;
+END PI_Notify.others;
+
+SUBPROGRAM PI_SubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_SubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_SubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_SubscribeToMessage.others;
+
+SUBPROGRAM PI_UnsubscribeToMessage
+FEATURES
+  messageID : IN PARAMETER DataView::MessageId {
+    Taste::encoding => NATIVE;
+  };
+PROPERTIES
+  Taste::Associated_Queue_Size => 3;
+END PI_UnsubscribeToMessage;
+
+SUBPROGRAM IMPLEMENTATION PI_UnsubscribeToMessage.others
+PROPERTIES
+  Compute_Execution_Time => 0 ms .. 250 ms;
+END PI_UnsubscribeToMessage.others;
+
+SUBPROGRAM RI_ReceiveMessage
+FEATURES
+  statusInfo : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_ReceiveMessage;
+
+SUBPROGRAM IMPLEMENTATION RI_ReceiveMessage.others
+END RI_ReceiveMessage.others;
+
+SUBPROGRAM RI_Notify
+FEATURES
+  message : IN PARAMETER DataView::Message {
+    Taste::encoding => NATIVE;
+  };
+END RI_Notify;
+
+SUBPROGRAM IMPLEMENTATION RI_Notify.others
+END RI_Notify.others;
+
+SYSTEM Sub3_Broker
+FEATURES
+  PI_Notify : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_Notify.others {
+    Taste::coordinates => "231332 191409";
+    Taste::RCMoperationKind => protected;
+    Taste::RCMperiod => 0 ms;
+    Taste::Deadline => 0 ms;
+    Taste::InterfaceName => "Notify";
+  };
+  PI_SubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_SubscribeToMessage.others {
+    Taste::coordinates => "242198 167945";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "SubscribeToMessage";
+  };
+  PI_UnsubscribeToMessage : PROVIDES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::PI_UnsubscribeToMessage.others {
+    Taste::coordinates => "283150 167945";
+    Taste::RCMoperationKind => sporadic;
+    Taste::RCMperiod => 500 ms;
+    Taste::Deadline => 500 ms;
+    Taste::InterfaceName => "UnsubscribeToMessage";
+  };
+  RI_ReceiveMessage : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Subscriber3::PI_ReceiveMessage.others {
+    Taste::coordinates => "261534 167945";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "ReceiveMessage";
+    Taste::labelInheritance => "true";
+  };
+  RI_Notify : REQUIRES SUBPROGRAM ACCESS interfaceview::IV::Sub3_Broker::RI_Notify.others {
+    Taste::coordinates => "295110 173614";
+    Taste::RCMoperationKind => any;
+    Taste::InterfaceName => "Notify";
+    Taste::labelInheritance => "true";
+  };
+PROPERTIES
+  Source_Language => (CPP);
+  Taste::Active_Interfaces => any;
+END Sub3_Broker;
+
+SYSTEM IMPLEMENTATION Sub3_Broker.others
+END Sub3_Broker.others;
+
+END interfaceview::IV::Sub3_Broker;
+
+PACKAGE interfaceview::IV
+-- { interfaceview::IV - 39417 71180 110195 82593 
+--PubSub design pattern, push model.
+--N subs, M pubs asynchronous.
+--With dynamic un/subscription.
+--With variable number of subs adding Pub_Brokers in daysi chain. 
+--}
+-- { interfaceview::IV - 190918 60853 211995 64143 
+--Daisy chain solution. 
+--}
+-- { interfaceview::IV - 13107 152882 38304 167685 
+--IMPORTANT: the queue length of the PIs connected to the pubs should be >= to the number of pubs. 
+--}
+PUBLIC
+
+WITH interfaceview::IV::Publisher2;
+WITH interfaceview::IV::Publisher1;
+WITH interfaceview::IV::Subscriber1;
+WITH interfaceview::IV::Subscriber2;
+WITH interfaceview::IV::Subscriber3;
+WITH interfaceview::IV::GUI_Operator;
+WITH interfaceview::IV::Sub1_Broker;
+WITH interfaceview::IV::Sub2_Broker;
+WITH interfaceview::IV::Pubs_Broker;
+WITH interfaceview::IV::Sub3_Broker;
+WITH Taste;
+WITH DataView;
+WITH TASTE_IV_Properties;
+SYSTEM interfaceview
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+END interfaceview;
+
+SYSTEM IMPLEMENTATION interfaceview.others
+SUBCOMPONENTS
+  Publisher2 : SYSTEM interfaceview::IV::Publisher2::Publisher2.others {
+    Taste::coordinates => "2520 125823 37322 145695";
+  };
+  Publisher1 : SYSTEM interfaceview::IV::Publisher1::Publisher1.others {
+    Taste::coordinates => "2573 99998 37007 119854";
+  };
+  Subscriber1 : SYSTEM interfaceview::IV::Subscriber1::Subscriber1.others {
+    Taste::coordinates => "86770 119801 154800 138832";
+  };
+  Subscriber2 : SYSTEM interfaceview::IV::Subscriber2::Subscriber2.others {
+    Taste::coordinates => "159681 119401 227711 138174";
+  };
+  Subscriber3 : SYSTEM interfaceview::IV::Subscriber3::Subscriber3.others {
+    Taste::coordinates => "231017 119788 295583 138224";
+  };
+  GUI_Operator : SYSTEM interfaceview::IV::GUI_Operator::GUI_Operator.others {
+    Taste::coordinates => "104089 91349 294953 106762";
+  };
+  Sub1_Broker : SYSTEM interfaceview::IV::Sub1_Broker::Sub1_Broker.others {
+    Taste::coordinates => "87084 168317 153697 196018";
+  };
+  Sub2_Broker : SYSTEM interfaceview::IV::Sub2_Broker::Sub2_Broker.others {
+    Taste::coordinates => "161098 168160 225663 195888";
+  };
+  Pubs_Broker : SYSTEM interfaceview::IV::Pubs_Broker::Pubs_Broker.others {
+    Taste::coordinates => "42140 167468 76329 197432";
+  };
+  Sub3_Broker : SYSTEM interfaceview::IV::Sub3_Broker::Sub3_Broker.others {
+    Taste::coordinates => "231332 167945 295110 195417";
+  };
+CONNECTIONS
+  Publisher2_RI_PublishMessage_Pubs_Broker_PI_PublishMessage : SUBPROGRAM ACCESS Pubs_Broker.PI_PublishMessage -> Publisher2.RI_PublishMessage {
+    Taste::coordinates => "37322 131680 66287 131680 66287 167468";
+  };
+  Publisher2_RI_CreateMessage_Pubs_Broker_PI_CreateMessage : SUBPROGRAM ACCESS Pubs_Broker.PI_CreateMessage -> Publisher2.RI_CreateMessage {
+    Taste::coordinates => "37322 140341 50803 140341 50803 167468";
+  };
+  Publisher1_RI_PublishMessage_Pubs_Broker_PI_PublishMessage : SUBPROGRAM ACCESS Pubs_Broker.PI_PublishMessage -> Publisher1.RI_PublishMessage {
+    Taste::coordinates => "37007 104894 66287 104894 66287 167468";
+  };
+  Publisher1_RI_CreateMessage_Pubs_Broker_PI_CreateMessage : SUBPROGRAM ACCESS Pubs_Broker.PI_CreateMessage -> Publisher1.RI_CreateMessage {
+    Taste::coordinates => "37007 115445 50803 115445 50803 167468";
+  };
+  Sub1_Broker_RI_ReceiveMessage_Subscriber1_PI_ReceiveMessage : SUBPROGRAM ACCESS Subscriber1.PI_ReceiveMessage -> Sub1_Broker.RI_ReceiveMessage {
+    Taste::coordinates => "119885 168317 119885 153731 120026 153731 120026 138832";
+  };
+  GUI_Operator_RI_CtrlSub1_Subscriber1_PI_CtrlSub1 : SUBPROGRAM ACCESS Subscriber1.PI_CtrlSub1 -> GUI_Operator.RI_CtrlSub1 {
+    Taste::coordinates => "110777 106762 110777 113911 103625 113911 103625 119801";
+  };
+  Subscriber1_RI_SubscribeToMessage_Sub1_Broker_PI_SubscribeToMessage : SUBPROGRAM ACCESS Sub1_Broker.PI_SubscribeToMessage -> Subscriber1.RI_SubscribeToMessage {
+    Taste::coordinates => "98608 138832 98608 163221 98483 163221 98483 168317";
+  };
+  Subscriber1_RI_UnsubscribeToMessage_Sub1_Broker_PI_UnsubscribeToMessage : SUBPROGRAM ACCESS Sub1_Broker.PI_UnsubscribeToMessage -> Subscriber1.RI_UnsubscribeToMessage {
+    Taste::coordinates => "140823 138832 140823 163221 140726 163221 140726 168317";
+  };
+  Subscriber1_RI_Sub1Status_GUI_Operator_PI_Sub1Status : SUBPROGRAM ACCESS GUI_Operator.PI_Sub1Status -> Subscriber1.RI_Sub1Status {
+    Taste::coordinates => "138776 119801 138776 113911 138842 113911 138842 106762";
+  };
+  Sub2_Broker_RI_ReceiveMessage_Subscriber2_PI_ReceiveMessage : SUBPROGRAM ACCESS Subscriber2.PI_ReceiveMessage -> Sub2_Broker.RI_ReceiveMessage {
+    Taste::coordinates => "193226 168160 193226 155607 193209 155607 193209 138174";
+  };
+  GUI_Operator_RI_CtrlSub2_Subscriber2_PI_CtrlSub2 : SUBPROGRAM ACCESS Subscriber2.PI_CtrlSub2 -> GUI_Operator.RI_CtrlSub2 {
+    Taste::coordinates => "178444 106762 178444 113525 178107 113525 178107 119401";
+  };
+  Subscriber2_RI_SubscribeToMessage_Sub2_Broker_PI_SubscribeToMessage : SUBPROGRAM ACCESS Sub2_Broker.PI_SubscribeToMessage -> Subscriber2.RI_SubscribeToMessage {
+    Taste::coordinates => "173479 138174 173479 153088 173696 153088 173696 168160";
+  };
+  Subscriber2_RI_UnsubscribeToMessage_Sub2_Broker_PI_UnsubscribeToMessage : SUBPROGRAM ACCESS Sub2_Broker.PI_UnsubscribeToMessage -> Subscriber2.RI_UnsubscribeToMessage {
+    Taste::coordinates => "213695 138174 213695 153088 213705 153088 213705 168160";
+  };
+  Subscriber2_RI_Sub2Status_GUI_Operator_PI_Sub2Status : SUBPROGRAM ACCESS GUI_Operator.PI_Sub2Status -> Subscriber2.RI_Sub2Status {
+    Taste::coordinates => "215014 119401 215014 112599 214766 112599 214766 106762";
+  };
+  Sub3_Broker_RI_ReceiveMessage_Subscriber3_PI_ReceiveMessage : SUBPROGRAM ACCESS Subscriber3.PI_ReceiveMessage -> Sub3_Broker.RI_ReceiveMessage {
+    Taste::coordinates => "261534 167945 261534 155211 261537 155211 261537 138224";
+  };
+  GUI_Operator_RI_CtrlSub3_Subscriber3_PI_CtrlSub3 : SUBPROGRAM ACCESS Subscriber3.PI_CtrlSub3 -> GUI_Operator.RI_CtrlSub3 {
+    Taste::coordinates => "243452 106762 243452 114076 243496 114076 243496 119788";
+  };
+  Subscriber3_RI_SubscribeToMessage_Sub3_Broker_PI_SubscribeToMessage : SUBPROGRAM ACCESS Sub3_Broker.PI_SubscribeToMessage -> Subscriber3.RI_SubscribeToMessage {
+    Taste::coordinates => "242422 138224 242422 153084 242198 153084 242198 167945";
+  };
+  Subscriber3_RI_UnsubscribeToMessage_Sub3_Broker_PI_UnsubscribeToMessage : SUBPROGRAM ACCESS Sub3_Broker.PI_UnsubscribeToMessage -> Subscriber3.RI_UnsubscribeToMessage {
+    Taste::coordinates => "283181 138224 283181 153084 283150 153084 283150 167945";
+  };
+  Subscriber3_RI_Sub3Status_GUI_Operator_PI_Sub3Status : SUBPROGRAM ACCESS GUI_Operator.PI_Sub3Status -> Subscriber3.RI_Sub3Status {
+    Taste::coordinates => "281123 119788 281123 113834 280763 113834 280763 106762";
+  };
+  Pubs_Broker_RI_Notify_Sub1_Broker_PI_Notify : SUBPROGRAM ACCESS Sub1_Broker.PI_Notify -> Pubs_Broker.RI_Notify {
+    Taste::coordinates => "76329 173992 81534 173992 81534 191537 87084 191537";
+  };
+  Sub1_Broker_RI_Notify_Sub2_Broker_PI_Notify : SUBPROGRAM ACCESS Sub2_Broker.PI_Notify -> Sub1_Broker.RI_Notify {
+    Taste::coordinates => "153697 175248 157161 175248 157161 190367 161098 190367";
+  };
+  Sub2_Broker_RI_Notify_Sub3_Broker_PI_Notify : SUBPROGRAM ACCESS Sub3_Broker.PI_Notify -> Sub2_Broker.RI_Notify {
+    Taste::coordinates => "225663 174954 229285 174954 229285 191409 231332 191409";
+  };
+END interfaceview.others;
+
+PROPERTIES
+  Taste::dataView => ("DataView");
+  Taste::dataViewPath => ("DataView.aadl");
+  Taste::coordinates => "0 0 297000 210000";
+  Taste::version => "2.4";
+END interfaceview::IV;
+

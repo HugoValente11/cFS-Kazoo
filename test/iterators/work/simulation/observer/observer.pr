@@ -1,0 +1,199 @@
+system my_observer;
+    /* CIF TEXT (144, 214), (507, 312) */
+    use datamodel comment 'observer.asn';
+    
+    exported procedure observe;
+       fpar in/out model           System_State,
+                 in/out last_event  Observable_Event;
+    referenced;
+    
+    signal pre_in_orchestrator_pulse (t_int) renames input pulse to orchestrator;
+    
+    signal foo (T_Uint32)
+       renames output do_something
+       from     orchestrator
+       to           another_function;
+    /* CIF ENDTEXT */
+    channel c
+        from env to my_observer with observe,
+pre_in_orchestrator_pulse,
+foo;
+        from my_observer to env with foo;
+    endchannel;
+    block my_observer;
+        signalroute r
+            from env to my_observer with observe,
+pre_in_orchestrator_pulse,
+foo;
+            from my_observer to env with foo;
+        connect c and r;
+        /* CIF PROCESS (259, 87), (150, 75) */
+        process my_observer;
+            /* CIF TEXT (0, 57), (256, 248) */
+            monitor st System_State;
+            
+            monitor event Observable_Event;
+            
+            dcl count T_Int
+               renames st.orchestrator.counter;
+            
+            dcl actual_val T_UInt32
+               renames st.another_function.param1;
+            
+            dcl p1 T_Int;
+            
+            successstates  good;
+            errorstates corrupted;
+            /* CIF ENDTEXT */
+            /* CIF procedure (149, 457), (106, 35) */
+            procedure Discard_Event;
+                /* CIF START (182, 39), (70, 35) */
+                START;
+                    /* CIF task (142, 94), (148, 35) */
+                    task Event := No_Event : {};
+                    /* CIF return (199, 149), (35, 35) */
+                    return ;
+            endprocedure;
+            /* CIF procedure (274, 120), (70, 35) */
+            procedure observe;
+                /* CIF TEXT (288, 48), (337, 136) */
+                --  this procedure could be generated automatically,
+                -- and be read-only.
+                
+                   fpar in/out model           System_State,
+                             in/out last_event  Observable_Event;
+                   returns Observer_State_Kind;
+                
+                dcl curr_status Observer_State_Kind := regular_state;
+                /* CIF ENDTEXT */
+                /* CIF START (782, 118), (70, 35) */
+                START;
+                    /* CIF task (748, 173), (137, 40) */
+                    task st := model,
+Event := Last_Event;
+                    /* CIF PROCEDURECALL (663, 233), (308, 35) */
+                    call writeln('[observer] Event: ', present(event));
+                    /* CIF decision (760, 288), (113, 50) */
+                    decision present(event);
+                        /* CIF ANSWER (259, 358), (93, 24) */
+                        (input_event):
+                            /* CIF PROCEDURECALL (162, 402), (289, 35) */
+                            call writeln('FROM: ', event.input_event.source);
+                            /* CIF PROCEDURECALL (162, 457), (289, 35) */
+                            call writeln('TO: ', event.input_event.dest);
+                        /* CIF ANSWER (555, 358), (103, 24) */
+                        (output_event):
+                            /* CIF PROCEDURECALL (462, 402), (290, 35) */
+                            call writeln('FROM: ', event.output_event.source);
+                            /* CIF PROCEDURECALL (463, 457), (289, 35) */
+                            call writeln('TO: ', event.output_event.dest);
+                        /* CIF ANSWER (791, 358), (114, 24) */
+                        (system_startup):
+                            /* CIF PROCEDURECALL (764, 402), (169, 35) */
+                            call writeln('system startup');
+                        /* CIF ANSWER (989, 358), (78, 24) */
+                        (no_event):
+                            /* CIF PROCEDURECALL (944, 402), (169, 35) */
+                            call writeln('no_event');
+                        /* CIF ANSWER (1146, 358), (123, 24) */
+                        (unhandled_input):
+                            /* CIF PROCEDURECALL (1137, 402), (142, 35) */
+                            call writeln('Lost input');
+                    enddecision;
+                    /* CIF return (799, 508), (35, 35) */
+                    return call observer_status;
+            endprocedure;
+            /* CIF START (556, 96), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (549, 151), (83, 35) */
+                NEXTSTATE first_state;
+            /* CIF state (864, 245), (97, 40) */
+            state fourth_state;
+                /* CIF provided (816, 305), (193, 79) */
+                provided output do_something(p)
+from     orchestrator
+to           another_function
+                /* CIF comment (1032, 316), (146, 56) */
+                comment 'intercept the output
+and modify the value
+of the parameter';
+                    /* CIF decision (877, 404), (70, 50) */
+                    decision p = 42;
+                        /* CIF ANSWER (812, 474), (70, 24) */
+                        (true):
+                            /* CIF task (812, 518), (70, 35) */
+                            task p := 99;
+                            /* CIF NEXTSTATE (804, 573), (85, 35) */
+                            NEXTSTATE fifth_state;
+                        /* CIF ANSWER (912, 474), (70, 24) */
+                        (false):
+                            /* CIF NEXTSTATE (900, 518), (92, 35) */
+                            NEXTSTATE corrupted;
+                    enddecision;
+            endstate;
+            /* CIF state (868, 98), (88, 35) */
+            state third_state;
+                /* CIF provided (827, 153), (173, 72) */
+                provided output paramesstogui
+from orchestrator;
+                    /* CIF NEXTSTATE (864, 245), (97, 40) */
+                    NEXTSTATE fourth_state;
+            endstate;
+            /* CIF state (1208, 430), (87, 35) */
+            state sixth_state;
+                /* CIF provided (1192, 485), (121, 50) */
+                provided actual_val = 99;
+                    /* CIF NEXTSTATE (1204, 555), (95, 35) */
+                    NEXTSTATE corrupted;
+            endstate;
+            /* CIF state (1226, 131), (145, 57) */
+            state fifth_state;
+                /* CIF provided (1206, 208), (184, 68) */
+                provided input do_something(val)
+to another_function;
+                    /* CIF decision (1248, 296), (99, 68) */
+                    decision val;
+                        /* CIF ANSWER (1221, 386), (62, 24) */
+                        (/= 42):
+                            /* CIF NEXTSTATE (1208, 430), (87, 35) */
+                            NEXTSTATE sixth_state;
+                        /* CIF ANSWER (1337, 386), (70, 24) */
+                        else:
+                            /* CIF NEXTSTATE (1325, 430), (92, 35) */
+                            NEXTSTATE Good;
+                    enddecision;
+            endstate;
+            /* CIF state (230, 314), (92, 35) */
+            state corrupted;
+            endstate;
+            /* CIF state (266, 262), (95, 35) */
+            state good;
+            endstate;
+            /* CIF state (540, 392), (101, 34) */
+            state second_state;
+                /* CIF provided (472, 447), (239, 45) */
+                provided st.orchestrator.magic_number = 42;
+                    /* CIF NEXTSTATE (541, 512), (101, 35) */
+                    NEXTSTATE third_state;
+            endstate;
+            /* CIF state (541, 282), (101, 35) */
+            state Wait_count;
+                /* CIF provided (549, 337), (85, 35) */
+                provided count = 3;
+                    /* CIF NEXTSTATE (540, 392), (101, 34) */
+                    NEXTSTATE second_state;
+            endstate;
+            /* CIF state (549, 151), (83, 35) */
+            state first_state;
+                /* CIF provided (522, 206), (139, 56) */
+                provided input pulse
+to orchestrator
+                /* CIF comment (688, 214), (111, 40) */
+                comment 'Called AFTER
+the input';
+                    /* CIF NEXTSTATE (541, 282), (101, 35) */
+                    NEXTSTATE Wait_count;
+            endstate;
+        endprocess my_observer;
+    endblock;
+endsystem;

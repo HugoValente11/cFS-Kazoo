@@ -1,0 +1,3 @@
+To create an observer:
+
+gather dataview-uniq.asn, simulation.asn, and *_datamodel.asn into a single file

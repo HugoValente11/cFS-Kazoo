@@ -1,0 +1,48 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fnode.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_node.ascii
+with Simulation_Dataview; use Simulation_Dataview;
+with ASN1_Iterators.Exhaustive_Simulation; use ASN1_Iterators;
+
+generic
+   type State_With_Observers is tagged private;
+   with function Application_State (Full_State : State_With_Observers) return asn1SccSystem_State is <>;
+   with procedure Update_State     (Full_State : in out State_With_Observers; Application_State : asn1SccSystem_State) is <>;
+   with function Full_State_Init return State_With_Observers is <>;
+   with function State_As_String (Full_State : State_With_Observers) return String is <>;
+   Run_Observers : access procedure (Full_State : in out State_With_Observers;
+                                     Event      : in out asn1sccObservable_Event;
+                                     Id         : out Natural;
+                                     Success    : out Boolean);
+package Simulator_Interface is
+
+   -- The full state depends on the number of observers, which is
+   -- not visible here. This is an opaque type, but it is tagged,
+   -- and user provides function to read/write the application state
+   Full_State : State_With_Observers;
+   User_State : aliased asn1SccSystem_State;  -- State without observers
+
+   procedure Simulation_Startup;
+
+   procedure Process_Event (Event : asn1SccObservable_Event);
+   procedure Run_Exhaustive_Simulation;
+
+private
+   Init : Boolean := False;
+   procedure Exhaust_All_Interfaces;
+
+   procedure Print_Event (Event         : asn1SccObservable_Event);
+   procedure ES_Callback (Event         : asn1SccObservable_Event;
+                          Limit_Reached : out Boolean);
+
+   --  Instantiate the exhaustive simulator
+   package ES is new Exhaustive_Simulation
+      (Context_Ty       => State_With_Observers,
+       Process_Ctxt     => Full_State'Access,
+       Event_Ty         => asn1SccObservable_Event,
+       State_As_String  => State_As_String,
+       Print_Event      => Print_Event);
+
+end Simulator_Interface;

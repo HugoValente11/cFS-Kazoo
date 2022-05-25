@@ -1,0 +1,91 @@
+system my_observer;
+    /* CIF TEXT (144, 214), (348, 124) */
+    use datamodel comment 'observer.asn';
+    
+    exported procedure observe;
+       fpar in/out model           System_State,
+                 in/out last_event  Observable_Event;
+    referenced;
+    /* CIF ENDTEXT */
+    channel c
+        from env to my_observer with observe;
+    endchannel;
+    block my_observer;
+        signalroute r
+            from env to my_observer with observe;
+        connect c and r;
+        /* CIF PROCESS (259, 87), (150, 75) */
+        process my_observer;
+            /* CIF TEXT (0, 57), (256, 56) */
+            monitor st System_State;
+            
+            monitor event Observable_Event;
+            /* CIF ENDTEXT */
+            /* CIF procedure (19, 126), (70, 35) */
+            procedure observe;
+                /* CIF TEXT (288, 48), (337, 136) */
+                --  this procedure could be generated automatically,
+                -- and be read-only.
+                
+                   fpar in/out model           System_State,
+                             in/out last_event  Observable_Event;
+                   returns Observer_State_Kind;
+                
+                dcl curr_status Observer_State_Kind := regular_state;
+                /* CIF ENDTEXT */
+                /* CIF START (782, 118), (70, 35) */
+                START;
+                    /* CIF task (748, 173), (137, 40) */
+                    task st := model,
+Event := Last_Event;
+                    /* CIF PROCEDURECALL (663, 233), (308, 35) */
+                    call writeln('[observer] Event: ', present(event));
+                    /* CIF decision (760, 288), (113, 50) */
+                    decision present(event);
+                        /* CIF ANSWER (258, 358), (93, 24) */
+                        (input_event):
+                            /* CIF PROCEDURECALL (161, 402), (289, 35) */
+                            call writeln('FROM: ', event.input_event.source);
+                            /* CIF PROCEDURECALL (161, 457), (289, 35) */
+                            call writeln('TO: ', event.input_event.dest);
+                        /* CIF ANSWER (554, 358), (103, 24) */
+                        (output_event):
+                            /* CIF PROCEDURECALL (461, 402), (290, 35) */
+                            call writeln('FROM: ', event.output_event.source);
+                            /* CIF PROCEDURECALL (462, 457), (289, 35) */
+                            call writeln('TO: ', event.output_event.dest);
+                        /* CIF ANSWER (790, 358), (114, 24) */
+                        (system_startup):
+                            /* CIF PROCEDURECALL (763, 402), (169, 35) */
+                            call writeln('system startup');
+                        /* CIF ANSWER (988, 358), (78, 24) */
+                        (no_event):
+                            /* CIF PROCEDURECALL (943, 402), (169, 35) */
+                            call writeln('no_event');
+                        /* CIF ANSWER (1145, 358), (123, 24) */
+                        (unhandled_input):
+                            /* CIF PROCEDURECALL (1136, 402), (142, 35) */
+                            call writeln('Lost input');
+                    enddecision;
+                    /* CIF return (799, 508), (35, 35) */
+                    return call observer_status;
+            endprocedure;
+            /* CIF procedure (22, 178), (106, 35) */
+            procedure Discard_Event;
+                /* CIF START (182, 39), (70, 35) */
+                START;
+                    /* CIF task (142, 94), (148, 35) */
+                    task Event := No_Event : {};
+                    /* CIF return (199, 149), (35, 35) */
+                    return ;
+            endprocedure;
+            /* CIF START (208, 125), (70, 35) */
+            START;
+                /* CIF NEXTSTATE (209, 180), (68, 35) */
+                NEXTSTATE Idle;
+            /* CIF state (309, 125), (70, 35) */
+            state Idle;
+            endstate;
+        endprocess my_observer;
+    endblock;
+endsystem;

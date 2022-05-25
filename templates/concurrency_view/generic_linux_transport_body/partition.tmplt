@@ -1,0 +1,37 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fpartition.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_partition.ascii
+#include "transport.h"
+
+#include <cstring>
+
+#include <Queue.h>
+#include <Request.h>
+
+extern "C"
+{
+#include <Broker.h>
+}
+
+// sporadic required
+@@TABLE@@
+void deliver_to_@_LOWER:Out_Port_Remote_Function_@_@_LOWER:Out_Port_Remote_Port_Name_@(
+const uint8_t* const data, const size_t length)
+{
+    Broker_deliver_request(INTERFACE_@_UPPER:Out_Port_Remote_Function_@_@_UPPER:Out_Port_Remote_Port_Name_@,
+                          data,
+                          length);
+}
+@@END_TABLE@@
+
+// sporadic provided
+@_Threads_@
+
+void initialize_transport()
+{
+@@TABLE@@
+interface_to_deliver_function[INTERFACE_@_UPPER:In_Port_Thread_Name_@] = &deliver_to_@_LOWER:In_Port_Thread_Name_@;
+@@END_TABLE@@
+}

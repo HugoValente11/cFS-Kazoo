@@ -1,0 +1,15 @@
+with "share/gpr/demo_simulator.gpr";
+with "asn1_iterators";
+
+project mc is
+ for Source_Dirs use (
+     "mcsrc",
+     "../dataview/iterators",
+     "observer"
+     --"../build/node1/simulation"
+     );
+ for Main use ("mc.adb");
+ package Compiler is
+    for Default_Switches ("Ada") use ("-g", "-O2");
+ end Compiler;
+ end mc;

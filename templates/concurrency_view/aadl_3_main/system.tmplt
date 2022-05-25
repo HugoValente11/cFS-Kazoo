@@ -1,0 +1,48 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fsystem.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+--  Scnenario file for Ocarina used to generate PolyORB-HI code
+--  Syntax for manual use: ocarina -x main.aadl
+--  This file was generated automatically by taste/kazoo - do not edit
+system Taste
+properties
+ Ocarina_Config::AADL_Files =>
+    ("../../@_Interface_View_@",
+     "../../@_Deployment_View_@",
+     "../dataview/dataview_aadlv2.aadl",
+     "system.aadl",
+@@TABLE@@
+     "@_Shared_Lib_Dir_@/@_LOWER:Used_Shared_Types_@/@_LOWER:Used_Shared_Types_@-iv-@_LOWER:Used_Shared_Types_@.aadl",
+@@END_TABLE@@
+@@IF@@ not @_No_Stdlib_Flag_@     
+     "ocarina_components.aadl",
+@@END_IF@@
+@@IF@@ @_Other_Files'Length_@ > 0
+   @@INLINE(     )(,\n)(,\n)@@
+      @@TABLE@@
+         "../../@_Other_Files_@"
+      @@END_TABLE@@
+   @@END_INLINE@@
+@@END_IF@@
+     "TASTE_IV_Properties.aadl",
+     "TASTE_DV_Properties.aadl");
+@@IF@@ @_Use_POHIC_@
+ Ocarina_Config::Generator => polyorb_hi_c;
+@@ELSE@@
+ Ocarina_Config::Generator => polyorb_hi_ada;
+@@END_IF@@
+ Ocarina_Config::Generator_Options => ();
+ Ocarina_Config::AADL_Version => AADLv2;
+ Ocarina_Config::Needed_Property_Sets => (
+   
+  "data_model",
+  "base_types",
+  value (Ocarina_Config::arinc653_properties),
+  value (Ocarina_Config::Deployment),
+  value (Ocarina_Config::Cheddar_Properties),
+  value (Ocarina_Config::TASTE_Properties));
+  Ocarina_Config::Root_System_name => "deploymentview.final";
+end Taste;
+
+system implementation Taste.impl
+end Taste.impl;

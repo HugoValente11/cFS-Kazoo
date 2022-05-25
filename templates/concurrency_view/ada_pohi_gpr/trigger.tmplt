@@ -1,0 +1,3 @@
+@@IF@@ not @_Use_POHIC_@ and @_CPU_Platform_@ /= PLATFORM_MSP430_FREERTOS and @_Target_@ /= SIMU and @_CPU_Platform_@ /= PLATFORM_GENERIC_LINUX
+TRUE
+@@END_IF@@

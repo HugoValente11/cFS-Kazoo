@@ -1,0 +1,67 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fpartition.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_partition.ascii
+def report_partition_@_LOWER:Name_@():
+    print("[-] Checking stack usage of tasks inside @_LOWER:Name_@...")
+    stack_usage = {}
+    @@IF@@ @_CPU_Platform_@ = PLATFORM_LEON_RTEMS_POSIX or @_CPU_Platform_@ = PLATFORM_AIR
+    elf_binary = "../binaries/@_LOWER:Name_@_leon3_rtems.exe"
+    @@ELSE@@
+    elf_binary = "../binaries/@_LOWER:Name_@"
+    @@END_IF@@
+    shift_offset = 0  
+    @@IF@@ @_CPU_Platform_@ = PLATFORM_GENERIC_LINUX or @_CPU_Platform_@ = PLATFORM_NATIVE
+    # On Linux, a constant named PTHREAD_STACK_MIN gives the minimum stack size for a thread
+    # in addition to the user space stack. We have to add this offest to the computed value:
+    shift_offset = 16384
+    @@END_IF@@
+    if not os.path.exists(elf_binary):
+        print("[x] Failed to locate ELF binary:", elf_binary)
+        print("[x] Aborting...")
+        sys.exit(1)
+    for line in os.popen("checkStackUsageGCCBased.py " + elf_binary + " ../"):
+        data = line.strip().split()
+        try:
+            if len(data) == 3:
+                stack_usage[data[1].strip()] = int(data[0][:-1]), data[2]
+        except:
+            pass
+    pohic_stack_of = {
+        @_Threads'Indent_@
+    }
+
+    def check_task(task_name):
+@@IF@@ @_Use_POHIC_@
+        task_name_job = task_name + "_job"
+@@ELSE@@
+        task_name_job = "Process_Package_" + task_name.title() + "_Job"
+@@END_IF@@
+        @@IF@@ @_CPU_Platform_@ = PLATFORM_GENERIC_LINUX
+        @@-- N7 runtime use C++ so we must get rid of name mangling
+        keys = f'''"{'" "'.join(stack_usage.keys())}"'''
+        noMangling = os.popen(f'c++filt {keys}').readlines()
+        for idx, key in enumerate(list(stack_usage.keys())):
+            stack_usage[noMangling[idx].strip('()\n')] = stack_usage.pop(key)
+        @@END_IF@@
+
+        if task_name not in pohic_stack_of:
+            print("[!] WARNING: Unable to check stack usage of", task_name+"_job")
+        elif task_name_job not in stack_usage:
+            print("[!] WARNING: ", task_name_job,
+                  " is either recursive or missing in", elf_binary)
+        else:
+            reserved_stack = pohic_stack_of[task_name]
+            actual_stack, path = stack_usage[task_name_job]
+            actual_stack += shift_offset
+            print("[-] Stack usage of %32s" % task_name, "is %7d /%7d" % (
+                 actual_stack, reserved_stack))
+            if reserved_stack < actual_stack:
+                print("[x] ERROR: Stack usage of", task_name, "is", actual_stack,
+                      "which is higher than", reserved_stack)
+                print("[x] ERROR: Call chain is: ", path)
+                sys.exit(1)
+    @@TABLE@@
+    check_task("@_LOWER:Thread_Names_@")
+    @@END_TABLE@@

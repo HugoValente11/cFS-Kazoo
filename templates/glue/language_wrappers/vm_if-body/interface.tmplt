@@ -1,0 +1,158 @@
+@@-- The documentation of the templates is there:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_skeletons_sub_interface.ascii
+@@MACRO(MSC_LOG)@@
+#ifdef __unix__
+   // Log MSC data on Linux when environment variable is set
+   static int innerMsc = -1;
+   if (-1 == innerMsc)
+      innerMsc = (NULL != getenv("TASTE_INNER_MSC"))?1:0;
+   if (1 == innerMsc) {
+      long long msc_time = getTimeInMilliseconds();
+      printf ("INNER_PI: @_LOWER:Parent_Function_@,@_LOWER:Name_@,%lld\n", msc_time);
+      fflush(stdout);
+  }
+#endif
+@@END_MACRO@@
+@@MACRO(LOG_MSC_STATE)@@
+#ifdef __unix__
+   // trace the SDL state
+   if (1 == innerMsc) {
+      extern char *@_LOWER:Parent_Function_@_state(void);
+      printf ("INNER_SDL_STATE: @_LOWER:Parent_Function_@,%s\n", @_LOWER:Parent_Function_@_state());
+      fflush(stdout);
+  }
+#endif
+@@END_MACRO@@
+@@IF@@ @_Kind_@ /= UNPROTECTED_OPERATION
+   @@SET@@ Static="static "  @@-- Parameters of unprotected operations must be on the stack to avoid race conditions
+@@END_IF@@
+@@IF@@ @_EXIST:Param_Names_@
+void @_LOWER:Parent_Function_@_@_Name_@
+@@INLINE(      \()(,\n       )(\)\n)@@
+   @@TABLE@@
+      @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+         const char *IN_@_LOWER:Param_Names_@, size_t IN_@_LOWER:Param_Names_@_len
+     @@ELSE@@
+         char *OUT_@_LOWER:Param_Names_@, size_t *OUT_@_LOWER:Param_Names_@_len
+     @@END_IF@@
+   @@END_TABLE@@
+@@END_INLINE@@
+{
+@@IF@@ @_Debug_Flag_@
+  @@IF@@ @_Language_@ = GUI and @_LOWER:Name_@ /= poll or @_Language_@ /= GUI
+@_MSC_LOG()_@
+  @@END_IF@@
+@@END_IF@@
+@@TABLE@@    @@-- decode input/output parameters into static variables or stack in case of unprotected operations
+@@IF@@ @_Param_Encodings_@ /= NATIVE
+ @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+   @_Static_@asn1Scc@_REPLACE_ALL(-/_):Param_Types_@ IN_@_UPPER:Param_Names_@;
+ @@ELSE@@
+   @_Static_@asn1Scc@_REPLACE_ALL(-/_):Param_Types_@ OUT_@_UPPER:Param_Names_@;
+ @@END_IF@@
+ @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+#ifdef __unix__
+   asn1Scc@_REPLACE_ALL(-/_):Param_Types_@_Initialize(&IN_@_UPPER:Param_Names_@);
+#endif
+
+   if (0 != Decode_@_Param_Encodings_@_@_REPLACE_ALL(-/_):Param_Types_@ (&IN_@_UPPER:Param_Names_@, (void *)IN_@_LOWER:Param_Names_@, IN_@_LOWER:Param_Names_@_len)) {
+      #ifdef __unix__
+         puts("Error decoding @_Param_Types_@ in function @_Parent_Function_@_@_Name_@");
+      #endif
+      return;
+   }
+ @@ELSE@@
+#ifdef __unix__
+   asn1Scc@_REPLACE_ALL(-/_):Param_Types_@_Initialize(&OUT_@_UPPER:Param_Names_@);
+#endif
+ @@END_IF@@
+@@END_IF@@
+@@END_TABLE@@
+
+   //  Declare user code function as external (it may not have a .h if it is in Ada)
+   extern void @_LOWER:Parent_Function_@_PI_@_Name_@
+@@INLINE(      \()(,\n       )(\);\n)@@
+   @@TABLE@@
+      @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+         const asn1Scc@_REPLACE_ALL(-/_):Param_Types_@ *
+     @@ELSE@@
+         asn1Scc@_REPLACE_ALL(-/_):Param_Types_@ *
+     @@END_IF@@
+   @@END_TABLE@@
+@@END_INLINE@@
+
+@@-- determine if we need FPGA dispatching
+@@TABLE@@
+    @@IF@@ @_LOWER:Property_Names_@ = taste_iv_properties::fpga_configurations and @_Property_Values_@ /= ""
+       @@SET@@ Dispatch_FPGA=TRUE 
+    @@END_IF@@
+@@END_TABLE@@
+
+@@MACRO(PARAMETERS)@@
+   @@INLINE(, )@@
+      @@TABLE@@
+         @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+           @@IF@@ @_Param_Encodings_@ = NATIVE
+             (asn1Scc@_Param_Types_@ *)IN_@_LOWER:Param_Names_@
+           @@ELSE@@
+            &IN_@_UPPER:Param_Names_@
+           @@END_IF@@
+         @@ELSE@@
+           @@IF@@ @_Param_Encodings_@ = NATIVE
+            (asn1Scc@_Param_Types_@ *)OUT_@_LOWER:Param_Names_@
+           @@ELSE@@
+            &OUT_@_UPPER:Param_Names_@
+           @@END_IF@@
+         @@END_IF@@
+      @@END_TABLE@@
+   @@END_INLINE@@
+@@END_MACRO@@
+
+   // Call user code
+@@IF@@ @_Dispatch_FPGA_@
+   if(1 == @_LOWER:Parent_Function_@_@_Name_@_FPGA_Dispatch(@_STRIP:REPLACE_ALL(-/_):PARAMETERS()_@))
+      @_LOWER:Parent_Function_@_PI_@_Name_@ (@_STRIP:REPLACE_ALL(-/_):PARAMETERS()_@);
+@@ELSE@@
+   @_LOWER:Parent_Function_@_PI_@_Name_@ (@_STRIP:REPLACE_ALL(-/_):PARAMETERS()_@);
+@@END_IF@@
+
+@@TABLE@@    @@-- encode output parameters
+@@IF@@ @_Param_Encodings_@ /= NATIVE
+@@IF@@ @_Param_Directions_@ = "PARAM_OUT"
+   *OUT_@_LOWER:Param_Names_@_len = Encode_@_Param_Encodings_@_@_REPLACE_ALL(-/_):Param_Types_@
+      ((void *)OUT_@_LOWER:Param_Names_@,
+@@IF@@ @_Param_Encodings_@ = UPER
+       asn1Scc@_REPLACE_ALL(-/_):Param_Types_@_REQUIRED_BYTES_FOR_ENCODING,
+@@ELSIF@@ @_Param_Encodings_@ = ACN
+       asn1Scc@_REPLACE_ALL(-/_):Param_Types_@_REQUIRED_BYTES_FOR_ACN_ENCODING,
+@@END_IF@@
+       &OUT_@_UPPER:Param_Names_@);
+@@END_IF@@
+@@END_IF@@
+@@END_TABLE@@
+@@-- for the tracer, print the current SDL state
+@@IF@@ @_Language_@ = SDL and @_Debug_Flag_@
+@_LOG_MSC_STATE()_@
+@@END_IF@@
+}
+@@ELSE@@   @@-- parameterless functions
+void @_LOWER:Parent_Function_@_@_Name_@()
+{
+@@IF@@ @_Debug_Flag_@
+  @@IF@@ @_Language_@ = GUI and @_LOWER:Name_@ /= poll or @_Language_@ /= GUI
+@_MSC_LOG()_@
+  @@END_IF@@
+@@END_IF@@
+
+   //  Directly call user code, no parameters to pass
+   extern void @_LOWER:Parent_Function_@_PI_@_Name_@(void);
+   @_LOWER:Parent_Function_@_PI_@_Name_@();
+   // puts ("@_LOWER:Parent_Function_@_@_LOWER:Name_@ called");
+@@IF@@ @_Language_@ = SDL and @_Debug_Flag_@
+@_LOG_MSC_STATE()_@
+@@END_IF@@
+}
+@@END_IF@@

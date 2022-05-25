@@ -1,0 +1,22 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fpartition.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_partition.ascii
+with Simulation_Dataview;  use Simulation_Dataview;
+
+package Simulator is
+
+   --  To add an event to the system FIFO (e.g. when functions call a RI)
+   procedure Push_Event (Event : asn1SccObservable_Event);
+
+   --  Get the first stored event from the FIFO
+   function Pop_Event return asn1SccObservable_Event;
+
+   --  Exception raised by Pop_Event if the FIFO is empty
+   Empty_Queue : exception;
+
+   --  Event list (call of RI)
+   Events : asn1SccEvents_Ty := asn1SccEvents_Ty_Init;
+
+end Simulator;

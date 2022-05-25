@@ -1,0 +1,53 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Language_@            : The implementation language of the function
+@@-- @_Property_Names_@      : All AADL properties (names) associated to the function
+@@-- @_Property_Values_@     : ... and corresponding values
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding encoding (Default, Native, UPER, ACN)
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@IF@@ not @_Is_Timer_@
+   @@-- Declare a signal for all PIs, including (un)protected interfaces
+   @@IF@@ @_Kind_@ = SPORADIC_OPERATION or @_Kind_@ = CYCLIC_OPERATION
+      @@IF@@ @_Param_Names'Length_@ > 0
+/* CIF Keep Specific Geode PARAMNAMES @_Param_Names_@ */
+signal @_Name_@ (@_REPLACE_ALL((-)/_):Param_Types_@);
+      @@ELSE@@
+signal @_Name_@;
+      @@END_IF@@
+   @@ELSE@@
+   @@IF@@ @_Direction_@ = RI
+procedure @_Name_@;
+   @@ELSE@@
+-- Synchronous PI @_Name_@
+-- You must create a procedure with this name
+-- and copy the signature (the FPAR section) in a text box
+exported procedure @_Name_@;
+   @@END_IF@@
+      @@IF@@ @_EXIST:Param_Names_@
+   fpar
+         @@INLINE(         )(,\n         )(;\n)@@
+            @@TABLE@@
+               @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+                  in     @_CAPITALIZE:Param_Names_@ @_REPLACE_ALL((-)/_):Param_Types_@
+               @@ELSE@@  @@-- output parameter
+                  in/out @_CAPITALIZE:Param_Names_@ @_REPLACE_ALL((-)/_):Param_Types_@
+               @@END_IF@@
+            @@END_TABLE@@
+         @@END_INLINE@@
+      @@END_IF@@
+   @@IF@@ @_Direction_@ = RI
+   external;
+   @@ELSE@@
+   referenced;
+   @@END_IF@@
+   @@END_IF@@
+@@END_IF@@

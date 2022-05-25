@@ -1,0 +1,38 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fri.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f then Ctrl-W-L (or gf)
+@@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_pi.ascii
+@@TABLE@@
+ @@-- Here all functions are protected or unprotected (attribute Kind) as we are in a block
+ @@-- However we may not need to generate a pro_ function if the original PI was sporadic or cyclic
+ @@-- because a similar code is generated in their thread directly (function call_ThreadName)
+ @@-- therefore we check first these properties before generating anything here
+ @@IF@@ @_IF_Property_Names_@ = Taste::RCMoperationKind and (@_IF_Property_Values_@ = protected or @_IF_Property_Values_@ = unprotected)
+    @@SET@@ Trigger = TRUE
+ @@END_IF@@
+@@END_TABLE@@
+@@-- timer manager does not have taste properties, but the Set/Reset function are needed here
+@@IF@@ @_Language_@ = Timer_Manager
+    @@SET@@ Trigger = TRUE
+@@END_IF@@
+@@MACRO(PARAMETERS)@@
+   @@IF@@ @_Param_Names'Length_@ = 0
+       void
+   @@ELSE@@
+       @@INLINE(,\n       )@@
+          @@TABLE'ALIGN_ON("size_t")@@
+          @@IF@@ @_Param_Directions_@ = "PARAM_IN"
+             const char *IN_buf_@_LOWER:Param_Names_@, size_t size_IN_buf_@_LOWER:Param_Names_@
+          @@ELSE@@
+             char *OUT_buf_@_LOWER:Param_Names_@, size_t *size_OUT_buf_@_LOWER:Param_Names_@
+          @@END_IF@@
+          @@END_TABLE@@
+       @@END_INLINE@@
+   @@END_IF@@
+@@END_MACRO@@
+@@IF@@ @_Kind_@ = PROTECTED_OPERATION and @_EXIST:Remote_Function_Names_@ and @_Trigger_@ = TRUE
+@@-- Check that there is a caller, otherwise don't generate anything (e.g. cyclic) 
+   extern void @_LOWER:Parent_Function_@_@_Name_@(@_STRIP:PARAMETERS()_@);
+   void pro_@_Parent_Function_@_@_Name_@(@_STRIP:PARAMETERS()_@);
+@@END_IF@@

@@ -1,0 +1,17 @@
+templates/concurrency_view/sub/bus.tmplt
+
+This template is parsed for all busses referenced in system.tmplt
+
++-----------------+--------------------------------------+
+| Parameter name  | Description                          |
++=================+======================================+
+| Bus_Name        | Name of the bus                      |
++-----------------+--------------------------------------+
+| Classifier      | AADL Classifier for the bus          |
++-----------------+--------------------------------------+
+| Property_Names  | AADL property names (vector tag)     |
++-----------------+--------------------------------------+
+| Property_Values | AADL property values                 |
++-----------------+--------------------------------------+
+| AADL_Package    | AADL package name containing the bus |
++-----------------+--------------------------------------+

@@ -1,0 +1,26 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fpartition.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_partition.ascii
+#!/bin/sh
+
+GENERIC_LINUX_RUNTIME_COMMON_PATH="${HOME}/tool-inst/include/TASTE-Runtime-Common"
+GENERIC_LINUX_RUNTIME_PATH="${HOME}/tool-inst/include/TASTE-Linux-Runtime"
+GENERIC_LINUX_DRIVERS_PATH="${HOME}/tool-inst/include/TASTE-Linux-Drivers"
+
+echo "Copying GENERIC_LINUX runtime"
+mkdir -p "@_LOWER:Name_@/runtime/"
+cp -r "${GENERIC_LINUX_RUNTIME_PATH}"/src/* "@_LOWER:Name_@/runtime/"
+
+echo "Copying TASTE common runtime"
+cp -r "${GENERIC_LINUX_RUNTIME_COMMON_PATH}"/src/Packetizer "@_LOWER:Name_@/runtime/"
+cp -r "${GENERIC_LINUX_RUNTIME_COMMON_PATH}"/src/Broker "@_LOWER:Name_@/runtime/"
+cp -r "${GENERIC_LINUX_RUNTIME_COMMON_PATH}"/src/RuntimeCommon "@_LOWER:Name_@/runtime/"
+
+echo "Copying source code of device drivers"
+mkdir -p "@_LOWER:Name_@/drivers/"
+@@TABLE@@
+echo "Drivers @_Device_Driver_Names_@"
+cp -r "${GENERIC_LINUX_DRIVERS_PATH}/src/@_LOWER:Device_Driver_Names_@" "@_LOWER:Name_@/drivers/@_LOWER:Device_Driver_Names_@"
+@@END_TABLE@@

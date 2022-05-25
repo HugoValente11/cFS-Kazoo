@@ -1,0 +1,17 @@
+templates/skeletons/makefile.tmplt
+templates/skeletons/context-parameters.tmplt
+templates/skeletons/sub/trigger.tmplt
+templates/skeletons/sub/makefile-filename.tmplt
+templates/skeletons/sub/function-filename.tmplt
+templates/skeletons/sub/function.tmplt
+templates/skeletons/sub/interface.tmplt
+templates/skeletons/sub/makefile.tmplt
+templates/concurrency_view/sub/trigger.tmplt
+templates/concurrency_view/sub/bus.tmplt
+templates/concurrency_view/sub/thread.tmplt
+templates/concurrency_view/sub/pi.tmplt
+templates/concurrency_view/sub/ri.tmplt
+templates/concurrency_view/sub/block.tmplt
+templates/concurrency_view/sub/partition.tmplt
+templates/concurrency_view/sub/node.tmplt
+templates/concurrency_view/sub/system.tmplt

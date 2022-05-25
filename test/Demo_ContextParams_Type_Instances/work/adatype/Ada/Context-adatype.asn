@@ -1,0 +1,17 @@
+Context-adatype DEFINITIONS ::=
+BEGIN
+   IMPORTS
+      T-INTEGER FROM DataView;
+
+--  Group all context parameters of this function in a record
+Context-adatype ::= SEQUENCE {
+   foo T-INTEGER
+
+}
+
+--  Declare a constant with the values set by the user in the interface view
+adatype-ctxt Context-adatype ::= {
+   foo 42
+
+}
+END

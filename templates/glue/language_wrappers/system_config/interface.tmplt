@@ -1,0 +1,3 @@
+@@TABLE@@
+#define __NEED_@_REPLACE_ALL(-/_):Param_Types_@_@_Param_Encodings_@
+@@END_TABLE@@

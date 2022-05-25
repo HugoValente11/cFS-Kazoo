@@ -1,0 +1,29 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Function1;
+    /* CIF TEXT (664, 67), (267, 167) */
+    -- Text area for declarations and comments
+    
+    dcl i MyInteger := 42;
+    /* CIF ENDTEXT */
+    /* CIF START (320, 10), (70, 35) */
+    START;
+        /* CIF PROCEDURECALL (299, 65), (111, 35) */
+        call setData(i, true);
+        /* CIF NEXTSTATE (320, 115), (70, 35) */
+        NEXTSTATE Wait;
+    /* CIF state (451, 10), (68, 35) */
+    state Wait;
+        /* CIF input (450, 65), (70, 35) */
+        input pulse;
+            /* CIF PROCEDURECALL (443, 120), (82, 35) */
+            call getData(i);
+            /* CIF PROCEDURECALL (378, 170), (212, 35) */
+            call writeln('[function1] got data:', i);
+            /* CIF task (450, 225), (70, 35) */
+            task i := i + 1;
+            /* CIF PROCEDURECALL (425, 275), (118, 35) */
+            call setData (i, false);
+            /* CIF NEXTSTATE (450, 330), (70, 35) */
+            NEXTSTATE wait;
+    endstate;
+endprocess Function1;

@@ -1,0 +1,73 @@
+/* CIF PROCESS (250, 150), (150, 75) */
+process Orchestrator;
+    /* CIF TEXT (347, 66), (285, 168) */
+    -- Text area for declarations and comments
+    
+    dcl t t_int := 0;
+    
+    dcl counter t_int := 0;
+    
+    dcl magic_number T_Int32:= 0;
+    /* CIF ENDTEXT */
+    /* CIF START (718, 52), (70, 34) */
+    START;
+        /* CIF PROCEDURECALL (643, 106), (220, 35) */
+        call writeln( 'Orchestrator startup');
+        /* CIF NEXTSTATE (719, 156), (67, 35) */
+        NEXTSTATE wait;
+    /* CIF state (496, 337), (70, 35) */
+    state Step_2;
+        /* CIF input (496, 392), (70, 35) */
+        input pulse(t);
+            /* CIF decision (496, 447), (70, 50) */
+            decision t = 2;
+                /* CIF ANSWER (420, 517), (70, 24) */
+                (true):
+                    /* CIF output (400, 561), (110, 35) */
+                    output paramesstogui;
+                    /* CIF NEXTSTATE (420, 616), (70, 35) */
+                    NEXTSTATE step_2;
+                /* CIF ANSWER (552, 517), (70, 24) */
+                (false):
+                    /* CIF output (521, 561), (130, 35) */
+                    output do_something(42);
+                    /* CIF NEXTSTATE (550, 611), (73, 35) */
+                    NEXTSTATE all_done;
+            enddecision;
+    endstate;
+    /* CIF state (815, 543), (73, 35) */
+    state all_done;
+    endstate;
+    /* CIF state (999, 100), (67, 35) */
+    state wait;
+        /* CIF input (996, 155), (71, 35) */
+        input pulse(t);
+            /* CIF decision (986, 210), (89, 50) */
+            decision counter = 3;
+                /* CIF ANSWER (830, 280), (70, 24) */
+                (true):
+                    /* CIF task (791, 324), (148, 35) */
+                    task magic_number := 42;
+                    /* CIF NEXTSTATE (830, 379), (70, 35) */
+                    NEXTSTATE Step_2;
+                /* CIF ANSWER (1068, 280), (70, 24) */
+                (false):
+                    /* CIF decision (1068, 324), (70, 50) */
+                    decision t;
+                        /* CIF ANSWER (986, 394), (70, 25) */
+                        (4):
+                            /* CIF task (950, 439), (141, 59) */
+                            task counter := 3;
+                        /* CIF ANSWER (1133, 394), (70, 25) */
+                        else:
+                            /* CIF task (1097, 439), (141, 59) */
+                            task counter := 0,
+magic_number := 0;
+                    enddecision;
+                    /* CIF task (1068, 514), (70, 35) */
+                    task t := 0;
+                    /* CIF NEXTSTATE (1068, 569), (70, 35) */
+                    NEXTSTATE wait;
+            enddecision;
+    endstate;
+endprocess Orchestrator;

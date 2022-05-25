@@ -1,0 +1,87 @@
+---------------------------------------------------
+-- AADL2.2
+-- TASTE type deploymentview
+-- 
+-- generated code: do not edit
+---------------------------------------------------
+
+PACKAGE deploymentview::DV::Node1
+PUBLIC
+
+WITH Taste;
+WITH Deployment;
+WITH TASTE_DV_Properties;
+WITH deploymentview::DV;
+WITH Memory_Properties;
+WITH ARINC653;
+PROCESS demo
+END demo;
+
+PROCESS IMPLEMENTATION demo.others
+END demo.others;
+
+END deploymentview::DV::Node1;
+
+PACKAGE deploymentview::DV
+PUBLIC
+
+WITH interfaceview::IV::sdl_fct;
+WITH interfaceview::IV::ada_fct;
+WITH interfaceview::IV::Function2;
+WITH interfaceview::IV::gui;
+WITH ocarina_processors_x86;
+WITH deploymentview::DV::Node1;
+WITH Taste;
+WITH Deployment;
+WITH interfaceview::IV;
+WITH TASTE_DV_Properties;
+SYSTEM Node1
+END Node1;
+
+SYSTEM IMPLEMENTATION Node1.others
+SUBCOMPONENTS
+  IV_sdl_fct : SYSTEM interfaceview::IV::sdl_fct::sdl_fct.others {
+    Taste::FunctionName => "sdl_fct";
+  };
+  IV_ada_fct : SYSTEM interfaceview::IV::ada_fct::ada_fct.others {
+    Taste::FunctionName => "ada_fct";
+  };
+  IV_Function2 : SYSTEM interfaceview::IV::Function2::Function2.others {
+    Taste::FunctionName => "Function2";
+  };
+  IV_gui : SYSTEM interfaceview::IV::gui::gui.others {
+    Taste::FunctionName => "gui";
+  };
+  demo : PROCESS deploymentview::DV::Node1::demo.others {
+    Taste::coordinates => "1195 1064 1753 1352";
+    Deployment::Port_Number => 0;
+  };
+  x86_linux : PROCESSOR ocarina_processors_x86::x86.linux {
+    Taste::coordinates => "1125 982 1823 1393";
+  };
+PROPERTIES
+  Taste::APLC_Binding => (reference (demo)) APPLIES TO IV_sdl_fct;
+  Taste::APLC_Binding => (reference (demo)) APPLIES TO IV_ada_fct;
+  Taste::APLC_Binding => (reference (demo)) APPLIES TO IV_Function2;
+  Taste::APLC_Binding => (reference (demo)) APPLIES TO IV_gui;
+  Actual_Processor_Binding => (reference (x86_linux)) APPLIES TO demo;
+END Node1.others;
+
+SYSTEM deploymentview
+END deploymentview;
+
+SYSTEM IMPLEMENTATION deploymentview.others
+SUBCOMPONENTS
+  Node1 : SYSTEM Node1.others {
+    Taste::coordinates => "1038 865 1910 1452";
+  };
+  interfaceview : SYSTEM interfaceview::IV::interfaceview.others;
+END deploymentview.others;
+
+PROPERTIES
+  Taste::coordinates => "0 0 2970 2100";
+  Taste::version => "2.4";
+  Taste::interfaceView => "InterfaceView.aadl";
+  Taste::HWLibraries => ("../../../../tool-inst/share/ocarina/AADLv2/ocarina_components.aadl");
+END deploymentview::DV;
+
