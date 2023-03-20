@@ -19,6 +19,6 @@
 @@-- In addition all other command line configuration values are available
 @@-- as well as all function attributes
 @@SET@@ TABLES_ENABLED = FALSE
-@@IF@@ @_Language_@ = "C" and not @_Filename_Is_Present_@ and @_Zip_File_@ = "" and @_TABLES_ENABLED_@
+@@IF@@ @_Language_@ = "C" or @_Language_@ = "QGenC" and not @_Filename_Is_Present_@ and @_Zip_File_@ = ""
 TRUE
 @@END_IF@@

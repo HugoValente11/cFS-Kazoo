@@ -1,0 +1,47 @@
+@@IF@@ @_Language_@ = QGenC
+@@SET@@ LANG_QGEN="c"
+@@END_IF@@
+all: generate-code
+
+clean:
+	rm -rf obj ./xmi
+
+edit:
+	matlab -desktop -sd src
+
+@@-- --------------------------------------
+@@-- Code generation for QGenC:
+@@-- --------------------------------------
+@@--
+
+generate-code: ./src/QGen/@_LOWER:Name_@_built
+
+./src/QGen/@_LOWER:Name_@_built: ./src/QGen/@_LOWER:Name_@.slx
+	$(warning ---------------------------------------------------------------------)
+	$(warning NOTE: The following is a patch to generate source code automatically.)
+	$(warning ---------------------------------------------------------------------)
+	matlab -batch \
+	    "cd src/QGen; \
+	     run ./Simulink_DataView_asn.m; \
+	     qgen_export_xmi ('@_LOWER:Name_@.slx'); \
+	     exit;"
+	qgenc ./src/QGen/@_LOWER:Name_@.xmi --gen-entrypoint --wrap-io --pre-process-xmi --incremental \
+	    --no-misra --language @_LANG_QGEN_@ --output ./src
+	touch $@
+
+./src/QGen/@_LOWER:Name_@%slx : ./src/QGen/.@_LOWER:Name_@_script.m.md5
+	$(warning Edit the Simulink model(s) before the system build.)
+	matlab -batch \
+	    "cd src/QGen;  \
+	     run @_LOWER:Name_@_script.m;  \
+	     exit;"
+
+./src/QGen/.@_LOWER:Name_@_script.m.md5: ./src/QGen/@_LOWER:Name_@_script.m
+	@@-- Create md5sum file if does not exist.
+	@@-- POST: md5sum file is created.
+	test -f $@ || md5sum $< > $@
+	@@-- If MATLAB script contents changed, update md5sum file.
+	md5sum -c $@ &> /dev/null || md5sum $< > $@
+
+
+.PHONY: all clean edit generate-code compile-linux

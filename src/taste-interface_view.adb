@@ -788,7 +788,7 @@ package body TASTE.Interface_View is
                Put_Debug ("Component type found : " & To_String (Each.Value));
                Result.Is_Type := True;
             end if;
-            if Each.Name = "Taste::Function_priority"
+            if Each.Name = "Taste::Startup_Priority"
             then
                Result.F_Priority := Just (Unsigned_Long_Long'Value
                   (To_String (Each.Value)));

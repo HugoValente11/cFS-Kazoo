@@ -92,7 +92,7 @@ SET(SPACECRAFT_ID 0x42)
 # This list is effectively appended to every TGTx_APPLIST in targets.cmake.
 # Example:
 @@INLINE@@
-list(APPEND MISSION_GLOBAL_APPLIST sample_app sample_lib@_Blocks_@)
+list(APPEND MISSION_GLOBAL_APPLIST sample_app sample_lib dataview_lib@_Blocks_@)
 @@END_INLINE@@
 
 # The "MISSION_GLOBAL_STATIC_APPLIST" is similar to MISSION_GLOBAL_APPLIST

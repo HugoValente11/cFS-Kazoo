@@ -1,0 +1,53 @@
+@@SET@@ TABLES_ENABLED = FALSE
+@@SET@@ MESSAGES_ENABLED = True
+@@SET@@ EVENTS_ENABLED = True
+@@IF@@ @_DataStore_@ = "YES"
+@@SET@@ DATASTORE_ENABLED = TRUE
+@@END_IF@@
+/*
+ * @file
+ *
+ * User header file
+ */
+
+#ifndef @_UPPER:Name_@_USER_H
+#define @_UPPER:Name_@_USER_H
+
+#include "@_LOWER:Name_@_app.h"
+
+/*
+** global data
+*/
+@_UPPER:Name_@_Data_t @_UPPER:Name_@_Data;
+int32            status;
+@@IF@@ @_MESSAGES_ENABLED_@
+    @@IF@@ @_EXIST:List_Of_RIs_@
+uint32 i;
+    @@END_IF@@
+@@END_IF@@
+
+
+
+void  @_UPPER:Name_@_User_Main(void);
+void @_UPPER:Name_@_User_Init(void);
+
+@@IF@@ @_DATASTORE_ENABLED_@
+int32 @_UPPER:Name_@_Datastore_Init(void);
+@@END_IF@@
+
+@@IF@@ @_MESSAGES_ENABLED_@
+@_Send_Messages_Functions_@
+@_Receive_Messages_Functions_@
+@@END_IF@@
+
+@@IF@@ @_EVENTS_ENABLED_@
+@_Send_Events_@
+@@END_IF@@
+
+@@IF@@ @_Language_@ = QGenC
+@@TABLE@@
+void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void);
+@@END_TABLE@@
+@@END_IF@@
+
+#endif /* @_UPPER:Name_@_USER_H */

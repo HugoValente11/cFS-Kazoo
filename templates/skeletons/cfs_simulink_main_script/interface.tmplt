@@ -1,0 +1,84 @@
+@@IF@@ @_Direction_@ = "RI"
+@@TABLE@@
+inport_index = inport_index + 1;
+add_block('simulink/Sources/In1', '@_LOWER:Parent_Function_@/@_Param_Names_@');
+@@--  set port icon's position and size
+if all_inports_created
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','Position', inports_positions(inport_index,:));
+else
+@@-- y position is incremented by 100 for each input
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','Position',[25 (inport_index * 100) 55 ((inport_index * 100) + 14)]);
+end
+@@--  set BusOutputAsStruct to 'on'
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','BusOutputAsStruct','on');
+@@--  BASIC type (enum, real, int, boolean)
+@@IF@@ @_Param_Basic_Types_@ = ASN1_ENUMERATED or @_Param_Basic_Types_@ = ASN1_REAL or @_Param_Basic_Types_@ = ASN1_INTEGER or @_Param_Basic_Types_@ = ASN1_BOOLEAN
+@@-- The block parameter 'DataType' has been deprecated:
+@@--set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','DataType','Specify via Dialog');
+@@-- OutDataType Deprecated in R2007b, now use OutDataTypeStr:
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','OutDataTypeStr','@_REPLACE_ALL(-/_):Param_Types_@');
+@@ELSE@@
+@@--  set the properties specification by bus object to 'on'
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','UseBusObject','on');
+@@--   set the asn1 type of the bus object for validating input bus
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','BusObject','@_REPLACE_ALL(-/_):Param_Types_@');
+@@--   create the respective type's bus and a line from the port to the bus
+add_block('simulink/Commonly Used Blocks/Bus Selector','@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusSel');
+add_line('@_LOWER:Parent_Function_@','@_Param_Names_@/1','@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusSel/1');
+@@--   set BUS selector outputs to be consistent with the complex type fields
+setOutputsBusSelector(@_REPLACE_ALL(-/_):Param_Types_@, '@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusSel');
+@@--   set BUS icon's position and size
+if all_inports_created
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusSel','Position', bussel_positions(inport_index,:));
+else
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusSel','Position',[95 ((inport_index * 100) - 19) 100 ((inport_index * 100) + 19)]);
+end
+@@END_IF@@
+@@END_TABLE@@
+@@END_IF@@
+
+
+@@IF@@ @_Direction_@ = "PI"
+@@TABLE@@
+outport_index = outport_index + 1;
+@@--  create the outport
+add_block('simulink/Sinks/Out1','@_LOWER:Parent_Function_@/@_Param_Names_@');
+@@-- set port icon's position and size
+if all_outports_created
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','Position', outports_positions(outport_index,:));
+else
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','Position',[430 (outport_index * 100) 460 ((outport_index * 100) + 14)]);
+end
+@@-- BASIC type
+@@IF@@ @_Param_Basic_Types_@ = ASN1_ENUMERATED or @_Param_Basic_Types_@ = ASN1_REAL or @_Param_Basic_Types_@ = ASN1_INTEGER or @_Param_Basic_Types_@ = ASN1_BOOLEAN
+@@-- The block parameter 'DataType' has been deprecated:
+@@-- set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','DataType','Specify via Dialog');  @@-- set outport's asn1 type
+@@-- OutDataType Deprecated in R2007b, now use OutDataTypeStr:
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','OutDataTypeStr','@_REPLACE_ALL(-/_):Param_Types_@');
+@@ELSE@@
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','UseBusObject','on');
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','BusObject','@_REPLACE_ALL(-/_):Param_Types_@');
+@@-- create the respective type's bus and a line from the bus to the port
+add_block('simulink/Commonly Used Blocks/Bus Creator','@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre');
+add_line('@_LOWER:Parent_Function_@','@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre/1','@_Param_Names_@/1');
+@@-- set BUS creator inputs to be consistent with the name of the complex type fields
+setInputsBusCreator(@_REPLACE_ALL(-/_):Param_Types_@,'@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre');
+@@-- set the properties specification by bus object to 'on'
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','UseBusObject','on');
+@@-- set the NonVirtualBus to 'on'
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@','BusOutputAsStruct','on');
+@@-- set BUS object with the name of the complex type
+ set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre','BusObject','@_REPLACE_ALL(-/_):Param_Types_@');
+@@-- set BUS icon's position and size
+if all_outports_created
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre','Position', buscre_positions(outport_index,:));
+else
+   set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre','Position',[360 ((outport_index * 100) - 19) 365 ((outport_index * 100) + 19)]);
+end
+@@-- set UseBusObject flag to ON
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre','UseBusObject','on');
+@@-- set NonVirtualBus flag to ON
+set_param('@_LOWER:Parent_Function_@/@_Param_Names_@_@_REPLACE_ALL(-/_):Param_Types_@_BusCre','NonVirtualBus','on');
+@@END_IF@@
+@@END_TABLE@@
+@@END_IF@@

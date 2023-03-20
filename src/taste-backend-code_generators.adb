@@ -317,14 +317,38 @@ package body TASTE.Backend.Code_Generators is
                                   Process_Interfaces
                                      (Func_Tmpl.Provided,
                                      "send_events.tmplt", Path))
-                         & Assoc ("Send_Messages",
+                         & Assoc ("Send_Messages_Init",
                                   Process_Interfaces
                                      (Func_Tmpl.Provided,
-                                     "send_messages.tmplt", Path))
-                         & Assoc ("Receive_Messages",
+                                     "send_messages_init.tmplt", Path))
+                         & Assoc ("Send_Messages_Functions",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "send_messages_functions.tmplt", Path))
+                         & Assoc ("Receive_Messages_Init",
                                   Process_Interfaces
                                      (Func_Tmpl.Required,
-                                     "send_messages.tmplt", Path))
+                                     "send_messages_init.tmplt", Path))
+                         & Assoc ("Receive_Messages_Functions",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "send_messages_functions.tmplt", Path))
+                         & Assoc ("QGen_Wrapper_Req",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "qgen_wrapper.tmplt", Path))
+                         & Assoc ("QGen_Wrapper_Pro",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "qgen_wrapper.tmplt", Path))
+                         & Assoc ("QGen_Wrapper_Params_Req",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "qgen_wrapper_params.tmplt", Path))
+                         & Assoc ("QGen_Wrapper_Params_Pro",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "qgen_wrapper_params.tmplt", Path))
                          & Assoc ("ASN1_Modules", Get_Module_List)
                          & Assoc ("ASN1_Files", Get_ASN1_File_List);
 

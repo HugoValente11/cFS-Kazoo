@@ -36,20 +36,21 @@
 /*
 ** Include Files:
 */
-#include "@_LOWER:Name_@_app_events.h"
 #include "@_LOWER:Name_@_app_version.h"
 #include "@_LOWER:Name_@_app.h"
+#include "@_LOWER:Name_@_app_user.h"
 @@IF@@ @_TABLES_ENABLED_@
 #include "@_LOWER:Name_@_app_table.h"
 @@END_IF@@
+#include "dataview_init.h"
+@@IF@@ @_Language_@ = QGenC
+// Load QGen wrapper file
+#include "@_LOWER:Name_@_vm_if.h"
+@@END_IF@@
+
 
 /* The sample_lib module provides the SAMPLE_LIB_Function() prototype */
 #include <string.h>
-
-/*
-** global data
-*/
-@_UPPER:Name_@_Data_t @_UPPER:Name_@_Data;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 /* @_UPPER:Name_@_AppMain() -- Application entry point and main process loop         */
@@ -57,7 +58,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 void @_UPPER:Name_@_APP_Main(void)
 {
-    int32            status;
     @@IF@@ @_List_Of_RIs'Length_@ = 0
     CFE_SB_Buffer_t *SBBufPtr;
     @@END_IF@@
@@ -78,64 +78,33 @@ void @_UPPER:Name_@_APP_Main(void)
         @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
     }
 
-@@IF@@ @_EVENTS_ENABLED_@
-    // Send events
-    @_Send_Events_@
+
+
+@@IF@@ @_DATASTORE_ENABLED_@
+    // Initialize Datastore
+    @_UPPER:Name_@_Datastore_Init();
 @@END_IF@@
 
 @@IF@@ @_MESSAGES_ENABLED_@
-    // Send messages
-    @_Send_Messages_@
+    // ---------   Send messages  ------------
+    @_Send_Messages_Init_@
+    
+    // --------- Receive messages ------------
+    @_Receive_Messages_Init_@
+@@END_IF@@
 
-    // Receive messages
-    @@IF@@ @_EXIST:List_Of_RIs_@
-    // Set variables
-    uint32 i = 1;
-    uint32 index;
+    @@IF@@ @_Language_@ = QGenC
+    // Initialize QGen vars
+    init_@_LOWER:Name_@();
     @@END_IF@@
-    @_Receive_Messages_@
-@@END_IF@@
-
-@@IF@@ @_DATASTORE_ENABLED_@
-    // Datastore capabilities
-    @_UPPER:Name_@_Data.MAX_STORE_LENGTH = @_DataStoreSize_@;
-
-    // Memory pointers to load and store data
-    char store[] = "This is the test message stored";
-    char load[@_UPPER:Name_@_Data.MAX_STORE_LENGTH];
-
-    // Name of the Datastore
-    char cDSName[] = "@_LOWER:Name_@CDS";
-
-    // Register CDS
-    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
-
-    if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } else {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
+    
+    // Main app loop 
+    while (CFE_ES_RunLoop(&@_UPPER:Name_@_Data.RunStatus) == true)
+    {
+        // Call user loop
+        @_UPPER:Name_@_User_Main();
     }
 
-    // Copy data to CDS
-    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_Data.CDSHandlePtr, store);
-
-    if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } else {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful copy to CDS");
-    }
-
-    // Read data from CDS
-    status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_Data.CDSHandlePtr);
-
-    if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error reading from CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } else {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful read from CDS");
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] The information loaded from CDS was: '%s'", load);
-    }
-
-@@END_IF@@
 
 @@IF@@ @_List_Of_RIs'Length_@ = 0
     /*
@@ -168,7 +137,17 @@ void @_UPPER:Name_@_APP_Main(void)
             @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         }
     }
-    @@END_IF@@
+@@END_IF@@
+
+    // Delete pipe to free resources
+    status = CFE_SB_DeletePipe (@_UPPER:Name_@_Data.CommandPipe);
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Deleting the pipe, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
 
 
     /*
@@ -295,6 +274,25 @@ int32 @_UPPER:Name_@_Init(void)
 
     CFE_EVS_SendEvent(@_UPPER:Name_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@ App Initialized.%s",
                       @_UPPER:Name_@_VERSION_STRING);
+
+    /*
+    ** Create Software Bus message pipe.
+    */
+    @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
+
+    strcpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
+    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] COM_PIPE Name = %s", @_UPPER:Name_@_Data.PipeName);
+
+    status = CFE_SB_CreatePipe(&@_UPPER:Name_@_Data.CommandPipe, @_UPPER:Name_@_Data.PipeDepth, @_UPPER:Name_@_Data.PipeName);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error creating communication pipe,210, @_UPPER:Name_@_app.c, RC = 0x%08lX\n",
+                             (unsigned long)status);
+    }
+    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Pipe creation successful");
+
+    // Call user init 
+    @_UPPER:Name_@_User_Init();
 
     return (CFE_SUCCESS);
 
@@ -593,4 +591,10 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
     return;
 
 } /* End of @_UPPER:Name_@_GetCrc */
+@@END_IF@@
+
+
+@@IF@@ @_MESSAGES_ENABLED_@
+@_Send_Messages_Functions_@
+@_Receive_Messages_Functions_@
 @@END_IF@@

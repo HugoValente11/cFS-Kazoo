@@ -1,0 +1,221 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Language_@            : The implementation language of the function
+@@-- @_Property_Names_@      : All AADL properties (names) associated to the function
+@@-- @_Property_Values_@     : ... and corresponding values
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
+@@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
+@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
+@@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
+    @@IF@@ @_Period_@ /= " 0"
+    uint32 period = @_Period_@; // ms
+    @@END_IF@@
+
+    @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
+    @_UPPER:Parent_Function_@_Data.Size_@_Name_@ = @_Message_Size_@;
+
+    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_Data.Size_@_Name_@);
+
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
+    }
+
+    status = OS_TaskDelay(1000);
+
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error delaying the task.\n");
+    }
+
+    @@IF@@ @_Period_@ /= " 0"
+    while (CFE_ES_RunLoop(&@_UPPER:Parent_Function_@_Data.RunStatus) == true) {
+    @@END_IF@@
+
+
+    // Build structs here
+    @@TABLE@@
+    // @_UPPER:Parent_Function_@_Data.OUT_@_Param_Names_@;
+    @@END_TABLE@@
+
+    status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@), &@_UPPER:Parent_Function_@_Data.OUT_@_Param_Names_@, sizeof(@_UPPER:Parent_Function_@_Data.OUT_@_Param_Names_@));
+
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error writing the struct, RC = %lu\n", (unsigned long) status);
+    }
+
+
+        status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, false);
+
+        if (status != CFE_SUCCESS) {
+            @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending the message, RC = %lu\n", (unsigned long) status);
+        } else {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message sent successfully");
+        }
+
+        @@IF@@ @_Period_@ /= " 0"
+        status = OS_TaskDelay(period);
+    }
+    @@END_IF@@
+@@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
+// ------ Start here receiving messages ---------------------------
+@@-- /* Print here message properties of PI
+@@-- @_Message_ID_@
+@@-- @_Message_Content_@
+@@-- @_Message_Size_@
+@@-- @_Store_Message_@ : store message
+@@-- @@TABLE@@
+@@-- asn1Scc@_Param_Types_@ @_Param_Names_@;
+@@-- @@END_TABLE@@
+@@-- */ 
+    /*
+    ** Create Software Bus message pipe.
+    */
+    @_UPPER:Parent_Function_@_Data.PipeDepth = @_UPPER:Parent_Function_@_PIPE_DEPTH;
+
+    strncpy(@_UPPER:Parent_Function_@_Data.PipeName, "@_Message_ID_@_COM_PIPE", 20);
+    CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Nombre de la COM_PIPE de @_UPPER:Parent_Function_@_APP= %s", @_UPPER:Parent_Function_@_Data.PipeName);
+
+    status = CFE_SB_CreatePipe(&@_UPPER:Parent_Function_@_Data.CommandPipe,
+                               @_UPPER:Parent_Function_@_Data.PipeDepth,
+                               @_UPPER:Parent_Function_@_Data.PipeName);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating communication pipe,210, @_UPPER:Parent_Function_@_app.c, RC = 0x%08lX\n",
+                             (unsigned long)status);
+        
+    }  
+
+    CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successful pipe creation");
+
+    // Subscribe to @_Name_@     0x0@_Message_ID_@ msg id
+    
+    status = CFE_SB_Subscribe(0x0@_Message_ID_@,
+                              @_UPPER:Parent_Function_@_Data.CommandPipe);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error Subscribing to communication pipe, RC = 0x%08lX\n",
+                             (unsigned long) status);
+       
+    }
+       
+    while (CFE_ES_RunLoop(&@_UPPER:Parent_Function_@_Data.RunStatus) == true) {
+
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
+        
+        status = CFE_SB_GetPipeIdByName(&@_UPPER:Parent_Function_@_Data.CommandPipe, @_UPPER:Parent_Function_@_Data.PipeName);
+        
+        if (status != CFE_SUCCESS)
+        {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error obtaining GetPipeIdByName, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+        } else {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] GetPipeIdByName correct");
+        }
+
+        status = CFE_SB_PipeId_ToIndex(@_UPPER:Parent_Function_@_Data.CommandPipe, &index);
+
+        if (status != CFE_SUCCESS)
+        {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error obtaining Index from Pipe, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+        } else {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Index from @_UPPER:Parent_Function_@ is %i", index);
+        }
+
+        status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_Data.Buffer,
+                           @_UPPER:Parent_Function_@_Data.CommandPipe,
+                           CFE_SB_PEND_FOREVER);
+
+        if (status != CFE_SUCCESS)
+        {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error ReceiveBuffer, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+        } else {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successful reception");
+        
+            status = CFE_MSG_GetMsgId(&@_UPPER:Parent_Function_@_Data.Buffer->Msg, &@_UPPER:Parent_Function_@_Data.MsgId_@_Name_@);
+
+            if (status != CFE_SUCCESS) {
+                CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error GetMsgId, RC = 0x%08lX\n",
+                                (unsigned long)status);
+
+            } else {
+                int MsgIdInteger = CFE_SB_MsgIdToValue(@_UPPER:Parent_Function_@_Data.MsgId_@_Name_@);
+                CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] CFE_SB_MsgIdToValue is: %i", MsgIdInteger);
+
+                @_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@ = CFE_SB_GetUserData (&@_UPPER:Parent_Function_@_Data.Buffer->Msg);
+
+                // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@->);                            
+
+                @@IF@@ @_Store_Message_@ = "YES"
+                // Store message
+                char CDSname[] = "@_UPPER:Parent_Function_@_CDS";
+                @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH = sizeof(c);
+
+                // Create datastore
+                status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_Data.CDSHandlePtr,
+                                            @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH,
+                                            CDSname);
+
+                if (status == CFE_SUCCESS) {
+                    CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully created datastore");
+
+                    // Copy to datastore
+                    status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_Data.CDSHandlePtr, c);
+
+                    if (status == CFE_SUCCESS) {
+                        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully copied to datastore.");
+
+                        // Send event notification Successfully stored
+                        status = CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "[@_UPPER:Parent_Function_@] Message stored successfully"); 
+
+                    }
+                } 
+            @@END_IF@@
+
+            }
+        }
+
+        // Maybe add the timeout comment code?
+    }
+
+    // Delete pipe to free resources
+    status = CFE_SB_DeletePipe (@_UPPER:Parent_Function_@_Data.CommandPipe);
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error Deleting the pipe, RC = 0x%08lX\n",
+                             (unsigned long)status);
+       
+    }
+// ------ Stop receiving messages here---------------------------
+
+@@END_IF@@

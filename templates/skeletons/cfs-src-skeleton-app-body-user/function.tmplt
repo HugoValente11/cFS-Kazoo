@@ -1,0 +1,108 @@
+@@SET@@ TABLES_ENABLED = False
+@@SET@@ EVENTS_ENABLED = True
+@@SET@@ MESSAGES_ENABLED = True
+@@IF@@ @_DataStore_@ = "YES"
+@@SET@@ DATASTORE_ENABLED = TRUE
+// Datastore value
+// @_DataStore_@
+@@END_IF@@
+#include "@_LOWER:Name_@_app_user.h"
+
+@@IF@@ @_Language_@ = QGenC
+// Load QGen wrapper file
+#include "@_LOWER:Name_@_vm_if.h"
+@@END_IF@@
+
+void @_UPPER:Name_@_User_Main(void)
+{    
+    // TODO Call here send/receive messages in order needed
+
+
+    // status = OS_TaskDelay(period_ms);
+
+} /* End of @_UPPER:Name_@_User_Main() */
+
+
+void @_UPPER:Name_@_User_Init(void)
+{
+    // User initialization here
+    @@IF@@ @_DATASTORE_ENABLED_@
+    // Call datastore initialization
+    @_UPPER:Name_@_Datastore_Init();
+    @@END_IF@@
+
+} /* End of @_UPPER:Name_@_Init() */
+
+
+@@IF@@ @_DATASTORE_ENABLED_@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Name_@_Datastore_Init -- Initialize datastore           */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+int32 @_UPPER:Name_@_Datastore_Init(void)
+{
+    int32 status;
+
+    // Datastore capabilities
+    @_UPPER:Name_@_Data.MAX_STORE_LENGTH = @_DataStoreSize_@;
+
+    // Memory pointers to load and store data
+    // TODO Change placeholders to values to store in datastore
+    char store[] = "This is the test message stored";
+    char load[@_UPPER:Name_@_Data.MAX_STORE_LENGTH];
+
+    // Name of the Datastore
+    char cDSName[] = "@_LOWER:Name_@CDS";
+
+    // Register CDS
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
+    }
+
+    // Copy data to CDS
+    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_Data.CDSHandlePtr, store);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful copy to CDS");
+    }
+
+    // Read data from CDS
+    status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_Data.CDSHandlePtr);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error reading from CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful read from CDS");
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] The information loaded from CDS was: '%s'", load);
+    }
+
+    return status;
+
+} /* End of @_UPPER:Name_@_Datastore_Init() */
+@@END_IF@@
+
+@@IF@@ @_MESSAGES_ENABLED_@
+@_Send_Messages_Functions_@
+@_Receive_Messages_Functions_@
+@@END_IF@@
+
+@@IF@@ @_EVENTS_ENABLED_@
+@_Send_Events_@
+@@END_IF@@
+
+@@IF@@ @_Language_@ = QGenC
+// QGen wrappper
+@@TABLE@@
+void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void) {
+    @_LOWER:Name_@_Step(@_QGen_Wrapper_Req_@, @_QGen_Wrapper_Pro_@);
+}
+@@END_TABLE@@
+@@END_IF@@

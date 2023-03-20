@@ -37,7 +37,7 @@
 /* V1 Telemetry Message IDs must be 0x08xx */
 #define @_UPPER:Name_@_HK_TLM_MID 0x0883
 
-@_Send_Messages_@
+@_Send_Messages_Init_@
 
 
 #endif /* @_UPPER:Name_@_MSGIDS_H */

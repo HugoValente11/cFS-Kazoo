@@ -1,0 +1,133 @@
+In main
+// TODO Let's start here creating subscriber, so this code is valid when we have a required interface
+    @@IF@@ @_EXIST:List_Of_RIs_@
+    @_UPPER:Name_@_ComPipeCreate();
+
+    // Subscribe to Publisher_APP_COMMUNICATION_MID 0x0884 msg id
+    // TODO make dynamic PUBLISHER_APP_COMMUNICATION_MID
+    status = CFE_SB_Subscribe(PUBLISHER_APP_COMMUNCATION_MID, @_UPPER:Name_@_AppData.CommandPipe);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("@_UPPER:Name_@ App: Error Subscribing to communication pipe, RC = 0x%08lX\n",
+        (unsigned long) status);
+    }
+
+    CFE_SB_Buffer_t * buffer;
+    buffer->Msg = @_UPPER:Name_@_AppData.MsgPtr;
+
+    status = CFE_SB_ReceiveBuffer(&buffer, @_UPPER:Name_@_AppData.CommandPipe, CFE_SB_PEND_FOREVER);
+    
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("@_UPPER:Name_@ App: Error ReceiveBuffer, RC = 0x%08lX\n",
+        (unsigned long) status);
+    }
+
+    // Don't understand this part but let's keep it, easier to delete than add
+    // @_UPPER:Name_@_AppData.HkBuf.MsgHdr = *@_UPPER:Name_@_AppData.MsgPtr;
+    // ----- Comprobar distintos parámetros del paquete con sus metodos --------
+
+    status = CFE_MSG_GetMsgId(&@_UPPER:Name_@_AppData.MsgPtr, &@_UPPER:Name_@_AppData.MsgId);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("@_UPPER:Name_@ App: Error GetMsgId, RC = 0x%08lX\n",
+        (unsigned long) status);
+    }
+
+    int MsgIdInteger = CFE_SB_MsgIdToValue(@_UPPER:Name_@_AppData.MsgId);
+    CFE_ES_WriteToSysLog("El CFE_SB_MsgIdToValue en RX devuelve: %id", MsgIdInteger);
+
+    if (status == CFE_SUCCESS) {
+        char *c = CFE_SB_GetUserData (&@_UPPER:Name_@_AppData.MsgPtr);
+        CFE_ES_WriteToSysLog("El mensaje recibido es: %s.\n", c);
+    } else {
+        CFE_EVS_SendEvent(@_UPPER:Name_@_PIPE_ERR_EID, CFE_EVS_EventType_ERROR, "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
+        @_UPPER:Name_@_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+    }
+
+    // Borrar la pipe para liberar recursos
+    status = CFE_SB_DeletePipe(@_UPPER:Name_@_AppData.CommandPipe);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("@_UPPER:Name_@ APP: Error Deleting the pipe, RC = 0x%08lX\n",
+        (unsigned long) status);
+    }
+
+
+
+    /*
+    ** @_UPPER:Name_@ Runloop
+    */
+    while (CFE_ES_RunLoop(&@_UPPER:Name_@_AppData.RunStatus) == true)
+    {
+        status = CFE_SB_RcvMsg(&@_UPPER:Name_@_AppData.MsgPtr,
+                               @_UPPER:Name_@_AppData.CommandPipe,
+                               CFE_SB_PEND_FOREVER);
+
+
+        if (status == CFE_SUCCESS)
+        {
+            @_UPPER:Name_@_ProcessCommandPacket(@_UPPER:Name_@_AppData.MsgPtr);
+        }
+        else
+        {
+            CFE_EVS_SendEvent(@_UPPER:Name_@_PIPE_ERR_EID,
+                              CFE_EVS_EventType_ERROR,
+                              "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
+
+            @_UPPER:Name_@_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        }
+
+    }
+
+    @@END_IF@@
+    // Ends here subscriber 
+
+    // TODO This code is valid when it has provided interfaces
+    @@IF@@ @_EXIST:List_Of_PIs_@
+    char msg[] = "Hola, esto es un mensaje desde el @_UPPER:Name_@, esto es una prueba";
+    @_UPPER:Name_@_AppData.MsgId = @_UPPER:Name_@_APP_COMMUNICATION_MID;
+    @_UPPER:Name_@_AppData.Size = 200;
+    status = CFE_MSG_Init(&@_UPPER:Name_@_AppData.MsgPtr, @_UPPER:Name_@_AppData.MsgId, @_UPPER:Name_@_AppData.Size);
+
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Name_@_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("Error creando el mensaje, RC = %lu.\n), (unsigned long) status);
+    }
+
+    char *ptr = CFE_SB_GetUserData(&@_UPPER:Name_@_AppData.MsgPtr)
+    status = CFE_SB_MessageStringSet(ptr, msg, sizeof(msg), sizeof(msg));
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Name_@_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("Error escribir en el string mensaje, RC = %lu.\n), (unsigned long) status);
+    }
+
+    // Para que no se reciba el mensaje antes de suscripción en RX
+    sleep(1);
+    status = CFE_SB_TransmitMsg(&@_UPPER:Name_@_AppData.MsgPtr, false);
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Name_@_AppData.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("Error enviando el mensaje");
+    }
+    @@END_IF@@
+    // End here creation of publisher
+
+
+Function to create communication pipe
+    @@IF@@ @_EXIST:List_Of_RIs_@
+void @_UPPER:Name_@_ComPipeCreate(void) {
+    /* -------------------------
+    Create software bus message pipe
+    ------------------- */ 
+    // TODO at some point I guess the pipe depth should be dynamic
+    @_UPPER:Name_@_AppData.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
+
+    strcpy(@_UPPER:Name_@_AppData.PipeName, "@_UPPER:Name_@_COM_PIPE");
+    CFE_ES_WriteToSysLog("Nombre de la COM_PIPE de @_UPPER:Name_@_APP = %s", @_UPPER:Name_@_AppData.PipeName);
+
+    int status = CFE_SB_CreatePipe(&@_UPPER:Name_@_AppData.CommandPipe, @_UPPER:Name_@_AppData.PipeDepth, @_UPPER:Name_@_AppData.PipeName);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("TX App: Error creating communication pipe, 210, TX_app.c, RC = 0%08lX\n", (unsigned long) status);
+    }
+}
+@@END_IF@@
