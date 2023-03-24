@@ -124,31 +124,31 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
         }
 
 
-        @@IF@@ @_Store_Message_@ = "YES"
-        // Store message
-        char CDSname[] = "@_UPPER:Parent_Function_@_CDS";
-        @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH = sizeof(c);
-
-        // Create datastore
-        status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_Data.CDSHandlePtr,
-                                            @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH,
-                                            CDSname);
-
-        if (status == CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully created datastore");
-
-            // Copy to datastore
-            status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_Data.CDSHandlePtr, c);
-
-            if (status == CFE_SUCCESS) {
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully copied to datastore.");
-
-            // Send event notification Successfully stored
-            status = CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "[@_UPPER:Parent_Function_@] Message stored successfully"); 
-
-            }
-        } 
-        @@END_IF@@
+    @@--     @@IF@@ @_Store_Message_@ = "YES"
+    @@--     // Store message
+    @@--     char CDSname[] = "@_UPPER:Parent_Function_@_CDS";
+    @@--     @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH = sizeof(c);
+    @@-- 
+    @@--     // Create datastore
+    @@--     status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_Data.CDSHandlePtr,
+    @@--                                         @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH,
+    @@--                                         CDSname);
+    @@-- 
+    @@--     if (status == CFE_SUCCESS) {
+    @@--     CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully created datastore");
+    @@-- 
+    @@--         // Copy to datastore
+    @@--         status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_Data.CDSHandlePtr, c);
+    @@-- 
+    @@--         if (status == CFE_SUCCESS) {
+    @@--         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully copied to datastore.");
+    @@-- 
+    @@--         // Send event notification Successfully stored
+    @@--         status = CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "[@_UPPER:Parent_Function_@] Message stored successfully"); 
+    @@-- 
+    @@--         }
+    @@--     } 
+    @@--     @@END_IF@@
 
 
     }
