@@ -81,6 +81,7 @@ package body TASTE.Deployment_View is
       Device_Classifiers,
       Device_Associated_Processor_Names,
       Device_Configurations,
+      Device_Packetizers,
       Device_Accessed_Bus_Names,
       Device_Accessed_Port_Names,
       Device_Init_Entrypoints,
@@ -105,6 +106,8 @@ package body TASTE.Deployment_View is
               & Driver.Associated_Processor_Name;
             Device_Configurations := Device_Configurations
               & Driver.Device_Configuration;
+            Device_Packetizers := Device_Configurations
+              & Driver.Device_Packetizer;
             Device_Accessed_Bus_Names :=  Device_Accessed_Bus_Names
               & Driver.Accessed_Bus_Name.Element;
             Device_Accessed_Port_Names := Device_Accessed_Port_Names
@@ -130,6 +133,7 @@ package body TASTE.Deployment_View is
         & Assoc ("Device_Classifier",    Device_Classifiers)
         & Assoc ("Device_CPU",           Device_Associated_Processor_Names)
         & Assoc ("Device_Config",        Device_Configurations)
+        & Assoc ("Device_Packetizer",    Device_Packetizers)
         & Assoc ("Device_Bus_Name",      Device_Accessed_Bus_Names)
         & Assoc ("Device_Port_Name",     Device_Accessed_Port_Names)
         & Assoc ("Device_ASN1_File",     Device_ASN1_Filenames)
@@ -451,6 +455,17 @@ package body TASTE.Deployment_View is
             Result.Device_Configuration := US ("noconf");
          end if;
 
+	      if Is_Defined_Property (CI, "deployment::packetizer") and then
+            Get_String_Property (CI, "deployment::packetizer") /= No_Name
+         then
+            Result.Device_Packetizer :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "deployment::packetizer")));
+         else
+            Result.Device_Packetizer := US ("default");
+         end if;
+
+
          Find_Connected_Bus (CI, Accessed_Bus, Accessed_Port);
 
          --  Set the optional fields if the device is connected
@@ -496,6 +511,7 @@ package body TASTE.Deployment_View is
          Processes      : Node_Id;
          P_CI           : Node_Id;
          Ref            : Node_Id;
+         Startup_Priorities : Unsigned_Long_Long_Vectors.Vector;
          procedure Separate_CPU_Family_From_Instance
          --  If the CPU in the AADL model is "leon3.air", then split into
          --  family "leon3" and instance "air" based on dot separator
@@ -517,6 +533,28 @@ package body TASTE.Deployment_View is
             Family := US (Fam);
             Instance := US (Inst);
          end Separate_CPU_Family_From_Instance;
+
+         	
+         --  Built-in sort not used because we need to
+         --  sort two vectors at once
+         procedure Sort_Functions_Based_On_Startup_Priority
+            (Bound_Functions : in out String_Vectors.Vector;
+             Startup_Priorities : in out Unsigned_Long_Long_Vectors.Vector) is
+         begin
+            if Bound_Functions.Length /= Startup_Priorities.Length then
+               raise Startup_Priority_Error;
+            end if;
+            for I in Bound_Functions.First_Index ..
+                     Bound_Functions.Last_Index - 1 loop
+               for J in Bound_Functions.First_Index ..
+                        Bound_Functions.Last_Index - I - 1 loop
+                  if Startup_Priorities (J) < Startup_Priorities (J + 1) then
+                     Bound_Functions.Swap (J, J + 1);
+                     Startup_Priorities.Swap (J, J + 1);
+                  end if;
+               end loop;
+            end loop;
+         end Sort_Functions_Based_On_Startup_Priority;
 
       begin
          if Is_Defined_Property (CI, "taste_dv_properties::coverageenabled")
@@ -655,16 +693,34 @@ package body TASTE.Deployment_View is
 
                if Ref = CI then
                   begin
-                     Result.Bound_Functions.Insert (Get_Name_String (ATN.Name
+	                  if Result.Bound_Functions.Contains (
+                        Get_Name_String (ATN.Name
                         (ATN.Component_Type_Identifier
-                            (Corresponding_Declaration (P_CI)))));
+                            (Corresponding_Declaration (P_CI)))))
+                     then
+                        raise Constraint_Error;
+                     else
+                        Result.Bound_Functions.Append (Get_Name_String
+                           (ATN.Name
+                           (ATN.Component_Type_Identifier
+                           (Corresponding_Declaration (P_CI)))));
+                        if Is_Defined_Integer_Property (P_CI,
+                              Get_String_Name ("taste::startup_priority"))
+                        then
+                           Startup_Priorities.Append (
+                              Get_Integer_Property (P_CI,
+                              Get_String_Name ("taste::startup_priority")));
+                        else
+                           Startup_Priorities.Append (1);
+                        end if;
+                     end if;
                   exception
                      when Assert_Failure =>
                         Put_Info ("Detected DV from TASTE version 1.2");
-                        Result.Bound_Functions.Insert
+                        Result.Bound_Functions.Append
                           (Get_Name_String (Name (Identifier (Processes))));
                      when Constraint_Error =>
-                        --  If the call to Insert in the set failed
+                        --  If there are duplicate function in partition
                         Put_Info ("Duplicate bounded function in partition: "
                            & To_String (Result.Name));
                   end;
@@ -672,8 +728,16 @@ package body TASTE.Deployment_View is
             end if;
             Processes := Next_Node (Processes);
          end loop;
+	      Sort_Functions_Based_On_Startup_Priority (
+            Result.Bound_Functions, Startup_Priorities);
 
          return Result;
+         exception
+	         when Startup_Priority_Error =>
+               Put_Info ("Bound functions and startup priorities " &
+                         "lengths do not match for partition: "
+                         & To_String (Result.Name));
+            return Result;
       end Parse_Partition;
 
       function Parse_Node (Depl_View_System : Node_Id) return Taste_Node is
@@ -791,14 +855,14 @@ package body TASTE.Deployment_View is
 
    function Find_Partition (Node          : Taste_Node;
                             Function_Name : String)
-                            return Option_Partition.Option is
+                            return Partion_Holder is
    begin
       for Partition of Node.Partitions loop
          if Partition.Bound_Functions.Contains (Function_Name) then
-            return Option_Partition.Just (Partition);
+            return Partition_Holders.To_Holder (Partition);
          end if;
       end loop;
-      return Option_Partition.Nothing;
+      return Partition_Holders.Empty_Holder;
    end Find_Partition;
 
    procedure Fix_Bus_Connections (DV : in out Complete_Deployment_View;
@@ -831,7 +895,12 @@ package body TASTE.Deployment_View is
 
                      --  Update the information in the deployment view
                      C_DV.Source_Function := C_IV.Caller;
-                     C_DV.Source_Port     := C_IV.Callee & "_" & C_IV.RI_Name;
+	                  --  C_DV.Source_Port     := C_IV.Callee & "_" & C_IV.RI_Name;
+                     --  Port name
+                     C_DV.Source_Port     := C_IV.Caller
+                                             & "_" & C_IV.RI_Name
+                                             & "_" & C_IV.Callee
+                                             & "_" & C_IV.PI_Name;
                      C_DV.Dest_Function   := C_IV.Callee;
                      C_DV.Dest_Port       := C_IV.PI_Name;
                   end if;
@@ -886,6 +955,8 @@ package body TASTE.Deployment_View is
                          & To_String (Driver.Associated_Processor_Name));
                Put_Line (Output, "    |_ Configuration : "
                          & To_String (Driver.Device_Configuration));
+               Put_Line (Output, "    |_ Packetizer : "
+                         & To_String (Driver.Device_Packetizer));
                Put_Line (Output, "    |_ Bus_Name      : "
                          & Driver.Accessed_Bus_Name.Element);
                Put_Line (Output, "    |_ Port_Name     : "
