@@ -39,7 +39,7 @@ package body TASTE.Concurrency_View is
                declare
                   P : constant Taste_Partition :=
                     Block.Node.Unsafe_Just.Find_Partition
-                      (To_String (Block.Ref_Function.Name)).Unsafe_Just;
+                      (To_String (Block.Ref_Function.Name)).Element;
                begin
                   Put_Line (Output, " |_ Partition : " & To_String (P.Name));
                   Put_Line (Output, "   |_ Coverage       : "
@@ -153,11 +153,11 @@ package body TASTE.Concurrency_View is
         & Assoc ("Need_Mutex",          T.Need_Mutex)
         & Assoc ("Pro_Block_Name",      To_String (T.Protected_Block_Name))
         & Assoc ("Pro_Instance_Of",     To_String
-            (T.Ref_Protected_Block.Ref_Function.Instance_Of.Value_Or
-                (US (""))))
+            (T.Ref_Protected_Block.Ref_Function.Instance_Of))
         & Assoc ("Node_Name",           To_String (T.Node.Value_Or
           (Taste_Node'(Name => US (""), others => <>)).Name))
         & Assoc ("Remote_Threads",      Remote_Thread)
+        & Assoc ("CPU_Platform",      T.Node.Unsafe_Just.CPU_Platform'Img)
         & Assoc ("RI_Port_Names",       RI_Port_Name)
         & Assoc ("Remote_PIs",          Remote_PI)
         & Assoc ("Remote_PI_Sorts",     Remote_PI_Sort)
@@ -168,10 +168,11 @@ package body TASTE.Concurrency_View is
    end To_Template;
 
    --  Generate the code by iterating over template folders
-   procedure Generate_Code (CV : Taste_Concurrency_View)
+   procedure Generate_Code (CV : Taste_Concurrency_View;
+                            Templates_Dir : String)
    is
       Prefix   : constant String := CV.Base_Template_Path.Element
-        & "templates/concurrency_view";
+        & "templates/" & Templates_Dir;
       --  To iterate over template folders
       ST       : Search_Type;
       Current  : Directory_Entry_Type;
@@ -383,7 +384,7 @@ package body TASTE.Concurrency_View is
                               Thread_Dst_Name := Thread_Dst_Name
                                 & To_String (P.Remote_Thread);
                               Thread_Dst_Port := Thread_Dst_Port
-                                & To_String (P.Remote_PI);
+                                & To_String (P.Remote_Thread);
                            end if;
                         end loop;
                      end loop;
@@ -428,10 +429,9 @@ package body TASTE.Concurrency_View is
                         then Strip_String (Parse (Block_File_Id, Block_Tag))
                         else "");
                      Parent_Is_Shared : constant Boolean :=
-                       (B.Ref_Function.Instance_Of.Has_Value and then
+                       (B.Ref_Function.Instance_Of /= "" and then
                           CV.Configuration.Shared_Types.Contains
-                            (To_String
-                               (B.Ref_Function.Instance_Of.Unsafe_Just)));
+                            (To_String (B.Ref_Function.Instance_Of)));
                      use String_Sets;
 
                   begin
@@ -444,9 +444,9 @@ package body TASTE.Concurrency_View is
                      All_Block_Languages := All_Block_Languages
                        & TASTE.Backend.Language_Spelling (B.Ref_Function);
                      Block_Instance_Of := Block_Instance_Of
-                       & B.Ref_Function.Instance_Of.Value_Or (US (""));
+                       & B.Ref_Function.Instance_Of;
                      All_Block_Instance_Of := All_Block_Instance_Of
-                       & B.Ref_Function.Instance_Of.Value_Or (US (""));
+                       & B.Ref_Function.Instance_Of;
 
                      --  Check if the function type for this instance is in the
                      --  list of shared library folders instead of in the model
@@ -458,7 +458,7 @@ package body TASTE.Concurrency_View is
                         Actual_Shared := Actual_Shared or
                           String_Sets.To_Set
                             (To_String
-                               (B.Ref_Function.Instance_Of.Unsafe_Just));
+                               (B.Ref_Function.Instance_Of));
                      end if;
 
                      for TASTE_property of B.Ref_Function.User_Properties loop
@@ -493,26 +493,47 @@ package body TASTE.Concurrency_View is
                         Document_Template
                           (Templates_Concurrency_View_Sub_PI,
                            PI_Assoc & Assoc ("Partition_Name", ""));
-                        Pro_PI_Tag := Pro_PI_Tag & Newline
-                          & String'(Parse (Path & "/pi.tmplt",
+	                        declare
+                           Value : constant String :=
+                                Strip_String (Parse (Path & "/pi.tmplt",
                                     PI_Assoc & Assoc
                                       ("Partition_Name", Partition_Name)));
+                        begin
+                           --  Append with a newline only if there is content
+                           if Value /= "" then
+                              Pro_PI_Tag := Pro_PI_Tag & Newline & Value;
+                           end if;
+                        end;
                      end loop;
                      for PI_Assoc of Tmpl.Unprotected_Provided loop
-                        Unpro_PI_Tag := Unpro_PI_Tag & Newline
-                          & String'(Parse (Path & "/pi.tmplt",
+                        declare
+                           Value : constant String :=
+                               Strip_String (Parse (Path & "/pi.tmplt",
                                     PI_Assoc & Assoc
                                       ("Partition_Name", Partition_Name)));
+                        begin
+                           --  Append with a newline only if there is content
+                           if Value /= "" then
+                              Unpro_PI_Tag := Unpro_PI_Tag & Newline & Value;
+                           end if;
+                        end;
                      end loop;
-                     for RI_Assoc of Tmpl.Required loop
+
+	                     for RI_Assoc of Tmpl.Required loop
                         Document_Template
                           (Templates_Concurrency_View_Sub_RI,
                            RI_Assoc & Assoc ("Partition_Name", ""));
-
-                        RI_Tag := RI_Tag & Newline
-                          & String'(Parse (Path & "/ri.tmplt",
+                        declare
+                           Value : constant String :=
+                                Strip_String (Parse (Path & "/ri.tmplt",
                                     RI_Assoc & Assoc
                                       ("Partition_Name", Partition_Name)));
+                        begin
+                           --  Append with a newline only if there is content
+                           if Value /= "" then
+                              RI_Tag := RI_Tag & Newline & Value;
+                           end if;
+                        end;
                      end loop;
 
                      Block_Assoc :=
@@ -532,8 +553,9 @@ package body TASTE.Concurrency_View is
                      Document_Template
                        (Templates_Concurrency_View_Sub_Block, Block_Assoc);
 
-                     Blocks := Blocks & Newline & To_String (Result);
-
+	                    if Result /= "" then
+                        Blocks := Blocks & Newline & To_String (Result);
+                     end if;
                      --  Save the content of the block in a file
                      --  (if required at template folder level)
                      if Block_File_Name /= "" then
@@ -561,6 +583,7 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Thread_Names",         Thread_Names)
                  & Assoc ("Thread_Has_Param",     Thread_Has_Param)
                  & Assoc ("Node_Name",            Node_Name)
+                 & Assoc ("ASN1_Modules",         CV.Data_View.Get_Module_List)
                  & Assoc ("Blocks",               Blocks)
                  & Assoc ("Block_Names",          Block_Names)
                  & Assoc ("Block_Languages",      Block_Languages)
@@ -660,7 +683,7 @@ package body TASTE.Concurrency_View is
                         Block_Is_Passive := Block_Is_Passive & Is_Passive;
                      end;
                      Block_Instance_Of := Block_Instance_Of
-                       & B.Ref_Function.Instance_Of.Value_Or (US (""));
+                       & B.Ref_Function.Instance_Of;
                   end loop;
                end loop;
                for VP of CV.Nodes (Node_Name).Deployment_Node.Virtual_CPUs loop
@@ -719,6 +742,8 @@ package body TASTE.Concurrency_View is
             Node_CPU,                      --  Corresponding CPU name
             Node_Platform,                 --  Corresponding CPU Platform
             Node_CPU_Cls,                  --  Corresponding CPU classifier
+            Node_CPU_Family,               --  Corresponding CPU family
+            Node_CPU_Instance,             --  Corresponding CPU instance
             Node_Major_Frame,              --  Corresponding time frame (TSP)
             Node_Has_Memory : Vector_Tag;  --  Corresponding memory flag (TSP)
             Partition_Names,               --  List of partitions
@@ -739,13 +764,17 @@ package body TASTE.Concurrency_View is
             All_Drivers : Taste_Drivers.Vector;
 
             --  To keep a list of ASN.1 files/modules without duplicates:
-            Unique_ASN1_Sorts_Set : String_Sets.Set;
+            Unique_ASN1_Sorts_Set,
+            Unique_Connect_In_Port_Name_Set,
+            Unique_Connect_Port_Name_Set : String_Sets.Set;
             Unique_ASN1_Files,
             Unique_ASN1_Sorts,
             Unique_ASN1_Modules : Vector_Tag;
             Connect_From_Partition,           --  Partition to bus connections
             Connect_Port_Name,
-            Connect_Via_Bus    : Vector_Tag;
+            Connect_Via_Bus,
+            Unique_Connect_In_Port_Name,
+            Unique_Connect_Port_Name : Vector_Tag;
             Found : Boolean := False;
          begin
             --  Prepare the template tags of system.aadl with the busses
@@ -765,6 +794,23 @@ package body TASTE.Concurrency_View is
             --  directly provide the partition name of the function so we have
             --  to retrieve it here
             for BC : Bus_Connection of CV.Deployment.Connections loop
+              if not Unique_Connect_Port_Name_Set.Contains
+                  (Strip_String (To_String (BC.Source_Port)))
+               then
+                  Unique_Connect_Port_Name_Set.Insert
+                    (Strip_String (To_String (BC.Source_Port)));
+                  Unique_Connect_Port_Name :=
+                     Unique_Connect_Port_Name & BC.Source_Port;
+               end if;
+               --  Also collect the input ports (needed by the C++ runtime)
+               if not Unique_Connect_In_Port_Name_Set.Contains
+                  (Strip_String (To_String (BC.Dest_Port)))
+               then
+                  Unique_Connect_In_Port_Name_Set.Insert
+                    (Strip_String (To_String (BC.Dest_Port)));
+                  Unique_Connect_In_Port_Name :=
+                     Unique_Connect_In_Port_Name & BC.Dest_Port;
+              end if;
                Connect_Via_Bus   := Connect_Via_Bus   & BC.Bus_Name;
                Connect_Port_Name := Connect_Port_Name & BC.Source_Port;
                Found := False;
@@ -849,6 +895,10 @@ package body TASTE.Concurrency_View is
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Platform'Img;
                      Node_CPU_Cls := Node_CPU_Cls
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Classifier;
+	                   Node_CPU_Family := Node_CPU_Family
+                       & CV.Nodes (Node_Name).Deployment_Node.CPU_Family;
+                     Node_CPU_Instance := Node_CPU_Instance
+                       & CV.Nodes (Node_Name).Deployment_Node.CPU_Instance;
                      Node_Has_Memory := Node_Has_Memory
                        & (CV.Nodes (Node_Name)
                           .Deployment_Node.Memory.Name /= "");
@@ -958,6 +1008,8 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Node_CPU",            Node_CPU)
                  & Assoc ("Node_Platform",       Node_Platform)
                  & Assoc ("Node_CPU_Classifier", Node_CPU_Cls)
+                 & Assoc ("Node_CPU_Family",     Node_CPU_Family)
+                 & Assoc ("Node_CPU_Instance",   Node_CPU_Instance)
                  & Assoc ("Node_Major_Frame",    Node_Major_Frame)
                  & Assoc ("Node_Has_Memory",     Node_Has_Memory)
                  & Assoc ("Partition_Names",     Partition_Names)
@@ -987,7 +1039,11 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Connect_From_Part",   Connect_From_Partition)
                  & Assoc ("Connect_Via_Bus",     Connect_Via_Bus)
                  & Assoc ("Connect_Port_Name",   Connect_Port_Name)
-                 & Assoc ("Used_Shared_Types",   Used_Shared_Types);
+                 & Assoc ("Used_Shared_Types",   Used_Shared_Types)
+	               & Assoc ("Unique_Connect_In_Port_Name",
+                    Unique_Connect_In_Port_Name)
+                 & Assoc ("Unique_Connect_Port_Name",
+                    Unique_Connect_Port_Name);
                Create_Path (CV_Out_Dir
                            & Dir_Separator & Dir_Name (File_Sys));
                Create (File => Output_File,
@@ -1003,15 +1059,5 @@ package body TASTE.Concurrency_View is
       end loop;
       End_Search (ST);
    end Generate_Code;
-
-   procedure Generate_CV (CV : Taste_Concurrency_View) is
-   begin
-      CV.Generate_Code;
-   exception
-      when Error : Concurrency_View_Error | Ada.IO_Exceptions.Name_Error =>
-         Put_Error ("Concurrency View : "
-                    & Ada.Exceptions.Exception_Message (Error));
-         raise Quit_Taste;
-   end Generate_CV;
 
 end TASTE.Concurrency_View;
