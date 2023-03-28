@@ -167,13 +167,16 @@ package body TASTE.Backend.Code_Generators is
                   Join_Sets (Model.Configuration.To_Template, Each)
                   & Assoc ("CPU_Platform", CPU_Platform);
             begin
-               if not Doc_Done then
-                  --  Template documentation (done once)
-                  Document_Template (Templates_Skeletons_Sub_Interface, Tmplt);
-                  Doc_Done := True;
+               if Exists (Tmplt_Sign) then
+                  if not Doc_Done then
+                     --  Template documentation (done once)
+                     Document_Template (Templates_Skeletons_Sub_Interface,
+                     Tmplt);
+                     Doc_Done := True;
+                  end if;
+                  Result := Result & US (String'(Parse (Tmplt_Sign, Tmplt)))
+                  & Newline & Newline;
                end if;
-               Result := Result & US (String'(Parse (Tmplt_Sign, Tmplt)))
-                         & Newline & Newline;
             end;
          end loop;
          return Strip_String (Result);
@@ -311,15 +314,15 @@ package body TASTE.Backend.Code_Generators is
                                   Process_Interfaces
                                      (Func_Tmpl.Required,
                                      "interface.tmplt", Path, CPU_Platform))
-                         & Assoc ("Event_Filters",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "event_filters.tmplt", Path,
-                                     CPU_Platform))
                          & Assoc ("Send_Events",
                                   Process_Interfaces
                                      (Func_Tmpl.Provided,
                                      "send_events.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Event_Filters",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "event_filters.tmplt", Path,
                                      CPU_Platform))
                          & Assoc ("Send_Messages_Init",
                                   Process_Interfaces

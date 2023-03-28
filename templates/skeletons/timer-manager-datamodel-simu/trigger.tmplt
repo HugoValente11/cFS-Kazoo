@@ -1,0 +1,5 @@
+@@-- For the simulator the timer manager is generated in SDL
+@@-- in order to have an easily accessible context/state
+@@IF@@ @_Language_@ = Timer_Manager and (@_Target_@ = SIMU or @_Target_@ = MOCHECK)
+TRUE
+@@END_IF@@

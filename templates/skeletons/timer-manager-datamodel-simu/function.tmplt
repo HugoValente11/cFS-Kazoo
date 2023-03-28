@@ -1,0 +1,10 @@
+-- Dummy data model for the timer manager (needed to populate observer.asn)
+@_CAPITALIZE:REPLACE_ALL(_/-):Name_@-Datamodel DEFINITIONS ::=
+BEGIN
+@_CAPITALIZE:REPLACE_ALL(_/-):Name_@-States ::= ENUMERATED {wait}
+
+@_CAPITALIZE:REPLACE_ALL(_/-):Name_@-Context ::= SEQUENCE {
+   state @_CAPITALIZE:REPLACE_ALL(_/-):Name_@-States
+}
+
+END
