@@ -131,7 +131,6 @@ int32 @_UPPER:Name_@_TblValidationFunc(void *TblData);
 
 @@IF@@ @_DATASTORE_ENABLED_@
 int32 @_UPPER:Name_@_Datastore_Init(void);
-int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore);
 @@END_IF@@
 
 bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLength);
