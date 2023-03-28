@@ -13,7 +13,8 @@ with Ada.Containers.Indefinite_Ordered_Maps,
      Templates_Parser,
      TASTE.Parser_Utils,
      TASTE.Interface_View,
-     TASTE.Deployment_View;
+     TASTE.Deployment_View,
+     TASTE.Data_View;
 
 use Ada.Containers,
     Ada.Strings.Unbounded,
@@ -21,7 +22,8 @@ use Ada.Containers,
     Templates_Parser,
     TASTE.Parser_Utils,
     TASTE.Interface_View,
-    TASTE.Deployment_View;
+    TASTE.Deployment_View,
+    TASTE.Data_View;
 
 package TASTE.Concurrency_View is
 
@@ -159,6 +161,7 @@ package TASTE.Concurrency_View is
          Configuration      : Taste_Configuration;
          Nodes              : CV_Nodes.Map;
          Deployment         : Complete_Deployment_View;
+         Data_View          : Taste_Data_View;
          Base_Template_Path : String_Holder;
          Base_Output_Path   : String_Holder;
       end record;
@@ -167,6 +170,7 @@ package TASTE.Concurrency_View is
                          Output : File_Type);
 
    --  Generate the concurrency view using templates
-   procedure Generate_CV (CV : Taste_Concurrency_View);
+   procedure Generate_Code (CV            : Taste_Concurrency_View;
+                            Templates_Dir : String);
 
 end TASTE.Concurrency_View;

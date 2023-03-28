@@ -1,9 +1,10 @@
 --  ******************************* KAZOO  *******************************  --
 --  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
---  *********************************************************************** --
+--  **********************************************************************  --
 with Text_IO; use Text_IO;
-with Ada.Characters.Handling,
+with Ada.Characters.Latin_1,
+     Ada.Characters.Handling,
      Ada.Containers.Ordered_Sets,
      Ada.Exceptions,
      Ada.Directories,
@@ -26,7 +27,12 @@ use Ada.Characters.Handling,
 --  mappings and generate the corresponding code.
 
 package body TASTE.Backend.Code_Generators is
+
+   Newline : Character renames Ada.Characters.Latin_1.LF;
+   package Sort_Set is new Ordered_Sets (Unbounded_String);
+
    procedure Generate (Model : TASTE_Model) is
+      Set_of_CP        : Sort_Set.Set;
       All_CP_Files     : Tag;  --  List of Context Parameters ASN.1 files
       Template         : constant IV_As_Template :=
                                 Interface_View_Template (Model.Interface_View);
@@ -39,37 +45,21 @@ package body TASTE.Backend.Code_Generators is
       Prefix_Skeletons  : constant String := Prefix & "skeletons/";
       Prefix_Wrappers   : constant String := Prefix & "glue/language_wrappers";
 
-      --  Return a Tag list of ASN.1 Modules for the headers
-      function Get_Module_List return Tag is
-         Result : Tag;
+      --  Helper function: find the CPU Plaform where a function is bound
+      --  This is useful to have it in some wrapper backends (glue code)
+      --  as well as in the Makefile.
+      function Get_CPU_Platform (F : Taste_Terminal_Function) return String is
       begin
-         for Each of Model.Data_View.ASN1_Files loop
-            for Module of Each.Modules loop
-               Result := Result & Module.Name;
+         for Each_Node of DV.Element.Nodes loop
+            for Each_Partition of Each_Node.Partitions loop
+               if Each_Partition.Bound_Functions.Contains (To_String (F.Name))
+               then
+                  return Each_Node.CPU_Platform'Img;
+               end if;
             end loop;
          end loop;
-         return Result;
-      end Get_Module_List;
-
-      --  Return a Tag list of ASN.1 Files
-      function Get_ASN1_File_List return Tag is
-         Result : Tag;
-      begin
-         for Each of Model.Data_View.ASN1_Files loop
-            Result := Result & Each.Path;
-         end loop;
-         return Result;
-      end Get_ASN1_File_List;
-
-      --  Return a Tag list of ACN Files
-      function Get_ACN_File_List return Tag is
-         Result : Tag;
-      begin
-         for Each of Model.Data_View.ACN_Files loop
-            Result := Result & Each;
-         end loop;
-         return Result;
-      end Get_ACN_File_List;
+         return "CPU_Platform_NOT_FOUND_For_Function_" & To_String (F.name);
+      end Get_CPU_Platform;
 
       --  Generate a global Makefile (processing all functions)
       --  and a global project file (.pro) for Space Creator
@@ -77,7 +67,7 @@ package body TASTE.Backend.Code_Generators is
          package Languages_Set is new Ordered_Sets (Unbounded_String);
          use Languages_Set;
          Output_File      : File_Type;
-         Languages        : Set;
+         Languages        : Languages_Set.Set;
          Unique_Languages : Tag;
          Functions_Tag,
          Language_Tag,
@@ -101,15 +91,14 @@ package body TASTE.Backend.Code_Generators is
             Functions_Tag   := Functions_Tag & Each.Name;
             Language_Tag    := Language_Tag & Language_Spelling (Each);
             Is_Type_Tag     := Is_Type_Tag & Each.Is_Type;
-            Instance_Of_Tag :=
-                Instance_Of_Tag & Each.Instance_Of.Value_Or (US (""));
+            Instance_Of_Tag := Instance_Of_Tag & Each.Instance_Of;
             Has_Context_Param_Tag := Has_Context_Param_Tag
               & (not Each.Context_Params.Is_Empty);
             --  Determine if the function type is in the shared folder
             Is_Shared_Type_Tag := Is_Shared_Type_Tag
-              & (Each.Instance_Of.Has_Value and then not
+              & (Each.Instance_Of /= "" and then not
                   Model.Interface_View.Flat_Functions.Contains
-                      (To_String (Each.Instance_Of.Unsafe_Just)));
+                      (To_String (Each.Instance_Of)));
 
             if Each.User_Properties.Contains
                 ("TASTE_IV_Properties::FPGA_Configurations")
@@ -120,16 +109,7 @@ package body TASTE.Backend.Code_Generators is
             end if;
 
             if not DV.Is_Empty then
-               for Each_Node of Model.Deployment_View.Element.Nodes loop
-                  for Each_Partition of  Each_Node.Partitions loop
-                     if Each_Partition.Bound_Functions.Contains
-                      (To_String (Each.Name))
-                     then
-                        CPU_Platform_Tag := CPU_Platform_Tag
-                         & Each_Node.CPU_Platform'Img;
-                     end if;
-                  end loop;
-               end loop;
+               CPU_Platform_Tag := CPU_Platform_Tag & Get_CPU_Platform (Each);
             end if;
          end loop;
          for Each of Languages loop
@@ -146,9 +126,9 @@ package body TASTE.Backend.Code_Generators is
            & Assoc ("Is_FPGA",           Is_FPGA_Tag)
            & Assoc ("CPU_Platform",      CPU_Platform_Tag)
            & Assoc ("Unique_Languages",  Unique_Languages)
-           & Assoc ("ASN1_Files",        Get_ASN1_File_List)
-           & Assoc ("ACN_Files",         Get_ACN_File_List)
-           & Assoc ("ASN1_Modules",      Get_Module_List);
+           & Assoc ("ASN1_Files",        Model.Data_View.Get_ASN1_File_List)
+           & Assoc ("ACN_Files",         Model.Data_View.Get_ACN_File_List)
+           & Assoc ("ASN1_Modules",      Model.Data_View.Get_Module_List);
 
          Put_Debug ("Generating global Makefile");
          Create (File => Output_File,
@@ -169,28 +149,30 @@ package body TASTE.Backend.Code_Generators is
       --  Render a set of interfaces by applying a template
       --  Result is an unbounded string, allowing each interface to use
       --  multiple lines (combined with 'Indent)
+      --  Optionally contains a CPU_Platform argument, added to the template
+      --  in case a deployment view is present (e.g. for glue code generation)
       function Process_Interfaces (Interfaces : Template_Vectors.Vector;
-                                   Template : String;
-                                   Path       : String) return Unbounded_String
+                                   Path       : String;
+                                   CPU_Platform : String := "")
+      return Unbounded_String
       is
          Result      : Unbounded_String := Null_Unbounded_String;
-         Tmplt_Sign  : constant String := Path & Template;
+         Tmplt_Sign  : constant String := Path & "interface.tmplt";
          Doc_Done    : Boolean := False;
       begin
          for Each of Interfaces loop
             declare
                Tmplt :  constant Translate_Set :=
-                  Join_Sets (Model.Configuration.To_Template, Each);
+                  Join_Sets (Model.Configuration.To_Template, Each)
+                  & Assoc ("CPU_Platform", CPU_Platform);
             begin
-               if Exists (Tmplt_Sign) then
-                  if not Doc_Done then
-                     --  Template documentation (done once)
-                     Document_Template (Templates_Skeletons_Sub_Interface,
-                     Tmplt);
-                     Doc_Done := True;
-                  end if;
-                  Result := Result & US (String'(Parse (Tmplt_Sign, Tmplt)));
+               if not Doc_Done then
+                  --  Template documentation (done once)
+                  Document_Template (Templates_Skeletons_Sub_Interface, Tmplt);
+                  Doc_Done := True;
                end if;
+               Result := Result & US (String'(Parse (Tmplt_Sign, Tmplt)))
+                         & Newline & Newline;
             end;
          end loop;
          return Strip_String (Result);
@@ -224,18 +206,24 @@ package body TASTE.Backend.Code_Generators is
                     Name => Output_Lang & To_String (CP_File_Dash));
             Put_Line (Output_File, CP_Text);
             Close (Output_File);
-            All_CP_Files :=
-              All_CP_Files & ("../" & Output_Lang & To_String (CP_File_Dash));
+            declare
+               CP_To_Add : constant String :=
+                   "../" & Output_Lang & To_String (CP_File_Dash);
+            begin
+               if not Set_of_CP.Contains (US (CP_To_Add)) then
+                  Set_of_CP.Insert (US (CP_To_Add));
+                  All_CP_Files :=  All_CP_Files & CP_To_Add;
+               end if;
+            end;
             --  If the function is an instance of a function that is in the
             --  library of shared types, we must add its CP here, using the
             --  path to the installed library (known from Model.Configuration)
-            if F.Instance_Of.Has_Value
+            if F.Instance_Of /= ""
               and then not Model.Interface_View.Flat_Functions.Contains
-                (To_String (F.Instance_Of.Unsafe_Just))
+                (To_String (F.Instance_Of))
             then
                declare
-                  Parent      : constant String :=
-                    To_Lower (To_String (F.Instance_Of.Unsafe_Just));
+                  Parent      : constant String := To_String (F.Instance_Of);
                   Parent_Dash : Unbounded_String;
                begin
                   for C of Parent loop
@@ -243,11 +231,20 @@ package body TASTE.Backend.Code_Generators is
                                                    then '-'
                                                    else C);
                   end loop;
-
-                  All_CP_Files := All_CP_Files
-                    & (Model.Configuration.Shared_Lib_Dir
-                    & "/" & Parent & "/" & Parent & "/" & Language_Spelling (F)
-                    & "/" & "Context-" & Parent_Dash & ".asn");
+                  declare
+                     CP_To_Add : constant String :=
+                        "$(TASTE_SHARED_TYPES)/" & Parent & "/work/"
+                        & To_Lower (Parent) & "/" & Language_Spelling (F)
+                        & "/" & "Context-"
+                        & To_Lower (To_String (Parent_Dash))
+                        & ".asn";
+                  begin
+                     --  Ensure the CP are not duplicated
+                     if not Set_of_CP.Contains (US (CP_To_Add)) then
+                        Set_of_CP.Insert (US (CP_To_Add));
+                        All_CP_Files :=  All_CP_Files & CP_To_Add;
+                     end if;
+                  end;
                end;
             end if;
          end if;
@@ -283,12 +280,13 @@ package body TASTE.Backend.Code_Generators is
          end List_Of_PIs;
 
          Make_Tmpl   : constant Translate_Set :=
-           Function_Makefile_Template
-             (Model   => Model,
-              F       => F,
-              Modules => Get_Module_List,
-              Files   => Get_ASN1_File_List)
-              & Assoc ("List_Of_PIs", List_Of_PIs);
+           Join_Sets (Model.Configuration.To_Template,
+                      Function_Makefile_Template
+                         (Model   => Model,
+                          F       => F,
+                          Modules => Model.Data_View.Get_Module_List,
+                          Files   => Model.Data_View.Get_ASN1_File_List))
+           & Assoc ("List_Of_PIs", List_Of_PIs);
 
          Make_Path   : constant String := Path & "makefile.tmplt";
          Make_Text   : constant String :=
@@ -298,59 +296,23 @@ package body TASTE.Backend.Code_Generators is
          Func_Tmpl   : constant Func_As_Template :=
                                 Template.Funcs.Element (To_String (F.Name));
 
+         CPU_Platform : constant String :=
+            (if not DV.Is_Empty then Get_CPU_Platform (F) else "");
+
          Func_Map    : constant Translate_Set :=
                          Join_Sets (Model.Configuration.To_Template,
                                     Func_Tmpl.Header)
                          & Assoc ("Provided_Interfaces",
                                   Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "interface.tmplt", Path))
+                                     (Func_Tmpl.Provided, Path, CPU_Platform))
                          & Assoc ("Required_Interfaces",
                                   Process_Interfaces
-                                     (Func_Tmpl.Required,
-                                     "interface.tmplt", Path))
-                         & Assoc ("Event_Filters",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "event_filters.tmplt", Path))
-                         & Assoc ("Send_Events",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "send_events.tmplt", Path))
-                         & Assoc ("Send_Messages_Init",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "send_messages_init.tmplt", Path))
-                         & Assoc ("Send_Messages_Functions",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "send_messages_functions.tmplt", Path))
-                         & Assoc ("Receive_Messages_Init",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Required,
-                                     "send_messages_init.tmplt", Path))
-                         & Assoc ("Receive_Messages_Functions",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Required,
-                                     "send_messages_functions.tmplt", Path))
-                         & Assoc ("QGen_Wrapper_Req",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Required,
-                                     "qgen_wrapper.tmplt", Path))
-                         & Assoc ("QGen_Wrapper_Pro",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "qgen_wrapper.tmplt", Path))
-                         & Assoc ("QGen_Wrapper_Params_Req",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Required,
-                                     "qgen_wrapper_params.tmplt", Path))
-                         & Assoc ("QGen_Wrapper_Params_Pro",
-                                  Process_Interfaces
-                                     (Func_Tmpl.Provided,
-                                     "qgen_wrapper_params.tmplt", Path))
-                         & Assoc ("ASN1_Modules", Get_Module_List)
-                         & Assoc ("ASN1_Files", Get_ASN1_File_List);
+                                     (Func_Tmpl.Required, Path, CPU_Platform))
+                         & Assoc ("ASN1_Modules",
+                                  Model.Data_View.Get_Module_List)
+                         & Assoc ("CPU_Platform", CPU_Platform)
+                         & Assoc ("ASN1_Files",
+                                  Model.Data_View.Get_ASN1_File_List);
 
          Content     : constant String :=
                                     Parse (Path & "function.tmplt", Func_Map);
@@ -408,8 +370,9 @@ package body TASTE.Backend.Code_Generators is
                                                      others    => False);
                --  File_Tmpl: to get the output filename from user template
                File_Tmpl  : constant Translate_Set :=
-                 +Assoc  ("Name", Each.Name)
-                 & Assoc ("Language", Language);
+                  Model.Configuration.To_Template
+                  & Assoc  ("Name", Each.Name)
+                  & Assoc ("Language", Language);
                --  Base output folder where code is generated
                --  e.g. output/Ada/src/
                Output_Lang : constant String := Output_Base
@@ -542,7 +505,6 @@ package body TASTE.Backend.Code_Generators is
 
    --  Context Parameters
    function CP_Template (F : Taste_Terminal_Function) return Translate_Set is
-      package Sort_Set is new Ordered_Sets (Unbounded_String);
       use Sort_Set;
       Sorts_Set    : Set;
       Unique_Sorts : Vector_Tag;
@@ -568,7 +530,7 @@ package body TASTE.Backend.Code_Generators is
       return Result : constant Translate_Set :=
         +Assoc ("Name",            F.Name)
         & Assoc ("Is_Type",        F.Is_Type)
-        & Assoc ("Instance_Of",    F.Instance_Of.Value_Or (US ("")))
+        & Assoc ("Instance_Of",    F.Instance_Of)
         & Assoc ("Sort_Set",       Unique_Sorts)
         & Assoc ("Module_Set",     Corr_Module)
         & Assoc ("CP_Name",        Names)
@@ -594,11 +556,10 @@ package body TASTE.Backend.Code_Generators is
                       & Assoc ("Shared_Lib_Dir",
                                Model.Configuration.Shared_Lib_Dir)
                       & Assoc ("Is_Shared_Type",
-                               F.Instance_Of.Has_Value and then not
+                               F.Instance_Of /= "" and then not
                                  Model.Interface_View.Flat_Functions.Contains
-                                   (To_String (F.Instance_Of.Unsafe_Just)))
-                      & Assoc ("Instance_Of",
-                               F.Instance_Of.Value_Or (US ("")))));
+                                   (To_String (F.Instance_Of)))
+                      & Assoc ("Instance_Of", F.Instance_Of)));
 
    function Interface_View_Template (IV : Complete_Interface_View)
                                      return IV_As_Template is

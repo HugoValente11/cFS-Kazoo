@@ -203,6 +203,7 @@ package body TASTE.Parser_Utils is
       DeplV,
       DataV,
       OutDir,
+      DeplDir,
       Target : aliased GNAT.Strings.String_Access := null;
    begin
       --  Retrieve the path of the kazoo binary, to have a base prefix
@@ -303,6 +304,11 @@ package body TASTE.Parser_Utils is
                      Switch         => "-v",
                      Long_Switch    => "--version",
                      Help           => "Display tool version");
+      Define_Switch (Config, Output => DeplDir'Access,
+                     Switch         => "-e:",
+                     Long_Switch    => "--cv_template_dir=",
+                     Help           => "Concurrency View templates dir name",
+                     Argument       => "concurrency_view");
       Getopt (Config);
 
       loop
@@ -334,6 +340,11 @@ package body TASTE.Parser_Utils is
          then To_Holder (OutDir.all)
          else To_Holder ("work"));
 
+      Result.CV_Templates_Dir :=
+        (if DeplDir /= null and then DeplDir.all'Length > 0
+         then To_Holder (DeplDir.all)
+         else To_Holder ("concurrency_view"));
+
       Result.Target :=
         (if Target /= null and then Target.all'Length > 0
          then To_Holder (Target.all)
@@ -362,10 +373,10 @@ package body TASTE.Parser_Utils is
               & Assoc (Prefix & "Property_Values", Values));
    end Properties_To_Template;
 
-   function To_Template_Tag (SS : String_Sets.Set) return Tag is
+   function To_Template_Tag (SV : String_Vectors.Vector) return Tag is
       Result : Tag;
    begin
-      for Each of SS loop
+      for Each of SV loop
          Result := Result & Each;
       end loop;
       return Result;

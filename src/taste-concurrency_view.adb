@@ -1,11 +1,9 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 
 with Ada.Directories,
-     Ada.IO_Exceptions,
-     Ada.Exceptions,
      Ada.Characters.Latin_1,
      --  Ada.Strings.Fixed,
      GNAT.Directory_Operations,   --  Contains Dir_Name
@@ -156,8 +154,8 @@ package body TASTE.Concurrency_View is
             (T.Ref_Protected_Block.Ref_Function.Instance_Of))
         & Assoc ("Node_Name",           To_String (T.Node.Value_Or
           (Taste_Node'(Name => US (""), others => <>)).Name))
+        & Assoc ("CPU_Platform",        T.Node.Unsafe_Just.CPU_Platform'Img)
         & Assoc ("Remote_Threads",      Remote_Thread)
-        & Assoc ("CPU_Platform",      T.Node.Unsafe_Just.CPU_Platform'Img)
         & Assoc ("RI_Port_Names",       RI_Port_Name)
         & Assoc ("Remote_PIs",          Remote_PI)
         & Assoc ("Remote_PI_Sorts",     Remote_PI_Sort)
@@ -168,7 +166,7 @@ package body TASTE.Concurrency_View is
    end To_Template;
 
    --  Generate the code by iterating over template folders
-   procedure Generate_Code (CV : Taste_Concurrency_View;
+   procedure Generate_Code (CV            : Taste_Concurrency_View;
                             Templates_Dir : String)
    is
       Prefix   : constant String := CV.Base_Template_Path.Element
@@ -493,7 +491,7 @@ package body TASTE.Concurrency_View is
                         Document_Template
                           (Templates_Concurrency_View_Sub_PI,
                            PI_Assoc & Assoc ("Partition_Name", ""));
-	                        declare
+                        declare
                            Value : constant String :=
                                 Strip_String (Parse (Path & "/pi.tmplt",
                                     PI_Assoc & Assoc
@@ -505,6 +503,7 @@ package body TASTE.Concurrency_View is
                            end if;
                         end;
                      end loop;
+
                      for PI_Assoc of Tmpl.Unprotected_Provided loop
                         declare
                            Value : constant String :=
@@ -519,10 +518,11 @@ package body TASTE.Concurrency_View is
                         end;
                      end loop;
 
-	                     for RI_Assoc of Tmpl.Required loop
+                     for RI_Assoc of Tmpl.Required loop
                         Document_Template
                           (Templates_Concurrency_View_Sub_RI,
                            RI_Assoc & Assoc ("Partition_Name", ""));
+
                         declare
                            Value : constant String :=
                                 Strip_String (Parse (Path & "/ri.tmplt",
@@ -553,9 +553,10 @@ package body TASTE.Concurrency_View is
                      Document_Template
                        (Templates_Concurrency_View_Sub_Block, Block_Assoc);
 
-	                    if Result /= "" then
+                     if Result /= "" then
                         Blocks := Blocks & Newline & To_String (Result);
                      end if;
+
                      --  Save the content of the block in a file
                      --  (if required at template folder level)
                      if Block_File_Name /= "" then
@@ -582,8 +583,8 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Threads",              Part_Threads)
                  & Assoc ("Thread_Names",         Thread_Names)
                  & Assoc ("Thread_Has_Param",     Thread_Has_Param)
-                 & Assoc ("Node_Name",            Node_Name)
                  & Assoc ("ASN1_Modules",         CV.Data_View.Get_Module_List)
+                 & Assoc ("Node_Name",            Node_Name)
                  & Assoc ("Blocks",               Blocks)
                  & Assoc ("Block_Names",          Block_Names)
                  & Assoc ("Block_Languages",      Block_Languages)
@@ -794,7 +795,7 @@ package body TASTE.Concurrency_View is
             --  directly provide the partition name of the function so we have
             --  to retrieve it here
             for BC : Bus_Connection of CV.Deployment.Connections loop
-              if not Unique_Connect_Port_Name_Set.Contains
+               if not Unique_Connect_Port_Name_Set.Contains
                   (Strip_String (To_String (BC.Source_Port)))
                then
                   Unique_Connect_Port_Name_Set.Insert
@@ -810,7 +811,7 @@ package body TASTE.Concurrency_View is
                     (Strip_String (To_String (BC.Dest_Port)));
                   Unique_Connect_In_Port_Name :=
                      Unique_Connect_In_Port_Name & BC.Dest_Port;
-              end if;
+               end if;
                Connect_Via_Bus   := Connect_Via_Bus   & BC.Bus_Name;
                Connect_Port_Name := Connect_Port_Name & BC.Source_Port;
                Found := False;
@@ -895,7 +896,7 @@ package body TASTE.Concurrency_View is
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Platform'Img;
                      Node_CPU_Cls := Node_CPU_Cls
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Classifier;
-	                   Node_CPU_Family := Node_CPU_Family
+                     Node_CPU_Family := Node_CPU_Family
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Family;
                      Node_CPU_Instance := Node_CPU_Instance
                        & CV.Nodes (Node_Name).Deployment_Node.CPU_Instance;
@@ -1040,7 +1041,7 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Connect_Via_Bus",     Connect_Via_Bus)
                  & Assoc ("Connect_Port_Name",   Connect_Port_Name)
                  & Assoc ("Used_Shared_Types",   Used_Shared_Types)
-	               & Assoc ("Unique_Connect_In_Port_Name",
+                 & Assoc ("Unique_Connect_In_Port_Name",
                     Unique_Connect_In_Port_Name)
                  & Assoc ("Unique_Connect_Port_Name",
                     Unique_Connect_Port_Name);

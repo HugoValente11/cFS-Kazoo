@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 with Ada.Strings.Unbounded,
@@ -20,8 +20,8 @@ use Ada.Strings.Unbounded,
 package body TASTE.Semantic_Check is
    --  use String_Vectors;
    procedure Check_Model (Model : TASTE_Model) is
-      use Option_Partition;
-      Opt_Part     : Option_Partition.Option;
+      use Partition_Holders;
+      Opt_Part     : Partition_Holder;
       Found_Error  : Boolean := False;
       --  Allow case insensitive checks of unbounded strings:
       function "="(A, B : Unbounded_String) return Boolean is
@@ -79,50 +79,60 @@ package body TASTE.Semantic_Check is
          for Each of Model.Interface_View.Flat_Functions loop
             Opt_Part  := Model.Find_Binding (Each.Name);
             --  Check that each function is placed on a partition
-            if not Each.Is_Type and then not Opt_Part.Has_Value then
+            if not Each.Is_Type and then Opt_Part.Is_Empty then
                raise Semantic_Error with
                 "In the deployment view, the function " & To_String (Each.Name)
                 & " is not bound to any partition!";
             end if;
 
-            --  --  Check that functions have at least one PI
-            --  --  with the exception of GUIs and Blackbox devices
-            --  if Each.Language /= "gui"
-            --     and then Each.Language /= "blackbox_device"
-            --     and then Each.Provided.Length = 0
-            --  then
-            --     raise Semantic_Error with
-            --       "Function " & To_String (Each.Name) & " has no provided "
-            --        & "interfaces, and dead code is not allowed";
-            --  end if;
+            --  Check that functions have at least one PI (or a timer)
+            --  with the exception of GUIs and Blackbox devices
+            if Each.Language /= "gui"
+               and then Each.Language /= "blackbox_device"
+               and then Each.Provided.Length = 0
+               and then Each.Timers.Length = 0
+            then
+               raise Semantic_Error with
+                  "Function " & To_String (Each.Name) & " has no provided "
+                  & "interface, no timer, and dead code is not allowed";
+            end if;
 
-            --  Check that Simulink functions have exactly one PI and no RI
-            --  if (Each.Language    = "simulink"
-            --    or Each.Language = "qgenada"
-            --    or Each.Language = "qgenc")
-            --    and then (Each.Provided.Length /= 1
-            --              or Each.Required.Length /= 0)
-            --  then
-            --   raise Semantic_Error with
-            --      "Function " & To_String (Each.Name) & " must contain only "
-            --      & "one Provided Interface and no Required Interfaces";
-            --  end if;
+            --  Check that Simulink functions don't have any RI
+            if (Each.Language    = "simulink"
+                or Each.Language = "qgenada"
+                or Each.Language = "qgenc")
+                and then (Each.Required.Length /= 0)
+            then
+               raise Semantic_Error with
+                  "Function " & To_String (Each.Name) & " must not have any"
+                  & " Required Interface";
+            end if;
+
+            --  Check that Simulink functions (generated with EmbeddedCoder)
+            --  have exactly one PI
+            if (Each.Language = "simulink")
+                and then (Each.Provided.Length /= 1)
+            then
+               raise Semantic_Error with
+                 "Function " & To_String (Each.name) & " must contain only one"
+                 & " Provided Interface";
+            end if;
 
             --  Check that Simulink/QGen functions's PI is synchronous
-            --  if Each.Language    = "simulink"
-            --    or Each.Language = "qgenada"
-            --    or Each.Language = "qgenc"
-            --  then
-            --     for PI of Each.Provided loop
-            --       if PI.RCM /= Unprotected_Operation
-            --           and PI.RCM /= Protected_Operation
-            --        then
-            --           raise Semantic_Error with "The provided interface of "
-            --        & "function " & To_String (Each.Name) & " must be either"
-            --       & " protected or unprotected, but not sporadic or cyclic";
-            --       end if;
-            --    end loop;
-            --  end if;
+            if Each.Language    = "simulink"
+               or Each.Language = "qgenada"
+               or Each.Language = "qgenc"
+            then
+               for PI of Each.Provided loop
+                  if PI.RCM /= Unprotected_Operation
+                     and PI.RCM /= Protected_Operation
+                  then
+                     raise Semantic_Error with "The provided interface of "
+                     & "function " & To_String (Each.Name) & " must be either"
+                     & " protected or unprotected, but not sporadic or cyclic";
+                  end if;
+               end loop;
+            end if;
 
             --  GUI check:
             --  interfaces must all be sporadic
@@ -155,7 +165,7 @@ package body TASTE.Semantic_Check is
                                           or PI.RCM = Unprotected_Operation)
                then
                   for Remote of PI.Remote_Interfaces loop
-                     if not Opt_Part.Unsafe_Just.Bound_Functions.Contains
+                     if not Opt_Part.Element.Bound_Functions.Contains
                        (To_String (Remote.Function_Name))
                      then
                         raise Semantic_Error with "Function "
@@ -198,12 +208,12 @@ package body TASTE.Semantic_Check is
                & " (not " & To_String (Each.Language) & ")";
             end if;
 
-            if Each.Instance_Of.Has_Value then
+            if Each.Instance_Of /= "" then
                begin
                   declare
                      Corresponding_Type : constant Taste_Terminal_Function :=
                         Model.Interface_View.Flat_Functions.Element
-                           (To_String (Each.Instance_Of.Unsafe_Just));
+                           (To_String (Each.Instance_Of));
                   begin
                      if not Corresponding_Type.Is_Type then
                         raise Semantic_Error with "Function "
@@ -212,7 +222,7 @@ package body TASTE.Semantic_Check is
                         & " a type";
                      end if;
 
-                     --  Much check that PIs and RIs of type and instance match
+                     --  Check that PIs and RIs of type and instance match
                      for PI of Each.Provided loop
                         null;
                      end loop;
@@ -220,20 +230,18 @@ package body TASTE.Semantic_Check is
                      for RI of Each.Required loop
                         null;
                      end loop;
-
---                      raise Semantic_Error with "Interface mismatch between "
---                      & "functions " & To_String (Corresponding_Type.Name) &
---                      " (type) and " & To_String (Each.Name) & " (instance)";
                   end;
                exception
                   when Constraint_Error =>
                      --  if the component type is not in the model,
                      --  it may not be an error: it could be a shared type
                      if not Model.Configuration.Shared_Types.Contains
-                       (To_String (Each.Instance_Of.Unsafe_Just))
+                       (To_String (Each.Instance_Of))
                      then
+                        --  Nothing found in the shared folders
+                        --  Raise an error
                         raise Semantic_Error with "Function not found : "
-                          & To_String (Each.Instance_Of.Unsafe_Just)
+                          & To_String (Each.Instance_Of)
                           & " (specified as type of function "
                           & To_String (Each.Name) & ")";
                      end if;

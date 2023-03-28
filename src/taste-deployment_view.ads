@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 --  Deployment View parser
@@ -91,6 +91,7 @@ package TASTE.Deployment_View is
          Device_Classifier,
          Associated_Processor_Name,
          Device_Configuration,
+         Device_Packetizer,
          Init_Function,
          Init_Language,
          Send_Function,
@@ -139,7 +140,7 @@ package TASTE.Deployment_View is
          VP_Duration     : Unbounded_String := US ("");  --  TSP frame duration
          Memory_Region   : Unbounded_String := US ("");  --  TSP only
          Ada_Runtime     : Unbounded_String; --  if CPU_Platform = GNAT_Runtime
-         Bound_Functions : String_Sets.Set;
+         Bound_Functions : String_Vectors.Vector;
          User_Properties : Property_Maps.Map;  -- From TASTE_DV_Properties.aadl
       end record;
 
@@ -163,7 +164,9 @@ package TASTE.Deployment_View is
        & Assoc ("Ada_Runtime",     P.Ada_Runtime)
        & Assoc ("Bound_Functions", To_Template_Tag (P.Bound_Functions)));
 
-   package Option_Partition is new Option_Type (Taste_Partition);
+   --  package Option_Partition is new Option_Type (Taste_Partition);
+   package Partition_Holders is new Indefinite_Holders (Taste_Partition);
+   subtype Partition_Holder is Partition_Holders.Holder;
 
    package Taste_Partitions is
      new Indefinite_Ordered_Maps (String, Taste_Partition);
@@ -200,7 +203,8 @@ package TASTE.Deployment_View is
    --  Helper function: find the partition where a function is bounded
    function Find_Partition (Node          : Taste_Node;
                             Function_Name : String)
-                            return Option_Partition.Option;
+                            return Partition_Holder;
+                           --  Option_Partition.Option;
 
    package Node_Maps is new Indefinite_Ordered_Maps (String, Taste_Node);
 

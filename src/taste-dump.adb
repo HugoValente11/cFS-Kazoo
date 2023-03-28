@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 
@@ -26,7 +26,9 @@ package body TASTE.Dump is
    Newline : Character renames Ada.Characters.Latin_1.LF;
 
    --  iterate over template folders in the dump directory
-   procedure Dump_Input_Model (Model : TASTE_Model)
+   procedure Dump_Input_Model
+       (Model  : TASTE_Model;
+        Prefix : String)
    is
       IV : constant IV_As_Template :=
         Interface_View_Template (Model.Interface_View);
@@ -35,10 +37,6 @@ package body TASTE.Dump is
       --  There may be subfolders inside, set by the templates
       Output_Prefix : constant String :=
         Model.Configuration.Output_Dir.Element & "/Dump";
-
-      --  Root path containing the template subfolders:
-      Prefix   : constant String :=
-        Model.Configuration.Binary_Path.Element & "templates/dump";
 
       --  To iterate over template folders
       ST       : Search_Type;
@@ -119,6 +117,7 @@ package body TASTE.Dump is
             DV_Tags     : Translate_Set;   -- Deployment View
             Output_Tags : Translate_Set;
             Functions   : Unbounded_String;
+            Count_Func  : Integer := 0;    -- Count the number of functions
             Nodes       : Unbounded_String;
             Source_Functions,                  -- Connections in deployment
             Source_Ports,
@@ -153,6 +152,7 @@ package body TASTE.Dump is
                        Parse (Func_Template, Func_Map);
                   begin
                      Functions := Functions & Result & Newline;
+                     Count_Func := Count_Func + 1;
                   end;
                end loop;
 
@@ -251,6 +251,7 @@ package body TASTE.Dump is
 
                --  Interface view is made of functions and connections
                IV_Tags := +Assoc ("Functions", Functions)
+                 & Assoc ("Count_Functions", Count_Func)
                  & Assoc ("Callers", IV.Callers)
                  & Assoc ("Callees", IV.Callees)
                  & Assoc ("Caller_RIs", IV.RI_Names)

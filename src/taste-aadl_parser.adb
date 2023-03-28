@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 with System.Assertions,
@@ -46,10 +46,18 @@ package body TASTE.AADL_Parser is
    procedure Find_Shared_Libraries (Model : out TASTE_Model) is
       --  Look for shared component types and update the list of AADL files
       --  to be parsed together with interface and deployment views
+      --  NOTE this is deprecated with Space Creator-based systems, it was
+      --  needed only when the shared folders contained AADL files.
+      --  This part of the code should therefore have zero effect on the
+      --  parsing now and could be removed in 2022
+      Home : constant String :=
+        Env.Value (Name    => "HOME",
+                   Default => "/home/taste");
 
       Shared_Types   : constant String :=
         Env.Value (Name    => "TASTE_SHARED_TYPES",
-                   Default => "/home/taste/tool-inst/share/SharedTypes");
+                   Default =>  Home
+                   & "/.local/share/QtProject/QtCreator/shared_types");
 
       --  To iterate on folders:
       ST      : Search_Type;
@@ -61,7 +69,7 @@ package body TASTE.AADL_Parser is
                     Directory => Shared_Types,
                     Filter    => (Directory => True, others => False));
       if not More_Entries (ST) then
-         Put_Info ("No shared components found");
+         Put_Info ("No shared components found in " & Shared_Types);
       end if;
 
       while More_Entries (ST) loop
@@ -76,12 +84,12 @@ package body TASTE.AADL_Parser is
             Model.Configuration.Shared_Types.Append
               (Base_Name (Full_Name (Current)));
 
-            Put_Info ("Added " & Full_Name (Current) & " to Include path");
+            Put_Info ("Shared type " & Full_Name (Current) & " found");
          end if;
       end loop;
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Put_Error ("Shared library folder not found: " & Shared_Types);
+         Put_Info ("Legacy shared library folder ignored: " & Shared_Types);
    end Find_Shared_Libraries;
 
    procedure Parse_Set_Of_AADL_Files (Dest : in out Node_Id) is
@@ -288,8 +296,8 @@ package body TASTE.AADL_Parser is
 
    function Find_Binding (Model : TASTE_Model;
                           F     : Unbounded_String)
-                          return Option_Partition.Option is
-      use Option_Partition;
+                          return Partition_Holder is
+      use Partition_Holders;
       function Is_Equal (Left, Right : String) return Boolean
          renames Ada.Strings.Equal_Case_Insensitive;
       Function_Name : constant String := To_String (F);
@@ -301,13 +309,181 @@ package body TASTE.AADL_Parser is
          for Each of Node.Partitions loop
             for Binding of Each.Bound_Functions loop
                if Is_Equal (Binding, Function_Name) then
-                  return Just (Each);
+                  return To_Holder (Each);
                end if;
             end loop;
          end loop;
       end loop;
-      return Nothing;
+      return Empty_Holder;
    end Find_Binding;
+
+   procedure Duplicate_Function (Model           : in out TASTE_Model;
+                                 From            : String;
+                                 Instance_Number : Integer) is
+      To : constant String := From & "_" & Strip_String (Instance_Number'Img);
+      Source : constant Taste_Terminal_Function :=
+          Model.Interface_View.Flat_Functions.Element (Key => From);
+      New_Function : Taste_Terminal_Function := Source;
+      Deployment_View : Complete_Deployment_View :=
+          Model.Deployment_View.Element;
+   begin
+      New_Function.Name := US (To);
+      New_Function.Instance_Number := Instance_Number;
+      if Source.Instance_Of = "" then
+         raise Function_Error with "Only instances can be duplicated";
+      end if;
+      --  Add connections to the remote functions for each interface.
+      for PI of New_Function.Provided loop
+         PI.Parent_Function := New_Function.Name;
+
+         for Remote of PI.Remote_Interfaces loop
+            for Func of Model.Interface_View.Flat_Functions loop
+               if Func.Name = Remote.Function_Name then
+                  for Remote_If of Func.Required loop
+                     if Remote_If.Name = Remote.Interface_Name then
+                        Remote_If.Remote_Interfaces.Append
+                           (New_Item =>
+                              (Function_Name  => New_Function.Name,
+                               Interface_Name => PI.Name,
+                               Instance_Of    => New_Function.Instance_Of,
+                               Language       => New_Function.Language));
+                        --  Add the end-to-end connection to the interface view
+                        Model.Interface_View.Connections.Append
+                           (New_Item =>
+                              (Caller   => Remote.Function_Name,
+                               Callee   => New_Function.Name,
+                               RI_Name  => Remote.Interface_Name,
+                               PI_Name  => PI.Name,
+                               Channels => String_Vectors.Empty_Vector));
+                     end if;
+                  end loop;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+
+      for RI of New_Function.Required loop
+         RI.Parent_Function := New_Function.Name;
+
+         for Remote of RI.Remote_Interfaces loop
+            for Func of Model.Interface_View.Flat_Functions loop
+               if Func.Name = Remote.Function_Name then
+                  for Remote_If of Func.Required loop
+                     if Remote_If.Name = Remote.Interface_Name then
+                        Remote_If.Remote_Interfaces.Append
+                           (New_Item =>
+                              (Function_Name  => New_Function.Name,
+                               Interface_Name => RI.Name,
+                               Instance_Of    => New_Function.Instance_Of,
+                               Language       => New_Function.Language));
+                        --  Add the end-to-end connection to the interface view
+                        Model.Interface_View.Connections.Append
+                           (New_Item =>
+                              (Caller   => New_Function.Name,
+                               Callee   => Remote.Function_Name,
+                               RI_Name  => RI.Name,
+                               PI_Name  => Remote.Interface_Name,
+                               Channels => String_Vectors.Empty_Vector));
+                     end if;
+                  end loop;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+
+      Model.Interface_View.Flat_Functions.Insert (Key      => To,
+                                                  New_Item => New_Function);
+      --  Look into the Deployment view bindings and bind the new function
+      --  to the same partition as the original function
+      if Model.Deployment_View.Is_Empty then
+         return;
+      end if;
+      for Node of Deployment_View.Nodes loop
+         for Partition of Node.Partitions loop
+            if Partition.Bound_Functions.Contains (From) then
+               Partition.Bound_Functions.Append (To);
+               Model.Deployment_View.Replace_Element (Deployment_View);
+            end if;
+         end loop;
+      end loop;
+   end Duplicate_Function;
+
+   procedure Rename_Function (Model    : in out TASTE_Model;
+                              From, To : String)
+   is
+      IV           : Complete_Interface_View renames Model.Interface_View;
+      FV           : Taste_Terminal_Function :=
+                                       IV.Flat_Functions.Element (Key => From);
+      Cursor       : String_Vectors.Cursor;
+      Deployment_View : Complete_Deployment_View :=
+          Model.Deployment_View.Element;
+   begin
+      FV.Name := US (To);
+      for Each of FV.Provided loop
+         Each.Parent_Function := FV.Name;
+         --  Update the "Remote Function Name" of all connected interfaces
+         for Remote of Each.Remote_Interfaces loop
+            for Func of IV.Flat_Functions loop
+               if Func.Name = Remote.Function_Name then
+                  for Remote_If of Func.Required loop
+                     if Remote_If.Name = Remote.Interface_Name then
+                        for Entity of Remote_If.Remote_Interfaces loop
+                           if Entity.Function_Name = US (From) then
+                              Entity.Function_Name := FV.Name;
+                           end if;
+                        end loop;
+                     end if;
+                  end loop;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+
+      for Each of FV.Required loop
+         Each.Parent_Function := FV.Name;
+         --  Update the "Remote Function Name" of all connected interfaces
+         for Remote of Each.Remote_Interfaces loop
+            for Func of IV.Flat_Functions loop
+               if Func.Name = Remote.Function_Name then
+                  for Remote_If of Func.Provided loop
+                     if Remote_If.Name = Remote.Interface_Name then
+                        for Entity of Remote_If.Remote_Interfaces loop
+                           if Entity.Function_Name = US (From) then
+                              Entity.Function_Name := FV.Name;
+                           end if;
+                        end loop;
+                     end if;
+                  end loop;
+               end if;
+            end loop;
+         end loop;
+      end loop;
+      --  Update the end-to-end connections in the interface view
+      for Connection of IV.Connections loop
+         if Connection.Caller = US (From) then
+            Connection.Caller := US (To);
+         elsif Connection.Callee = US (From) then
+            Connection.Callee := US (To);
+         end if;
+      end loop;
+      IV.Flat_Functions.Delete (Key => From);
+      IV.Flat_Functions.Insert (Key      => To,
+                                New_Item => FV);
+      --  Look into the Deployment view bindings and rename the function there
+      if Model.Deployment_View.Is_Empty then
+         return;
+      end if;
+      for Node of Deployment_View.Nodes loop
+         for Partition of Node.Partitions loop
+            if Partition.Bound_Functions.Contains (From) then
+               Cursor := Partition.Bound_Functions.Find (Item => From);
+               Partition.Bound_Functions.Delete (Cursor);
+               Partition.Bound_Functions.Append (To);
+               Model.Deployment_View.Replace_Element (Deployment_View);
+            end if;
+         end loop;
+      end loop;
+   end Rename_Function;
 
    procedure Set_Calling_Threads (Partition : in out CV_Partition) is
       procedure Rec_Add_Calling_Thread (Thread_Id : String;
@@ -368,7 +544,7 @@ package body TASTE.AADL_Parser is
          Current_Function : constant String_Sets.Set :=
            String_Sets.To_Set (To_String (Func.Name));
       begin
-         --  Recursively find distand threads by following (un)pro RI paths
+         --  Recursively find distant threads by following (un)pro RI paths
          --  Ignore already visited nodes (system may have circular paths)
          if Current_Function.Is_Subset (Of_Set => Visited) then
             return;
@@ -399,31 +575,31 @@ package body TASTE.AADL_Parser is
                   end if;
                end loop;
             else
-               declare
-                  --  Assume only one remote connection per RI
-                  --  Have to iterate on Remote_Interfaces if that changes
+               --  There can be more than one remote per RI (due to multicast)
+               --  so we must iterate and create one out port per connection
+               for Remote_Interface of RI.Remote_Interfaces loop
+                  declare
+                     Remote_Thread_Name : constant Unbounded_String :=
+                       To_Lower (To_String (Remote_Interface.Function_Name))
+                       & "_" & Remote_Interface.Interface_Name;
+                     --  The port name convention has to be unique:
+                     --  <caller>_<riName>_<callee>_<piName>
+                     Port_Name : constant Unbounded_String :=
+                        Func.Name & "_"
+                        & RI.Name & "_"
+                        & Remote_Interface.Function_Name & "_"
+                        & Remote_Interface.Interface_Name;
 
-                  Dist      : constant Remote_Entity :=
-                    RI.Remote_Interfaces.First_Element;
-                  Remote_Thread_Name : constant Unbounded_String :=
-                    To_Lower (To_String (Dist.Function_Name))
-                    & "_" & Dist.Interface_Name;
-                  --  The port name cannot be RI.Name because that could
-                  --  cause multiple ports with the same name if more than
-                  --  one function connected through a chain of sync calls
-                  --  have a RI of that name.
-                  --  Port_Name : constant Unbounded_String := RI.Name;
-                  Port_Name : constant Unbounded_String :=
-                      Dist.Function_Name & "_" & RI.Name;
-                  New_P     : constant Thread_Port :=
-                    (Name          => Port_Name,
-                     Remote_Thread => Remote_Thread_Name,
-                     Remote_PI     => Dist.Interface_Name,
-                     RI            => RI);
-               begin
-                  Ports_Map.Include (Key      => To_String (Port_Name),
-                                     New_Item => New_P);
-               end;
+                     New_P     : constant Thread_Port :=
+                       (Name          => Port_Name,
+                        Remote_Thread => Remote_Thread_Name,
+                        Remote_PI     => Remote_Interface.Interface_Name,
+                        RI            => RI);
+                  begin
+                     Ports_Map.Include (Key      => To_String (Port_Name),
+                                        New_Item => New_P);
+                  end;
+               end loop;
             end if;
             <<Continue>>
          end loop;
@@ -440,6 +616,7 @@ package body TASTE.AADL_Parser is
         (Base_Template_Path => Model.Configuration.Binary_Path,
          Base_Output_Path   => Model.Configuration.Output_Dir,
          Deployment         => Model.Deployment_View.Element,
+         Data_View          => Model.Data_View,
          Configuration      => Model.Configuration,
          others             => <>);
       use String_Vectors;
@@ -483,7 +660,7 @@ package body TASTE.AADL_Parser is
             Partition_Name : constant String :=
               (if Node.Has_Value
                then To_String (Node.Unsafe_Just.Find_Partition
-                 (Function_Name).Unsafe_Just.Name)
+                 (Function_Name).Element.Name)
                else "");
 
             Block : Protected_Block :=
@@ -526,6 +703,7 @@ package body TASTE.AADL_Parser is
                         if not Remote_Node.Has_Value
                           or not Block.Node.Has_Value
                         then
+                           Put_Error (To_String (Remote.Function_Name));
                            raise Concurrency_View_Error with
                              "Concurrency Generation Error (parser bug?)";
                         end if;
@@ -543,12 +721,13 @@ package body TASTE.AADL_Parser is
                if PI.RCM = Cyclic_Operation or PI.RCM = Sporadic_Operation then
                   declare
                      Thread : constant AADL_Thread :=
-                       (Name                 => To_Lower (To_String (F.Name))
-                        & "_" & PI.Name,
+                       (Name                 =>
+                          To_Lower (To_String (F.Name)) & "_" & PI.Name,
                         Partition_Name       => US (Partition_Name),
                         RCM                  => US (PI.RCM'Img),
                         Need_Mutex           => (F.Provided.Length > 1),
-                        Entry_Port_Name      => PI.Name,
+                        Entry_Port_Name      => --  PI.Name,   DELETEME
+                          To_Lower (To_String (F.Name)) & "_" & PI.Name,
                         Ref_Protected_Block  => Block,
                         Protected_Block_Name => Block.Ref_Function.Name,
                         Node                 => Block.Node,
@@ -557,8 +736,7 @@ package body TASTE.AADL_Parser is
                                                     (Model, F, Partition_Name),
                         Priority             => US (PI.Priority'Img),
                         Dispatch_Offset_Ms   => US (PI.Dispatch_Offset'Img),
-                        Stack_Size_In_Bytes  => US
-                            (Integer'Image (PI.Stack_Size * 1000)));
+                        Stack_Size_In_Bytes  => US (PI.Stack_Size'Img));
                   begin
                      CV.Nodes
                        (Node_Name).Partitions (Partition_Name).Threads.Include
@@ -581,15 +759,15 @@ package body TASTE.AADL_Parser is
             --  Find and set protected blocks calling threads
             Set_Calling_Threads (Partition);
 
-            --  Check that all blocks have a calling thread, otherwise
-            --  they will never run
+            --  --  Check that all blocks have a calling thread, otherwise
+            --  --  they will never run
             --  for B of Partition.Blocks loop
-            --   if B.Calling_Threads.Length = 0 then
-            --        raise Concurrency_View_Error with
-            --        "Function "
-            --        & To_String (B.Ref_Function.Name)
-            --        & " has no active caller";
-            --   end if;
+            --    if B.Calling_Threads.Length = 0 then
+            --       raise Concurrency_View_Error with
+            --         "Function "
+            --         & To_String (B.Ref_Function.Name)
+            --         & " has no active caller";
+            --    end if;
             --  end loop;
 
             --  Define ports at partition (process) level
@@ -602,7 +780,7 @@ package body TASTE.AADL_Parser is
                      Node : constant Option_Node.Option  :=
                        CV.Deployment.Find_Node
                          (To_String (Remote.Function_Name));
-                     Part : Option_Partition.Option;
+                     Part : Partition_Holder;
                      --  Optional type of the parameter:
                      Sort : constant Unbounded_String :=
                        (if not T.PI.Params.Is_Empty
@@ -619,14 +797,17 @@ package body TASTE.AADL_Parser is
                           Node.Unsafe_Just.Find_Partition
                             (To_String (Remote.Function_Name));
 
-                        if Part.Has_Value
-                          and then Part.Unsafe_Just.Name
+                        if not Part.Is_Empty
+                          and then Part.Element.Name
                             /= Partition.Deployment_Partition.Name
                              and then not Partition.In_Ports.Contains
                                (To_String (T.Entry_Port_Name))
                         then
-                           --  shouldn't we check for presence first in case
-                           --  there are multiple callers?
+                           --  We check for presence in case of multiple
+                           --  callers, but then Remote_Partition_Name
+                           --  is set only for one of them. For Input ports
+                           --  it does not matter because this field is not
+                           --  used anywhere.
                            Partition.In_Ports.Insert
                              (Key      => To_String (T.Entry_Port_Name),
                               New_Item => (Port_Name   => T.Entry_Port_Name,
@@ -635,7 +816,7 @@ package body TASTE.AADL_Parser is
                                            Encoding    => Encoding,
                                            Queue_Size  => US ("1"),
                                            Remote_Partition_Name
-                                                    => Part.Unsafe_Just.Name));
+                                                    => Part.Element.Name));
                         end if;
                      else
                         Put_Error ("This should never happen.");
@@ -649,7 +830,7 @@ package body TASTE.AADL_Parser is
                         Node : constant Option_Node.Option  :=
                           CV.Deployment.Find_Node
                             (To_String (Remote.Function_Name));
-                        Part : Option_Partition.Option;
+                        Part : Partition_Holder;
                         --  Optional type of the parameter:
                         Sort : constant Unbounded_String :=
                           (if not Out_Port.RI.Params.Is_Empty
@@ -665,35 +846,34 @@ package body TASTE.AADL_Parser is
                            Part := Node.Unsafe_Just.Find_Partition
                              (To_String (Remote.Function_Name));
 
-                           if Part.Has_Value and then Part.Unsafe_Just.Name
+                           if not Part.Is_Empty and then Part.Element.Name
                              /= Partition.Deployment_Partition.Name
                            then
                               if not Partition.Out_Ports.Contains
-                                (To_String (Out_Port.RI.Name))
+                                (To_String (Out_Port.Name))
                               then
                                  --  Create a new port and reference the thread
                                  Partition.Out_Ports.Insert
-                                   (Key      => To_String (Out_Port.RI.Name),
-                                    New_Item => (Port_Name   =>
-                                                     --  Out_Port.RI.Name,
-                                                     Out_Port.Name,
-                                                 Connected_Threads =>
-                                                   String_Vectors.Empty_Vector
+                                   (Key      => To_String (Out_Port.Name),
+                                    New_Item =>
+                                    (Port_Name         => Out_Port.Name,
+                                     Connected_Threads =>
+                                                 String_Vectors.Empty_Vector
                                                  & To_String (T.Name),
-                                                 Type_Name   => Sort,
-                                                 Encoding => Encoding,
-                                                 Remote_Partition_Name =>
-                                                   Part.Unsafe_Just.Name,
-                                                 Remote_Function_Name =>
-                                                   Remote.Function_Name,
-                                                 Remote_Port_Name =>
-                                                   Remote.Interface_Name,
-                                                 Queue_Size => US ("1")));
+                                     Type_Name         => Sort,
+                                     Encoding          => Encoding,
+                                     Remote_Partition_Name =>
+                                                 Part.Element.Name,
+                                     Remote_Function_Name =>
+                                                  Remote.Function_Name,
+                                     Remote_Port_Name =>
+                                      Out_Port.Remote_Thread,
+                                     Queue_Size => US ("1")));
                               else
                                  --  Port already exists: just add this thread
                                  Partition.Out_Ports
                                    (To_String
-                                      (Out_Port.RI.Name)).Connected_Threads
+                                      (Out_Port.Name)).Connected_Threads
                                      .Append (To_String (T.Name));
                               end if;
                            end if;
@@ -780,41 +960,57 @@ package body TASTE.AADL_Parser is
          raise Quit_Taste;
    end Generate_Code;
 
-   function Process_Function (F : in out Taste_Terminal_Function)
-      return Function_Maps.Map
-   is
-      New_Functions    : Function_Maps.Map;
+   procedure Generate_Concurrency_View (Model : TASTE_Model) is
    begin
-      --  Look for GUIs and add a Poll PI (if there is at least one RI)
-      if F.Required.Length > 0 and F.Language = "gui" then
-         F.Provided.Insert (Key      => "Poll",
-                            New_Item => (Name            => US ("Poll"),
-                                         Parent_Function => F.Name,
-                                         RCM             => Cyclic_Operation,
-                                         Period_Or_MIAT  => 10,
-                                         others => <>));
-      end if;
-      return New_Functions;
-   end Process_Function;
+      Model.Concurrency_View.Generate_Code (
+        Model.Configuration.CV_Templates_Dir.Element);
+   exception
+      when Error : Concurrency_View_Error | Ada.IO_Exceptions.Name_Error =>
+         Put_Error ("Concurrency View : "
+                    & Ada.Exceptions.Exception_Message (Error));
+         raise Quit_Taste;
+   end Generate_Concurrency_View;
 
    procedure Preprocessing (Model : in out TASTE_Model) is
-      New_Functions : Function_Maps.Map;
-      DV : Complete_Deployment_View := Model.Deployment_View.Element;
+      DV : Complete_Deployment_View;
       use Remote_Entities,
           Parameters;
+      --  When processing functions, we may create new functions. They
+      --  are stored in a new map during the iteration over existing functions
+      To_Be_Duplicated : Function_Maps.Map;
    begin
-      --  Processing of user-defined functions (may return a list of new
-      --  functions that will be added to the model)
+      --  Processing of user-defined functions
       for F of Model.Interface_View.Flat_Functions loop
-         declare
-            Funcs : constant Function_Maps.Map := Process_Function (F);
-         begin
-            for Each of Funcs loop
-               New_Functions.Insert (Key      => To_String (Each.Name),
-                                     New_Item => Each);
-            end loop;
-         end;
+         --  Look for GUIs and add a Poll PI (if there is at least one RI)
+         if F.Required.Length > 0 and F.Language = "gui" then
+            F.Provided.Insert (Key      => "Poll",
+                               New_Item => (Name            => US ("Poll"),
+                                            Parent_Function => F.Name,
+                                            RCM             =>
+                                                            Cyclic_Operation,
+                                            Period_Or_MIAT  => 10,
+                                            others => <>));
+         end if;
+         if F.Max_Instances > 1 then
+            To_Be_Duplicated.Insert (Key      => To_String (F.Name),
+                                     New_Item => F);
+         end if;
       end loop;
+
+      for F of To_Be_Duplicated loop
+         --  If more than one instance of a function can be created, duplicate
+         --  this function and rename it (based in Min_ and Max_Instances)
+         for I in 2 .. F.Max_Instances loop
+            Model.Duplicate_Function (From            => To_String (F.Name),
+                                      Instance_Number => I);
+         end loop;
+         --  Renaming is about functions that have multiple instances. Only
+         --  the existing function is renamed with an instance number set to 1.
+         Model.Rename_Function (From => To_String (F.Name),
+                                To   => To_String (F.Name) & "_1");
+      end loop;
+
+      DV := Model.Deployment_View.Element;
 
       --  For each partition generate a timer manager if needed
       for Node : Taste_Node of DV.Nodes loop
@@ -863,12 +1059,14 @@ package body TASTE.AADL_Parser is
                         Manager_As_Remote : constant Remote_Entity :=
                           (Function_Name  => Timer_Manager.Name,
                            Language       => US ("C"),
-                           Interface_Name => US (Name_In_Manager));
+                           Interface_Name => US (Name_In_Manager),
+                           Instance_Of    => US (""));
 
                         Function_As_Remote : constant Remote_Entity :=
                           (Function_Name  => US (Function_Name),
                            Language       => US (Func_Language),
-                           Interface_Name => US (Timer_Name));
+                           Interface_Name => US (Timer_Name),
+                           Instance_Of    => US (""));
 
                         Timer_PI : constant Taste_Interface :=
                           (Name              => US (Timer_Name),
@@ -915,6 +1113,7 @@ package body TASTE.AADL_Parser is
                            Remote_Interfaces => Remote_Entities.Empty_Vector &
                            (Function_Name  => US (Function_Name),
                             Language       => US (Func_Language),
+                            Instance_Of    => US (""),
                             Interface_Name => US (Set_Name_In_Function)),
                            Params            => Parameters.Empty_Vector &
                            (Name            => US ("Val"),
@@ -935,6 +1134,7 @@ package body TASTE.AADL_Parser is
                            Remote_Interfaces => Remote_Entities.Empty_Vector &
                            (Function_Name  => US (Function_Name),
                             Language       => US (Func_Language),
+                            Instance_Of    => US (""),
                             Interface_Name => US (Reset_Name_In_Function)),
                            Params            => Parameters.Empty_Vector,
                            RCM               => Protected_Operation,
@@ -949,7 +1149,8 @@ package body TASTE.AADL_Parser is
                                (Function_Name).Language,
                            Remote_Interfaces => Remote_Entities.Empty_Vector &
                            (Function_Name  => US (Manager_Name),
-                            Language       => US ("C"),  --  manager is in C
+                            Language       => US ("Timer_Manager"),
+                            Instance_Of    => US (""),
                             Interface_Name => US (Set_Name_In_Manager)),
                            Params            => Parameters.Empty_Vector &
                            (Name           => US ("Val"),
@@ -972,7 +1173,8 @@ package body TASTE.AADL_Parser is
                                (Function_Name).Language,
                            Remote_Interfaces => Remote_Entities.Empty_Vector &
                            (Function_Name  => US (Manager_Name),
-                            Language       => US ("C"),  -- manager is in C
+                            Language       => US ("Timer_Manager"),
+                            Instance_Of    => US (""),
                             Interface_Name => US (Reset_Name_In_Manager)),
                            Params            => Parameters.Empty_Vector,
                            RCM               => Protected_Operation,
@@ -1047,7 +1249,7 @@ package body TASTE.AADL_Parser is
                     (Key      => Manager_Name,
                      New_Item => Timer_Manager);
                   --  Bind it in the deployment view
-                  Partition.Bound_Functions.Insert (Manager_Name);
+                  Partition.Bound_Functions.Append (Manager_Name);
                end if;
             end;
          end loop;

@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 with Ada.Strings.Unbounded,
@@ -17,11 +17,13 @@ package TASTE.Backend is
      (if    Language = "ada"             then "Ada"
       elsif Language = "c"               then "C"
       elsif Language = "blackbox_device" then "Blackbox_C"
+      elsif Language = "blackbox_c"      then "Blackbox_C"
       elsif Language = "gui"             then "GUI"
       elsif Language = "cpp"             then "CPP"
       elsif Language = "rtds"            then "RTDS"
       elsif Language = "sdl"             then "SDL"
       elsif Language = "sdl_opengeode"   then "SDL"
+      elsif Language = "seds"            then "SEDS"
       elsif Language = "simulink"        then "SIMULINK"
       elsif Language = "qgenc"           then "QGenC"
       elsif Language = "qgenada"         then "QGenAda"

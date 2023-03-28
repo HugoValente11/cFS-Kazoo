@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 
@@ -11,7 +11,9 @@ package TASTE.Dump is
    Dump_Error : exception;
 
    --  Dump input files (interface, data, deployment)
-   --  using the templates in the templates/dump/* subfolders
-   procedure Dump_Input_Model (Model : TASTE_Model);
+   --  using by default the templates in the templates/dump/* subfolders
+   procedure Dump_Input_Model
+       (Model  : TASTE_Model;
+        Prefix : String);
 
 end TASTE.Dump;

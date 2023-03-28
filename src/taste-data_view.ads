@@ -8,6 +8,7 @@
 with Text_IO,
      Ada.Containers.Indefinite_Ordered_Maps,
      Ada.Strings.Unbounded,
+     Templates_Parser,
      Ocarina,
      Ocarina.Types,
      TASTE.Parser_Utils;
@@ -15,6 +16,7 @@ with Text_IO,
 use Text_IO,
     Ada.Containers,
     Ada.Strings.Unbounded,
+    Templates_Parser,
     Ocarina,
     Ocarina.Types,
     TASTE.Parser_Utils;
@@ -66,6 +68,11 @@ package TASTE.Data_View is
    procedure Check_Files (DV : Taste_Data_View);
 
    procedure Debug_Dump (DV : Taste_Data_View; Output : File_Type);
+
+   --  Functions converting the AST into Templates Parser tags
+   function Get_Module_List    (DV : Taste_Data_View) return Tag;
+   function Get_ASN1_File_List (DV : Taste_Data_View) return Tag;
+   function Get_ACN_File_List  (DV : Taste_Data_View) return Tag;
 
    --  Make a local copy of ASN.1 files to allow project export
    procedure Export_ASN1_Files (DV : Taste_Data_View; Output_Path : String);

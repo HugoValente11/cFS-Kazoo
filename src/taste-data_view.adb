@@ -195,6 +195,35 @@ package body TASTE.Data_View is
       end loop;
    end Debug_Dump;
 
+   function Get_Module_List (DV : Taste_Data_View) return Tag is
+      Result : Tag;
+   begin
+      for Each of DV.ASN1_Files loop
+         for Module of Each.Modules loop
+            Result := Result & Module.Name;
+         end loop;
+      end loop;
+      return Result;
+   end Get_Module_List;
+
+   function Get_ASN1_File_List (DV : Taste_Data_View) return Tag is
+      Result : Tag;
+   begin
+      for Each of DV.ASN1_Files loop
+         Result := Result & Each.Path;
+      end loop;
+      return Result;
+   end Get_ASN1_File_List;
+
+   function Get_ACN_File_List  (DV : Taste_Data_View) return Tag is
+      Result : Tag;
+   begin
+      for Each of DV.ACN_Files loop
+         Result := Result & Each;
+      end loop;
+      return Result;
+   end Get_ACN_File_List;
+
    procedure Export_ASN1_Files (DV : Taste_Data_View; Output_Path : String) is
    begin
       for Idx in DV.ASN1_Files.Iterate loop

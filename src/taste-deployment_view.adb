@@ -106,7 +106,7 @@ package body TASTE.Deployment_View is
               & Driver.Associated_Processor_Name;
             Device_Configurations := Device_Configurations
               & Driver.Device_Configuration;
-            Device_Packetizers := Device_Configurations
+            Device_Packetizers := Device_Packetizers
               & Driver.Device_Packetizer;
             Device_Accessed_Bus_Names :=  Device_Accessed_Bus_Names
               & Driver.Accessed_Bus_Name.Element;
@@ -455,7 +455,7 @@ package body TASTE.Deployment_View is
             Result.Device_Configuration := US ("noconf");
          end if;
 
-	      if Is_Defined_Property (CI, "deployment::packetizer") and then
+         if Is_Defined_Property (CI, "deployment::packetizer") and then
             Get_String_Property (CI, "deployment::packetizer") /= No_Name
          then
             Result.Device_Packetizer :=
@@ -464,7 +464,6 @@ package body TASTE.Deployment_View is
          else
             Result.Device_Packetizer := US ("default");
          end if;
-
 
          Find_Connected_Bus (CI, Accessed_Bus, Accessed_Port);
 
@@ -506,12 +505,12 @@ package body TASTE.Deployment_View is
 
       function Parse_Partition (CI : Node_Id; Depl : Node_Id)
                                 return Taste_Partition is
-         Result         : Taste_Partition;
-         CPU            : Node_Id;
-         Processes      : Node_Id;
-         P_CI           : Node_Id;
-         Ref            : Node_Id;
-         Startup_Priorities : Unsigned_Long_Long_Vectors.Vector;
+         Result               : Taste_Partition;
+         CPU                  : Node_Id;
+         Processes            : Node_Id;
+         P_CI                 : Node_Id;
+         Ref                  : Node_Id;
+         Startup_Priorities   : Unsigned_Long_Long_Vectors.Vector;
          procedure Separate_CPU_Family_From_Instance
          --  If the CPU in the AADL model is "leon3.air", then split into
          --  family "leon3" and instance "air" based on dot separator
@@ -534,7 +533,6 @@ package body TASTE.Deployment_View is
             Instance := US (Inst);
          end Separate_CPU_Family_From_Instance;
 
-         	
          --  Built-in sort not used because we need to
          --  sort two vectors at once
          procedure Sort_Functions_Based_On_Startup_Priority
@@ -544,6 +542,7 @@ package body TASTE.Deployment_View is
             if Bound_Functions.Length /= Startup_Priorities.Length then
                raise Startup_Priority_Error;
             end if;
+
             for I in Bound_Functions.First_Index ..
                      Bound_Functions.Last_Index - 1 loop
                for J in Bound_Functions.First_Index ..
@@ -693,7 +692,7 @@ package body TASTE.Deployment_View is
 
                if Ref = CI then
                   begin
-	                  if Result.Bound_Functions.Contains (
+                     if Result.Bound_Functions.Contains (
                         Get_Name_String (ATN.Name
                         (ATN.Component_Type_Identifier
                             (Corresponding_Declaration (P_CI)))))
@@ -728,16 +727,15 @@ package body TASTE.Deployment_View is
             end if;
             Processes := Next_Node (Processes);
          end loop;
-	      Sort_Functions_Based_On_Startup_Priority (
+         Sort_Functions_Based_On_Startup_Priority (
             Result.Bound_Functions, Startup_Priorities);
-
          return Result;
          exception
-	         when Startup_Priority_Error =>
+            when Startup_Priority_Error =>
                Put_Info ("Bound functions and startup priorities " &
                          "lengths do not match for partition: "
                          & To_String (Result.Name));
-            return Result;
+               return Result;
       end Parse_Partition;
 
       function Parse_Node (Depl_View_System : Node_Id) return Taste_Node is
@@ -855,7 +853,7 @@ package body TASTE.Deployment_View is
 
    function Find_Partition (Node          : Taste_Node;
                             Function_Name : String)
-                            return Partion_Holder is
+                            return Partition_Holder is
    begin
       for Partition of Node.Partitions loop
          if Partition.Bound_Functions.Contains (Function_Name) then
@@ -895,7 +893,7 @@ package body TASTE.Deployment_View is
 
                      --  Update the information in the deployment view
                      C_DV.Source_Function := C_IV.Caller;
-	                  --  C_DV.Source_Port     := C_IV.Callee & "_" & C_IV.RI_Name;
+                  --  C_DV.Source_Port     := C_IV.Callee & "_" & C_IV.RI_Name;
                      --  Port name
                      C_DV.Source_Port     := C_IV.Caller
                                              & "_" & C_IV.RI_Name

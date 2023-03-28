@@ -8,6 +8,7 @@ with Ada.Containers.Indefinite_Ordered_Maps,
      Ada.Containers.Indefinite_Ordered_Sets,
      Ada.Containers.Indefinite_Vectors,
      Ada.Containers.Indefinite_Holders,
+     Ada.Containers.Vectors,
      Ada.Strings.Unbounded,
      Ada.Strings.Equal_Case_Insensitive,
      Ada.Strings.Less_Case_Insensitive,
@@ -132,6 +133,8 @@ package TASTE.Parser_Utils is
 
    AADL_Parser_Error : exception;
 
+   Startup_Priority_Error : exception;
+
    function Get_APLC_Binding (E : Node_Id) return List_Id;
 
    function Get_Interface_Name (D : Node_Id) return Name_Id;
@@ -151,6 +154,9 @@ package TASTE.Parser_Utils is
                                     Prefix     : String := "")
      return Translate_Set;
 
+   package Unsigned_Long_Long_Vectors is new Vectors (Natural,
+                                                      Unsigned_Long_Long);
+
    package String_Vectors is new Indefinite_Vectors (Natural, String,
                                            Ada.Strings.Equal_Case_Insensitive);
    package String_Sets is new Indefinite_Ordered_Sets
@@ -159,7 +165,7 @@ package TASTE.Parser_Utils is
        "="          => Ada.Strings.Equal_Case_Insensitive);
 
    --  Helper function translating directly a string set to a templates Tag
-   function To_Template_Tag (SS : String_Sets.Set) return Tag;
+   function To_Template_Tag (SV : String_Vectors.Vector) return Tag;
 
    function Get_Properties_Map (D : Node_Id) return Property_Maps.Map;
 
@@ -196,6 +202,7 @@ package TASTE.Parser_Utils is
          Deployment_View,
          Data_View,
          Output_Dir,
+         CV_Templates_Dir,
          Target           : String_Holder;
          Check_Data_View  : aliased Boolean := False;
          Skeletons        : aliased Boolean := True;

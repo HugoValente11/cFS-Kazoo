@@ -33,8 +33,8 @@ package TASTE.AADL_Parser is
    type TASTE_Model is tagged
       record
          Interface_View   : Complete_Interface_View;
-         Deployment_View  : Deployment_View_Holder;
-         Data_View        : Taste_Data_View;
+         Deployment_View  : aliased Deployment_View_Holder;
+         Data_View        : aliased Taste_Data_View;
          Concurrency_View : Taste_Concurrency_View;
          Configuration    : Taste_Configuration;
       end record;
@@ -63,17 +63,28 @@ package TASTE.AADL_Parser is
 
    function Find_Binding (Model : TASTE_Model;
                           F     : Unbounded_String)
-                          return Option_Partition.Option;
+                          return Partition_Holder;
+
+   --  Copy a function and bind it to the same partition as the original
+   --  This is used to support multiple instances of a function type.
+   --  Each instance is a duplicate of the user-defined instance, but with
+   --  a different name.
+   procedure Duplicate_Function (Model           : in out TASTE_Model;
+                                 From            : String;
+                                 Instance_Number : Integer);
+
+   --  Rename a function: useful after duplicating to rename the original
+   --  function with an index suffix.
+   procedure Rename_Function (Model    : in out TASTE_Model;
+                              From, To : String);
 
    procedure Dump                  (Model : TASTE_Model);
    procedure Generate_Code         (Model : TASTE_Model);
 
+   --  Process Templates from the templates/concurrency_view subfolder
+   procedure Generate_Concurrency_View (Model : TASTE_Model);
+
 private
    procedure Build_TASTE_AST (Model : out TASTE_Model);
    procedure Find_Shared_Libraries (Model : out TASTE_Model);
-
-   --  Perform various processing on a function. Return a map of possibly
-   --  created new functions, to be added to the new Model
-   function Process_Function (F : in out Taste_Terminal_Function)
-      return Function_Maps.Map;
 end TASTE.AADL_Parser;

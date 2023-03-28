@@ -20,7 +20,7 @@ private
       record
          Present : Boolean := False;
          Valid   : Boolean := True;
-         Value   : T;
+         Value   : aliased T;
       end record;
 
    function Just (I : T) return Option is (Present => True,

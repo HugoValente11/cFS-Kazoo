@@ -1,5 +1,5 @@
 --  ******************************* KAZOO  *******************************  --
---  (c) 2017-2021 European Space Agency - maxime.perrotin@esa.int
+--  (c) 2017-2022 European Space Agency - maxime.perrotin@esa.int
 --  See LICENSE file
 --  *********************************************************************** --
 
@@ -19,7 +19,8 @@ begin
       Model : TASTE_Model := Parse_Project;
    begin
       --  Call Template-based dump backends (convert to xml, graphviz...)
-      TASTE.Dump.Dump_Input_Model (Model);
+      TASTE.Dump.Dump_Input_Model (Model,
+           Model.Configuration.Binary_Path.Element & "templates/dump");
 
       if Model.Configuration.Debug_Flag then
          --  Dump not based on templates (deprecated)
@@ -30,8 +31,13 @@ begin
          Model.Preprocessing;
          Model.Add_Concurrency_View;
          Model.Add_CV_Properties;
-         Model.Concurrency_View.Generate_CV;
+         Model.Generate_Concurrency_View;
       end if;
+
+      --  Call template-based dump backends after preprocessing
+      --  (some functions may have been created)
+      TASTE.Dump.Dump_Input_Model (Model,
+          Model.Configuration.Binary_Path.Element & "templates/dump_post");
 
       Model.Generate_Code;
 
