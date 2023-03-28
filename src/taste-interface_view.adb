@@ -85,6 +85,8 @@ package body TASTE.Interface_View is
       Protected_Name     : constant Name_Id := Get_String_Name ("protected");
       Cyclic_Name        : constant Name_Id := Get_String_Name ("cyclic");
       Sporadic_Name      : constant Name_Id := Get_String_Name ("sporadic");
+      Event_Name      : constant Name_Id := Get_String_Name ("events");
+      Message_Name      : constant Name_Id := Get_String_Name ("message");
       Any_Name           : constant Name_Id := Get_String_Name ("any");
    begin
       if Is_Defined_Enumeration_Property (E, RCM_Operation_Kind) then
@@ -102,6 +104,12 @@ package body TASTE.Interface_View is
 
          elsif RCM_Operation_Kind_N = Sporadic_Name then
             return Sporadic_Operation;
+
+         elsif RCM_Operation_Kind_N = Event_Name then
+            return Event_Operation;
+
+         elsif RCM_Operation_Kind_N = Message_Name then
+            return Message_Operation;
 
          elsif RCM_Operation_Kind_N = Any_Name then
             return Any_Operation;
@@ -142,6 +150,92 @@ package body TASTE.Interface_View is
          return 0;
       end if;
    end Get_RCM_Period;
+
+   --------------------
+   -- Get_Event_Name --
+   --------------------
+
+   function Get_Event_Name (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::eventname");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Event_Name;
+
+   --------------------
+   -- Get_Event_Info --
+   --------------------
+
+   function Get_Event_Info (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::eventinfo");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Event_Info;
+
+   --------------------
+   -- Get_Event_ID --
+   --------------------
+
+   function Get_Event_ID (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::eventid");
+   begin
+      if Is_Defined_String_Property (D, Event_Name) then
+         return Get_String_Property (D, Event_Name);
+      else
+         return "-1";
+      end if;
+   end Get_Event_ID;
+
+   --------------------
+   -- Get_Event_Type --
+   --------------------
+
+   function Get_Event_Type (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::eventtype");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Event_Type;
+
+   --------------------
+   -- Get_Message_ID --
+   --------------------
+
+   function Get_Message_ID (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::messageid");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Message_ID;
+
+   --------------------
+   -- Get_Message_Content --
+   --------------------
+
+   function Get_Message_Content (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::messagecontent");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Message_Content;
+
+   --------------------
+   -- Get_Message_Size --
+   --------------------
+
+   function Get_Message_Size (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::messagesize");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Message_Size;
+
+   --------------------
+   -- Get_Store_Message --
+   --------------------
+
+   function Get_Store_Message (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::storemessage");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Store_Message;
 
    --------------------------
    -- Get_Ada_Package_Name --
@@ -488,6 +582,14 @@ package body TASTE.Interface_View is
          Result.RCM := Get_RCM_Operation_Kind (If_I);
          Result.Period_Or_MIAT := Get_RCM_Period (If_I);
          Result.WCET_ms := Get_Upper_WCET (If_I);
+         Result.Event_Name := US (Get_Event_Name (If_I));
+         Result.Event_Info := US (Get_Event_Info (If_I));
+         Result.Event_Type := US (Get_Event_Type (If_I));
+         Result.Event_ID := US (Get_Event_ID (If_I));
+         Result.Message_ID := US (Get_Message_ID (If_I));
+         Result.Message_Content := US (Get_Message_Content (If_I));
+         Result.Message_Size := US (Get_Message_Size (If_I));
+         Result.Store_Message := US (Get_Store_Message (If_I));
 
          Result.User_Properties := Get_Properties_Map (If_I);
          --  Get various properties as 1st class citizens in the AST
@@ -707,6 +809,19 @@ package body TASTE.Interface_View is
             then
                Put_Debug ("Component type found : " & To_String (Each.Value));
                Result.Is_Type := True;
+            end if;
+            if Each.Name = "Taste::Startup_Priority"
+            then
+               Result.F_Priority := Just (Unsigned_Long_Long'Value
+                  (To_String (Each.Value)));
+            end if;
+            if Each.Name = "Taste::Needs_datastore"
+            then
+               Result.DataStore := Each.Value;
+            end if;
+            if Each.Name = "Taste::Datastore_size"
+            then
+               Result.DataStoreSize := Each.Value;
             end if;
             if Each.Name = "TASTE_IV_Properties::is_instance_of"
             then
@@ -1018,6 +1133,7 @@ package body TASTE.Interface_View is
       Result               : Func_As_Template;
 
       List_Of_PIs,
+      List_Of_Events,
       List_Of_RIs,
       List_Of_Sync_PIs     : Tag;
 
@@ -1219,6 +1335,7 @@ package body TASTE.Interface_View is
                   else Ada.Directories.Full_Name
                    (To_String (F.Zip_File.Unsafe_Just))))
         & Assoc ("List_Of_PIs",           List_Of_PIs)
+        & Assoc ("List_Of_Events",        List_Of_Events)
         & Assoc ("List_Of_RIs",           List_Of_RIs)
         & Assoc ("List_Of_Sync_PIs",      List_Of_Sync_PIs)
         & Assoc ("List_Of_Sync_RIs",      List_Of_Sync_RIs)
@@ -1236,6 +1353,9 @@ package body TASTE.Interface_View is
         & Assoc ("ASync_RI_Param_Type",   ASync_RI_Param_Type)
         & Assoc ("Async_RIs_Parent",      Async_RIs_Parent)
         & Assoc ("CP_Names",              CP_Names)
+        & Assoc ("DataStore",             F.DataStore)
+        & Assoc ("DataStoreSize",         F.DataStoreSize)
+        & Assoc ("Function_Priority",     F.F_Priority.Value_Or (100)'Img)
         & Assoc ("CP_Types",              CP_Types)
         & Assoc ("CP_Values",             CP_Values)
         & Assoc ("CP_Asn1Modules",        CP_Asn1Modules)
@@ -1454,6 +1574,14 @@ package body TASTE.Interface_View is
         & Assoc ("Period",                 TI.Period_Or_MIAT'Img)
         & Assoc ("WCET",                   TI.WCET_ms.Value_Or (0)'Img)
         & Assoc ("Queue_Size",             TI.Queue_Size.Value_Or (1)'Img)
+        & Assoc ("Event_Name",             TI.Event_Name)
+        & Assoc ("Event_Info",             TI.Event_Info)
+        & Assoc ("Event_Type",             TI.Event_Type)
+        & Assoc ("Event_ID",               TI.Event_ID)
+        & Assoc ("Message_ID",             TI.Message_ID)
+        & Assoc ("Message_Content",        TI.Message_Content)
+        & Assoc ("Message_Size",           TI.Message_Size)
+        & Assoc ("Store_Message",          TI.Store_Message)
         & Assoc ("IF_Stack_Size",          TI.Stack_Size)
         & Assoc ("IF_Priority",            TI.Priority)
         & Assoc ("IF_Offset",              TI.Dispatch_Offset)

@@ -51,12 +51,23 @@ package TASTE.Interface_View is
                                          Protected_Operation,
                                          Cyclic_Operation,
                                          Sporadic_Operation,
+                                         Event_Operation,
+                                         Message_Operation,
                                          Any_Operation);
 
    function Get_RCM_Operation_Kind (E : Node_Id)
      return Supported_RCM_Operation_Kind;
 
    function Get_RCM_Operation (E : Node_Id) return Node_Id;
+
+   function Get_Event_Name (D : Node_Id) return String;
+   function Get_Event_ID (D : Node_Id) return String;
+   function Get_Event_Info (D : Node_Id) return String;
+   function Get_Event_Type (D : Node_Id) return String;
+   function Get_Message_ID (D : Node_Id) return String;
+   function Get_Message_Content (D : Node_Id) return String;
+   function Get_Message_Size (D : Node_Id) return String;
+   function Get_Store_Message (D : Node_Id) return String;
 
    function Get_RCM_Period (D : Node_Id) return Unsigned_Long_Long;
 
@@ -123,6 +134,14 @@ package TASTE.Interface_View is
          Period_Or_MIAT    : Unsigned_Long_Long;
          WCET_ms           : Option_ULL.Option := Option_ULL.Nothing;
          Queue_Size        : Option_ULL.Option := Option_ULL.Nothing;
+         Event_Name        : Unbounded_String;
+         Event_Info        : Unbounded_String;
+         Event_Type        : Unbounded_String;
+         Event_ID          : Unbounded_String;
+         Message_ID        : Unbounded_String;
+         Message_Content   : Unbounded_String;
+         Message_Size      : Unbounded_String;
+         Store_Message     : Unbounded_String;
          User_Properties   : Property_Maps.Map;
          Is_Timer          : Boolean := False;
          --  Following attributes are set in SpaceCreator at IV level
@@ -163,6 +182,10 @@ package TASTE.Interface_View is
    type Taste_Terminal_Function is tagged
       record
          Name            : Unbounded_String;
+         DataStore       : Unbounded_String;
+         DataStoreSize   : Unbounded_String;
+         Function_Priority : Option_ULL.Option := Option_ULL.Nothing;
+         F_Priority      : Option_ULL.Option := Option_ULL.Nothing;
          Context         : Unbounded_String      := Null_Unbounded_String;
          Full_Prefix     : Option_UString.Option := Option_UString.Nothing;
          Language        : Unbounded_String;

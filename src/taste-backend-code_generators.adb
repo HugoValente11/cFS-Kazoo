@@ -152,12 +152,13 @@ package body TASTE.Backend.Code_Generators is
       --  Optionally contains a CPU_Platform argument, added to the template
       --  in case a deployment view is present (e.g. for glue code generation)
       function Process_Interfaces (Interfaces : Template_Vectors.Vector;
+                                   Template   : String;
                                    Path       : String;
                                    CPU_Platform : String := "")
       return Unbounded_String
       is
          Result      : Unbounded_String := Null_Unbounded_String;
-         Tmplt_Sign  : constant String := Path & "interface.tmplt";
+         Tmplt_Sign  : constant String := Path & Template;
          Doc_Done    : Boolean := False;
       begin
          for Each of Interfaces loop
@@ -304,12 +305,62 @@ package body TASTE.Backend.Code_Generators is
                                     Func_Tmpl.Header)
                          & Assoc ("Provided_Interfaces",
                                   Process_Interfaces
-                                     (Func_Tmpl.Provided, Path, CPU_Platform))
+                                     (Func_Tmpl.Provided,
+                                     "interface.tmplt", Path, CPU_Platform))
                          & Assoc ("Required_Interfaces",
                                   Process_Interfaces
-                                     (Func_Tmpl.Required, Path, CPU_Platform))
-                         & Assoc ("ASN1_Modules",
-                                  Model.Data_View.Get_Module_List)
+                                     (Func_Tmpl.Required,
+                                     "interface.tmplt", Path, CPU_Platform))
+                         & Assoc ("Event_Filters",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "event_filters.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Send_Events",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "send_events.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Send_Messages_Init",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "send_messages_init.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Send_Messages_Functions",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "send_messages_functions.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Receive_Messages_Init",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "send_messages_init.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("Receive_Messages_Functions",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "send_messages_functions.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("QGen_Wrapper_Req",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "qgen_wrapper.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("QGen_Wrapper_Pro",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "qgen_wrapper.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("QGen_Wrapper_Params_Req",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "qgen_wrapper_params.tmplt", Path,
+                                     CPU_Platform))
+                         & Assoc ("QGen_Wrapper_Params_Pro",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "qgen_wrapper_params.tmplt", Path,
+                                     CPU_Platform))
                          & Assoc ("CPU_Platform", CPU_Platform)
                          & Assoc ("ASN1_Files",
                                   Model.Data_View.Get_ASN1_File_List);

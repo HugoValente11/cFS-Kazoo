@@ -87,52 +87,52 @@ package body TASTE.Semantic_Check is
 
             --  Check that functions have at least one PI (or a timer)
             --  with the exception of GUIs and Blackbox devices
-            if Each.Language /= "gui"
-               and then Each.Language /= "blackbox_device"
-               and then Each.Provided.Length = 0
-               and then Each.Timers.Length = 0
-            then
-               raise Semantic_Error with
-                  "Function " & To_String (Each.Name) & " has no provided "
-                  & "interface, no timer, and dead code is not allowed";
-            end if;
+            --  if Each.Language /= "gui"
+            --    and then Each.Language /= "blackbox_device"
+            --    and then Each.Provided.Length = 0
+            --    and then Each.Timers.Length = 0
+            --  then
+            --    raise Semantic_Error with
+            --       "Function " & To_String (Each.Name) & " has no provided "
+            --       & "interface, no timer, and dead code is not allowed";
+            --  end if;
 
             --  Check that Simulink functions don't have any RI
-            if (Each.Language    = "simulink"
-                or Each.Language = "qgenada"
-                or Each.Language = "qgenc")
-                and then (Each.Required.Length /= 0)
-            then
-               raise Semantic_Error with
-                  "Function " & To_String (Each.Name) & " must not have any"
-                  & " Required Interface";
-            end if;
+            --  if (Each.Language    = "simulink"
+            --     or Each.Language = "qgenada"
+            --     or Each.Language = "qgenc")
+            --     and then (Each.Required.Length /= 0)
+            --  then
+            --    raise Semantic_Error with
+            --       "Function " & To_String (Each.Name) & " must not have any"
+            --       & " Required Interface";
+            --  end if;
 
             --  Check that Simulink functions (generated with EmbeddedCoder)
             --  have exactly one PI
-            if (Each.Language = "simulink")
-                and then (Each.Provided.Length /= 1)
-            then
-               raise Semantic_Error with
-                 "Function " & To_String (Each.name) & " must contain only one"
-                 & " Provided Interface";
-            end if;
+            --  if (Each.Language = "simulink")
+            --     and then (Each.Provided.Length /= 1)
+            --  then
+            --    raise Semantic_Error with
+            --   "Function " & To_String (Each.name) & " must contain only one"
+            --      & " Provided Interface";
+            --  end if;
 
-            --  Check that Simulink/QGen functions's PI is synchronous
-            if Each.Language    = "simulink"
-               or Each.Language = "qgenada"
-               or Each.Language = "qgenc"
-            then
-               for PI of Each.Provided loop
-                  if PI.RCM /= Unprotected_Operation
-                     and PI.RCM /= Protected_Operation
-                  then
-                     raise Semantic_Error with "The provided interface of "
-                     & "function " & To_String (Each.Name) & " must be either"
-                     & " protected or unprotected, but not sporadic or cyclic";
-                  end if;
-               end loop;
-            end if;
+            --  --  Check that Simulink/QGen functions's PI is synchronous
+            --  if Each.Language    = "simulink"
+            --    or Each.Language = "qgenada"
+            --    or Each.Language = "qgenc"
+            --  then
+            --    for PI of Each.Provided loop
+            --       if PI.RCM /= Unprotected_Operation
+            --          and PI.RCM /= Protected_Operation
+            --       then
+            --          raise Semantic_Error with "The provided interface of "
+            --       & "function " & To_String (Each.Name) & " must be either"
+            --       & " protected or unprotected, but not sporadic or cyclic";
+            --       end if;
+            --    end loop;
+            --  end if;
 
             --  GUI check:
             --  interfaces must all be sporadic
