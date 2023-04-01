@@ -105,6 +105,9 @@ void @_UPPER:Name_@_APP_Main(void)
         @_UPPER:Name_@_User_Main();
     }
 
+    CFE_ES_RestartApp(@_UPPER:Name_@_Data.AppId);
+
+
 
 @@IF@@ @_List_Of_RIs'Length_@ = 0
     /*
@@ -290,6 +293,9 @@ int32 @_UPPER:Name_@_Init(void)
                              (unsigned long)status);
     }
     CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Pipe creation successful");
+
+    // Get App Id
+    @_UPPER:Name_@_FindAppId();
 
     // Call user init 
     @_UPPER:Name_@_User_Init();
@@ -598,3 +604,27 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
 @_Send_Messages_Functions_@
 @_Receive_Messages_Functions_@
 @@END_IF@@
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Name_@_FindAppId -- Get App Id and set it in App data   */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Name_@_FindAppId(void)
+{
+    /*
+    ** Search the ES Application table for the name that matches this app
+    */
+    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++ )
+    {
+
+        if (!strcmp(CFE_ES_Global.AppTable[i].AppName, @_UPPER:Name_@_APP_NAME))
+        {
+            CFE_ES_GetAppIDByName(&@_UPPER:Name_@_Data.AppId, CFE_ES_Global.AppTable[i].AppName);
+            CFE_ES_WriteToSysLog("[@_UPPER:Name_@] App Name: %s", CFE_ES_Global.AppTable[i].AppName);
+
+        }
+
+    } /* end for */
+}
