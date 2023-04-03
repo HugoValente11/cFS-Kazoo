@@ -344,6 +344,12 @@ package body TASTE.Backend.Code_Generators is
                                      (Func_Tmpl.Required,
                                      "send_messages_functions.tmplt", Path,
                                      CPU_Platform))
+                         & Assoc ("Component_Management_Functions",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "component_management_functions.tmplt",
+                                     Path,
+                                     CPU_Platform))
                          & Assoc ("QGen_Wrapper_Req",
                                   Process_Interfaces
                                      (Func_Tmpl.Required,

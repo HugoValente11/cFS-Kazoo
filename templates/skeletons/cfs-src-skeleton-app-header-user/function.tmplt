@@ -44,6 +44,8 @@ int32 @_UPPER:Name_@_Datastore_Init(void);
 @_Send_Events_@
 @@END_IF@@
 
+@_Component_Management_Functions_@
+
 @@IF@@ @_Language_@ = QGenC
 @@TABLE@@
 void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void);

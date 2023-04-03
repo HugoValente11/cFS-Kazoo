@@ -27,7 +27,7 @@
 @@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
-@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
+@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */

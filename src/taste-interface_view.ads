@@ -53,6 +53,7 @@ package TASTE.Interface_View is
                                          Sporadic_Operation,
                                          Event_Operation,
                                          Message_Operation,
+                                         Component_Management_Operation,
                                          Any_Operation);
 
    function Get_RCM_Operation_Kind (E : Node_Id)
@@ -68,6 +69,7 @@ package TASTE.Interface_View is
    function Get_Message_Content (D : Node_Id) return String;
    function Get_Message_Size (D : Node_Id) return String;
    function Get_Store_Message (D : Node_Id) return String;
+   function Get_Target_Component (D : Node_Id) return String;
 
    function Get_RCM_Period (D : Node_Id) return Unsigned_Long_Long;
 
@@ -142,6 +144,7 @@ package TASTE.Interface_View is
          Message_Content   : Unbounded_String;
          Message_Size      : Unbounded_String;
          Store_Message     : Unbounded_String;
+         Target_Name       : Unbounded_String;
          User_Properties   : Property_Maps.Map;
          Is_Timer          : Boolean := False;
          --  Following attributes are set in SpaceCreator at IV level

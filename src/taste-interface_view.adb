@@ -87,6 +87,8 @@ package body TASTE.Interface_View is
       Sporadic_Name      : constant Name_Id := Get_String_Name ("sporadic");
       Event_Name      : constant Name_Id := Get_String_Name ("events");
       Message_Name      : constant Name_Id := Get_String_Name ("message");
+      Component_Management_Name      : constant Name_Id :=
+       Get_String_Name ("component_management");
       Any_Name           : constant Name_Id := Get_String_Name ("any");
    begin
       if Is_Defined_Enumeration_Property (E, RCM_Operation_Kind) then
@@ -110,6 +112,9 @@ package body TASTE.Interface_View is
 
          elsif RCM_Operation_Kind_N = Message_Name then
             return Message_Operation;
+
+         elsif RCM_Operation_Kind_N = Component_Management_Name then
+            return Component_Management_Operation;
 
          elsif RCM_Operation_Kind_N = Any_Name then
             return Any_Operation;
@@ -236,6 +241,16 @@ package body TASTE.Interface_View is
    begin
       return Get_String_Property (D, Event_Name);
    end Get_Store_Message;
+
+   --------------------
+   -- Get_Target_Component --
+   --------------------
+
+   function Get_Target_Component (D : Node_Id) return String is
+      Event_Name : constant Name_Id := Get_String_Name ("taste::target_pi");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Target_Component;
 
    --------------------------
    -- Get_Ada_Package_Name --
@@ -590,6 +605,7 @@ package body TASTE.Interface_View is
          Result.Message_Content := US (Get_Message_Content (If_I));
          Result.Message_Size := US (Get_Message_Size (If_I));
          Result.Store_Message := US (Get_Store_Message (If_I));
+         Result.Target_Name := US (Get_Target_Component (If_I));
 
          Result.User_Properties := Get_Properties_Map (If_I);
          --  Get various properties as 1st class citizens in the AST
@@ -1582,6 +1598,7 @@ package body TASTE.Interface_View is
         & Assoc ("Message_Content",        TI.Message_Content)
         & Assoc ("Message_Size",           TI.Message_Size)
         & Assoc ("Store_Message",          TI.Store_Message)
+        & Assoc ("Target_Name",            TI.Target_Name)
         & Assoc ("IF_Stack_Size",          TI.Stack_Size)
         & Assoc ("IF_Priority",            TI.Priority)
         & Assoc ("IF_Offset",              TI.Dispatch_Offset)

@@ -1,0 +1,106 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_UPPER:Parent_Function_@     : The name of the function
+@@-- @_Language_@            : The implementation language of the function
+@@-- @_Property_Names_@      : All AADL properties (names) associated to the function
+@@-- @_Property_Values_@     : ... and corresponding values
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_UPPER:Parent_Function_@     : The name of the function
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
+@@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
+@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
+@@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId -- Return @_Target_Name_@ app Id   */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
+{
+    uint32 appId = -1;
+    /*
+    ** Search the ES Application table for the name that matches @_UPPER:Target_Name_@_APP
+    */
+    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++ )
+    {
+
+        if (!strcmp(CFE_ES_Global.AppTable[i].AppName, "@_UPPER:Target_Name_@_APP"))
+        {
+            CFE_ES_GetAppIDByName(&appId, CFE_ES_Global.AppTable[i].AppName);
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] App Name: %s", CFE_ES_Global.AppTable[i].AppName);
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] App id: %d", appId);
+            return appId;
+
+        }
+        else {
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Some other app Name: %s", CFE_ES_Global.AppTable[i].AppName);
+        }
+
+    } /* end for */
+
+    return appId;
+
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Parent_Function_@_Start@_Target_Name_@App -- Starts @_Target_Name_@ app   */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
+{
+
+        // Build token list with startup params for @_Target_Name_@ app
+        const char * TokenList[] = {"CFE_APP", // Object type
+        "@_LOWER:Target_Name_@_app", // Path/Filename
+        "@_UPPER:Target_Name_@_APP_Main", // Entry point
+        "@_UPPER:Target_Name_@_APP", // CFE_Name
+        "100", // Priority
+        "16384", // Stack size
+        "0x0", // Load address
+        "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
+
+        // Load app
+        CFE_ES_ParseFileEntry(TokenList, 8);
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Parent_Function_@_Stop@_Target_Name_@App -- Stops @_Target_Name_@ app   */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
+{
+        // Returns @_Target_Name_@ app id
+        uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+
+        // Stops application
+        CFE_ES_DeleteApp(appId);
+}
+
+
+
+@@END_IF@@
