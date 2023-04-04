@@ -32,7 +32,9 @@ void  @_UPPER:Name_@_User_Main(void);
 void @_UPPER:Name_@_User_Init(void);
 
 @@IF@@ @_DATASTORE_ENABLED_@
-int32 @_UPPER:Name_@_Datastore_Init(void);
+int32 @_UPPER:Name_@_Datastore_User_Init(int datastoreSize);
+int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore);
+void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_Data.MAX_STORE_LENGTH]);
 @@END_IF@@
 
 @@IF@@ @_MESSAGES_ENABLED_@

@@ -29,8 +29,6 @@
 @@SET@@ MESSAGES_ENABLED = True
 @@IF@@ @_DataStore_@ = "YES"
 @@SET@@ DATASTORE_ENABLED = TRUE
-// Datastore value
-// @_DataStore_@
 @@END_IF@@
 
 /*
@@ -78,12 +76,6 @@ void @_UPPER:Name_@_APP_Main(void)
         @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
     }
 
-
-
-@@IF@@ @_DATASTORE_ENABLED_@
-    // Initialize Datastore
-    @_UPPER:Name_@_Datastore_Init();
-@@END_IF@@
 
 @@IF@@ @_MESSAGES_ENABLED_@
     // ---------   Send messages  ------------
@@ -566,6 +558,52 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
     return;
 
 } /* End of @_UPPER:Name_@_GetCrc */
+@@END_IF@@
+
+@@IF@@ @_DATASTORE_ENABLED_@
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Name_@_Datastore_Init -- Initialize datastore           */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+int32 @_UPPER:Name_@_Datastore_Init(void)
+{
+    int32 status;
+
+    char cDSName[] = "@_LOWER:Name_@CDS";
+
+    // Register CDS
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
+    }
+
+    return status;
+
+} /* End of @_UPPER:Name_@_Datastore_Init() */
+
+int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
+{
+    int32 status;
+
+    // Copy data to CDS
+    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_Data.CDSHandlePtr, dataToStore);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful copy to CDS");
+    }
+
+    return status;
+
+} /* End of @_UPPER:Name_@_Datastore_Store() */
+
 @@END_IF@@
 
 

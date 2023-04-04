@@ -132,7 +132,7 @@ int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg)
 int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg);
 @@SET@@ FDIR_ENABLED = TRUE
 @@IF@@ @_FDIR_ENABLED_@
-void @_UPPER:Name_@_FindAppId(void);
+void  @_UPPER:Name_@_FindAppId(void);
 @@END_IF@@
 @@IF@@ @_TABLES_ENABLED_@
 int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg);
@@ -143,6 +143,7 @@ int32 @_UPPER:Name_@_TblValidationFunc(void *TblData);
 
 @@IF@@ @_DATASTORE_ENABLED_@
 int32 @_UPPER:Name_@_Datastore_Init(void);
+int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore);
 @@END_IF@@
 
 bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLength);
