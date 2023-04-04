@@ -48,13 +48,7 @@ uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
         if (!strcmp(CFE_ES_Global.AppTable[i].AppName, "@_UPPER:Target_Name_@_APP"))
         {
             CFE_ES_GetAppIDByName(&appId, CFE_ES_Global.AppTable[i].AppName);
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] App Name: %s", CFE_ES_Global.AppTable[i].AppName);
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] App id: %d", appId);
             return appId;
-
-        }
-        else {
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Some other app Name: %s", CFE_ES_Global.AppTable[i].AppName);
         }
 
     } /* end for */

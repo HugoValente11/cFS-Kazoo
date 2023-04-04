@@ -187,6 +187,7 @@ package TASTE.Interface_View is
          Name            : Unbounded_String;
          DataStore       : Unbounded_String;
          DataStoreSize   : Unbounded_String;
+         FDIR            : Unbounded_String;
          Function_Priority : Option_ULL.Option := Option_ULL.Nothing;
          F_Priority      : Option_ULL.Option := Option_ULL.Nothing;
          Context         : Unbounded_String      := Null_Unbounded_String;

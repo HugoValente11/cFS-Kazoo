@@ -839,6 +839,10 @@ package body TASTE.Interface_View is
             then
                Result.DataStoreSize := Each.Value;
             end if;
+            if Each.Name = "Taste::FDIR"
+            then
+               Result.FDIR := Each.Value;
+            end if;
             if Each.Name = "TASTE_IV_Properties::is_instance_of"
             then
                --  Old form, should not appear in new designs
@@ -1371,6 +1375,7 @@ package body TASTE.Interface_View is
         & Assoc ("CP_Names",              CP_Names)
         & Assoc ("DataStore",             F.DataStore)
         & Assoc ("DataStoreSize",         F.DataStoreSize)
+        & Assoc ("FDIR",                  F.FDIR)
         & Assoc ("Function_Priority",     F.F_Priority.Value_Or (100)'Img)
         & Assoc ("CP_Types",              CP_Types)
         & Assoc ("CP_Values",             CP_Values)

@@ -105,42 +105,11 @@ void @_UPPER:Name_@_APP_Main(void)
         @_UPPER:Name_@_User_Main();
     }
 
+@@IF@@ @_FDIR_@ = "YES"
+    // Restart application on error
     CFE_ES_RestartApp(@_UPPER:Name_@_Data.AppId);
-
-
-
-@@IF@@ @_List_Of_RIs'Length_@ = 0
-    /*
-    ** SAMPLE Runloop
-    */
-    while (CFE_ES_RunLoop(&@_UPPER:Name_@_Data.RunStatus) == true)
-    {
-        /*
-        ** Performance Log Exit Stamp
-        */
-        CFE_ES_PerfLogExit(@_UPPER:Name_@_PERF_ID);
-
-        /* Pend on receipt of command packet */
-        status = CFE_SB_ReceiveBuffer(&SBBufPtr, @_UPPER:Name_@_Data.CommandPipe, CFE_SB_PEND_FOREVER);
-
-        /*
-        ** Performance Log Entry Stamp
-        */
-        CFE_ES_PerfLogEntry(@_UPPER:Name_@_PERF_ID);
-
-        if (status == CFE_SUCCESS)
-        {
-            @_UPPER:Name_@_ProcessCommandPacket(SBBufPtr);
-        }
-        else
-        {
-            CFE_EVS_SendEvent(@_UPPER:Name_@_PIPE_ERR_EID, CFE_EVS_EventType_ERROR,
-                              "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
-
-            @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-        }
-    }
 @@END_IF@@
+
 
     // Delete pipe to free resources
     status = CFE_SB_DeletePipe (@_UPPER:Name_@_Data.CommandPipe);

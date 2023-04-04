@@ -3,8 +3,6 @@
 @@SET@@ MESSAGES_ENABLED = True
 @@IF@@ @_DataStore_@ = "YES"
 @@SET@@ DATASTORE_ENABLED = TRUE
-// Datastore value
-// @_DataStore_@
 @@END_IF@@
 #include "@_LOWER:Name_@_app_user.h"
 
