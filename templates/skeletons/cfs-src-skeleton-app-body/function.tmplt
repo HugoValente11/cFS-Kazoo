@@ -629,8 +629,6 @@ void @_UPPER:Name_@_FindAppId(void)
         if (!strcmp(CFE_ES_Global.AppTable[i].AppName, @_UPPER:Name_@_APP_NAME))
         {
             CFE_ES_GetAppIDByName(&@_UPPER:Name_@_Data.AppId, CFE_ES_Global.AppTable[i].AppName);
-            CFE_ES_WriteToSysLog("[@_UPPER:Name_@] App Name: %s", CFE_ES_Global.AppTable[i].AppName);
-
         }
 
     } /* end for */

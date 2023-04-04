@@ -130,10 +130,7 @@ void  @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr);
 int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg);
 int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg);
 int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg);
-@@SET@@ FDIR_ENABLED = TRUE
-@@IF@@ @_FDIR_ENABLED_@
 void  @_UPPER:Name_@_FindAppId(void);
-@@END_IF@@
 @@IF@@ @_TABLES_ENABLED_@
 int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg);
 void  @_UPPER:Name_@_GetCrc(const char *TableName);

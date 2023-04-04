@@ -56,12 +56,9 @@ add_cfe_app_dependency(@_LOWER:Name_@_app dataview_lib)
 target_link_libraries(@_LOWER:Name_@_app m)
 @@END_IF@@
 
-@@SET@@ FDIR_ENABLED = TRUE
-@@IF@@ @_FDIR_ENABLED_@
 # Executive services source files
 target_include_directories(@_LOWER:Name_@_app PUBLIC ../../cfe/modules/es/fsw/src/)
 target_link_libraries(@_LOWER:Name_@_app PRIVATE core_private)
-@@END_IF@@
 
 
 @@IF@@ @_TABLES_ENABLED_@ = TRUE
