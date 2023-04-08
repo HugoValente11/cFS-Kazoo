@@ -107,6 +107,7 @@ typedef struct
     */
     CFE_ES_CDSHandle_t CDSHandlePtr;
     int MAX_STORE_LENGTH;
+    uint8 CDSData[50];
 @@END_IF@@
 
     CFE_EVS_BinFilter_t EventFilters[@_UPPER:Name_@_EVENT_COUNTS];

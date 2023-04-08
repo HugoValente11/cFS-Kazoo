@@ -577,6 +577,23 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
     // Register CDS
     status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
 
+    if (status == CFE_ES_CDS_ALREADY_EXISTS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CDS Already exists");
+
+        // Critical Data Store already exists,
+        // get a copy of its current contents and store it in @_UPPER:Name_@_Data.CDSData
+        // to see if we can work use it
+        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_Data.CDSData, @_UPPER:Name_@_Data.CDSHandlePtr);
+
+        if (status == CFE_SUCCESS)
+        {
+            return CFE_ES_CDS_ALREADY_EXISTS;
+        }
+
+        status = CFE_SUCCESS;
+    }
+
     if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
     } else {

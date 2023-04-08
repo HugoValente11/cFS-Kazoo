@@ -39,8 +39,15 @@ int32 @_UPPER:Name_@_Datastore_User_Init(int datastoreSize)
     // Datastore size in bytes
     @_UPPER:Name_@_Data.MAX_STORE_LENGTH = datastoreSize;
 
-    return @_UPPER:Name_@_Datastore_Init();
+    // Check if there's data in Datastore,
+    // if there is recover the data and store it in @_UPPER:Name_@_Data.CDSData
+    int32 status = @_UPPER:Name_@_Datastore_Init();
+    if (status == CFE_ES_CDS_ALREADY_EXISTS)
+    {
+        // User implementation to handle data stored
+    }
 
+    return status;
 }
 
 int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
