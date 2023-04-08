@@ -1,9 +1,6 @@
 @@SET@@ TABLES_ENABLED = FALSE
 @@SET@@ MESSAGES_ENABLED = True
 @@SET@@ EVENTS_ENABLED = True
-@@IF@@ @_DataStore_@ = "YES"
-@@SET@@ DATASTORE_ENABLED = TRUE
-@@END_IF@@
 /*
  * @file
  *
@@ -31,10 +28,10 @@ uint32 i;
 void  @_UPPER:Name_@_User_Main(void);
 void @_UPPER:Name_@_User_Init(void);
 
-@@IF@@ @_DATASTORE_ENABLED_@
-int32 @_UPPER:Name_@_Datastore_User_Init(int datastoreSize);
+@@IF@@ @_DataStore_@ = "YES"
+int32 @_UPPER:Name_@_Datastore_User_Init(void);
 int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore);
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_Data.MAX_STORE_LENGTH]);
+void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE]);
 @@END_IF@@
 
 @@IF@@ @_MESSAGES_ENABLED_@

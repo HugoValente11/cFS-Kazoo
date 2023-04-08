@@ -27,9 +27,6 @@
 @@SET@@ TABLES_ENABLED = False
 @@SET@@ EVENTS_ENABLED = True
 @@SET@@ MESSAGES_ENABLED = True
-@@IF@@ @_DataStore_@ = "YES"
-@@SET@@ DATASTORE_ENABLED = TRUE
-@@END_IF@@
 
 /*
 ** Include Files:
@@ -560,7 +557,7 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
 } /* End of @_UPPER:Name_@_GetCrc */
 @@END_IF@@
 
-@@IF@@ @_DATASTORE_ENABLED_@
+@@IF@@ @_DataStore_@ = "YES"
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
@@ -575,7 +572,7 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
     char cDSName[] = "@_LOWER:Name_@CDS";
 
     // Register CDS
-    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr,@_UPPER:Name_@_Data.MAX_STORE_LENGTH,cDSName);
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
 
     if (status == CFE_ES_CDS_ALREADY_EXISTS)
     {

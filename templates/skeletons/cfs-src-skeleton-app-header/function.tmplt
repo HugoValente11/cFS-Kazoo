@@ -1,10 +1,5 @@
 @@SET@@ TABLES_ENABLED = FALSE
 @@SET@@ MESSAGES_ENABLED = True
-@@SET@@ DATASTORE_ENABLED = TRUE
-@@IF@@ @_DataStore_@ = "YES"
-// Datastore value
-// @_DataStore_@
-@@END_IF@@
 /**
  * @file
  *
@@ -35,6 +30,11 @@
 #define @_UPPER:Name_@_PIPE_DEPTH 32 /* Depth of the Command Pipe for Application */
 
 #define @_UPPER:Name_@_APP_NAME "@_UPPER:Name_@_APP" /* App Name */
+
+@@IF@@ @_DataStore_@ = "YES"
+#define @_UPPER:Name_@_DATASTORE_SIZE @_DataStoreSize_@ /* Datastore size */
+@@END_IF@@
+
 
 @@IF@@ @_TABLES_ENABLED_@
 #define @_UPPER:Name_@_NUMBER_OF_TABLES 1 /* Number of Table(s) */
@@ -101,13 +101,12 @@ typedef struct
     @_Provided_Interfaces_@
 @@END_IF@@
 
-@@IF@@ @_DATASTORE_ENABLED_@
+@@IF@@ @_DataStore_@ = "YES"
     /*
     ** Data store properties
     */
     CFE_ES_CDSHandle_t CDSHandlePtr;
-    int MAX_STORE_LENGTH;
-    uint8 CDSData[50];
+    uint8 CDSData[@_UPPER:Name_@_DATASTORE_SIZE];
 @@END_IF@@
 
     CFE_EVS_BinFilter_t EventFilters[@_UPPER:Name_@_EVENT_COUNTS];
@@ -139,7 +138,7 @@ void  @_UPPER:Name_@_GetCrc(const char *TableName);
 int32 @_UPPER:Name_@_TblValidationFunc(void *TblData);
 @@END_IF@@
 
-@@IF@@ @_DATASTORE_ENABLED_@
+@@IF@@ @_DataStore_@ = "YES"
 int32 @_UPPER:Name_@_Datastore_Init(void);
 int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore);
 @@END_IF@@
