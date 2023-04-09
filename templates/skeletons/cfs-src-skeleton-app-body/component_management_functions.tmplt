@@ -65,19 +65,18 @@ uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
 {
+    // Build token list with startup params for @_Target_Name_@ app
+    const char * TokenList[] = {"CFE_APP", // Object type
+    "@_LOWER:Target_Name_@_app", // Path/Filename
+    "@_UPPER:Target_Name_@_APP_Main", // Entry point
+    "@_UPPER:Target_Name_@_APP", // CFE_Name
+    "100", // Priority
+    "16384", // Stack size
+    "0x0", // Load address
+    "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
 
-        // Build token list with startup params for @_Target_Name_@ app
-        const char * TokenList[] = {"CFE_APP", // Object type
-        "@_LOWER:Target_Name_@_app", // Path/Filename
-        "@_UPPER:Target_Name_@_APP_Main", // Entry point
-        "@_UPPER:Target_Name_@_APP", // CFE_Name
-        "100", // Priority
-        "16384", // Stack size
-        "0x0", // Load address
-        "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
-
-        // Load app
-        CFE_ES_ParseFileEntry(TokenList, 8);
+    // Load app
+    CFE_ES_ParseFileEntry(TokenList, 8);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -88,13 +87,11 @@ void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void @_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
 {
-        // Returns @_Target_Name_@ app id
-        uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+    // Returns @_Target_Name_@ app id
+    uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
 
-        // Stops application
-        CFE_ES_DeleteApp(appId);
+    // Stops application
+    CFE_ES_DeleteApp(appId);
 }
-
-
 
 @@END_IF@@

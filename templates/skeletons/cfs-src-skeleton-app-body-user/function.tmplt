@@ -9,14 +9,13 @@ void @_UPPER:Name_@_User_Main(void)
 
 
     // status = OS_TaskDelay(period_ms);
-
-} /* End of @_UPPER:Name_@_User_Main() */
+}
 
 void @_UPPER:Name_@_User_Init(void)
 {
     // User initialization here
-
     @@IF@@ @_DataStore_@ = "YES"
+
     // Call datastore initialization with @_DataStoreSize_@ bytes
     @_UPPER:Name_@_Datastore_User_Init();
     @@END_IF@@
@@ -40,7 +39,6 @@ int32 @_UPPER:Name_@_Datastore_User_Init()
 int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
 {
     return @_UPPER:Name_@_Datastore_Store(dataToStore);
-
 }
 
 void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
@@ -56,7 +54,6 @@ void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE
 @_Receive_Messages_Functions_@
 @@END_IF@@
 @@IF@@ @_EVENTS_ENABLED_@
-
 @_Send_Events_@
 @@END_IF@@
 @@IF@@ @_Language_@ = QGenC
@@ -68,5 +65,4 @@ void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void) {
 }
 @@END_TABLE@@
 @@END_IF@@
-
 @_Component_Management_Functions_@

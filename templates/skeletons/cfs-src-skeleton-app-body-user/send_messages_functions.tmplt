@@ -45,8 +45,7 @@ void @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
     // Receive message
     @_UPPER:Parent_Function_@_Receive_@_Name_@();
 
-    // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@);                            
-
+    // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@);
 
 }
 
