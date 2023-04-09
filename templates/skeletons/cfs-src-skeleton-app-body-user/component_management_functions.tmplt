@@ -39,5 +39,4 @@ void @_UPPER:Parent_Function_@_User_Stop@_Target_Name_@App(void)
     @_UPPER:Parent_Function_@_Stop@_Target_Name_@App();
 }
 
-
 @@END_IF@@

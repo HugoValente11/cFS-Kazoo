@@ -3,12 +3,6 @@
 @@SET@@ MESSAGES_ENABLED = True
 #include "@_LOWER:Name_@_app_user.h"
 
-
-@@IF@@ @_Language_@ = QGenC
-// Load QGen wrapper file
-#include "@_LOWER:Name_@_vm_if.h"
-@@END_IF@@
-
 void @_UPPER:Name_@_User_Main(void)
 {    
     // TODO Call here send/receive messages in order needed
@@ -17,7 +11,6 @@ void @_UPPER:Name_@_User_Main(void)
     // status = OS_TaskDelay(period_ms);
 
 } /* End of @_UPPER:Name_@_User_Main() */
-
 
 void @_UPPER:Name_@_User_Init(void)
 {
@@ -29,9 +22,8 @@ void @_UPPER:Name_@_User_Init(void)
     @@END_IF@@
 
 }
-
-
 @@IF@@ @_DataStore_@ = "YES"
+
 int32 @_UPPER:Name_@_Datastore_User_Init()
 {
     // Check if there's data in Datastore,
@@ -51,7 +43,6 @@ int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
 
 }
 
-
 void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
 {
     // Read data from CDS
@@ -59,17 +50,17 @@ void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE
 
 }
 @@END_IF@@
-
 @@IF@@ @_MESSAGES_ENABLED_@
+
 @_Send_Messages_Functions_@
 @_Receive_Messages_Functions_@
 @@END_IF@@
-
 @@IF@@ @_EVENTS_ENABLED_@
+
 @_Send_Events_@
 @@END_IF@@
-
 @@IF@@ @_Language_@ = QGenC
+
 // QGen wrappper
 @@TABLE@@
 void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void) {
