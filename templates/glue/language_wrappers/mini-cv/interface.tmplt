@@ -58,7 +58,9 @@ PROPERTIES
 @@END_IF@@
    @@INLINE(   )(\n   )(\n)@@
       @@TABLE@@
+      @@IF@@ @_Property_Names_@ /= "Taste::FDIR"
          @_Property_Names_@ => "@_Property_Values_@";
+      @@END_IF@@
       @@END_TABLE@@
    @@END_INLINE@@
 @@IF@@ @_Language_@ = "GUI" and @_Direction_@ = "PI"
