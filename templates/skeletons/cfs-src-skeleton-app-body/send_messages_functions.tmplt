@@ -36,17 +36,6 @@
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void @_UPPER:Parent_Function_@_Send_@_Name_@() {
-    // Initialize message @_Name_@
-    @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
-    @_UPPER:Parent_Function_@_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
-
-    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_Data.Size_@_Name_@);
-
-    if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
-    }
-
     // Define buffer where stream will be written to
     byte perBuffer[asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BYTES_FOR_ENCODING];
 

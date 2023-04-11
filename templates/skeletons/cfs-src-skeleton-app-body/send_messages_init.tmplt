@@ -29,9 +29,16 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
-    @@IF@@ @_Period_@ /= " 0"
-    // uint32 period = @_Period_@; // ms
-    @@END_IF@@
+    // Initialize message @_Name_@
+    @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
+    @_UPPER:Parent_Function_@_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
+
+    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_Data.Size_@_Name_@);
+
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
+    }
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
     // Initialize pipe @_Name_@
