@@ -150,12 +150,6 @@ bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLe
 @_Receive_Messages_Functions_@
 @@END_IF@@
 
-@@IF@@ @_Language_@ = QGenC
-@@TABLE@@
-void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void);
-@@END_TABLE@@
-@@END_IF@@
-
 @_Component_Management_Functions_@
 
 #endif /* @_UPPER:Name_@_H */
