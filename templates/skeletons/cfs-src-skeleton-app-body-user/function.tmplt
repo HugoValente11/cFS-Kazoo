@@ -9,7 +9,7 @@ void @_UPPER:Name_@_User_Main(void)
     // Receive input
     @_Receive_Messages_Init_@
     // Call QGen wrappper
-    void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@();
+    @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@();
     // Send output
     @_Send_Messages_Init_@
 @@END_IF@@
