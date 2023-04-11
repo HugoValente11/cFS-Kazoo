@@ -5,7 +5,14 @@
 
 void @_UPPER:Name_@_User_Main(void)
 {    
-    // TODO Call here send/receive messages in order needed
+@@IF@@ @_Language_@ = QGenC
+    // Receive input
+    @_Receive_Messages_Init_@
+    // Call QGen wrappper
+    void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@();
+    // Send output
+    @_Send_Messages_Init_@
+@@END_IF@@
 
 
     // status = OS_TaskDelay(period_ms);

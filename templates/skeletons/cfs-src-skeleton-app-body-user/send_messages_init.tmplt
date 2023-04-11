@@ -29,22 +29,7 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
-    @@IF@@ @_Period_@ /= " 0"
-    // uint32 period = @_Period_@; // ms
-    @@END_IF@@
-
+@_UPPER:Parent_Function_@_User_Send_@_Name_@();
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
-    // Initialize pipe @_Name_@
-    // Subscribe to @_Name_@     0x0@_Message_ID_@ msg id
-    
-    status = CFE_SB_Subscribe(0x0@_Message_ID_@,
-                              @_UPPER:Parent_Function_@_Data.CommandPipe);
-
-    if (status != CFE_SUCCESS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error Subscribing to communication pipe, RC = 0x%08lX\n",
-                             (unsigned long) status);
-       
-    }
-
+@_UPPER:Parent_Function_@_User_Receive_@_Name_@();
 @@END_IF@@
