@@ -157,16 +157,6 @@ package body TASTE.Interface_View is
    end Get_RCM_Period;
 
    --------------------
-   -- Get_Event_Name --
-   --------------------
-
-   function Get_Event_Name (D : Node_Id) return String is
-      Event_Name : constant Name_Id := Get_String_Name ("taste::eventname");
-   begin
-      return Get_String_Property (D, Event_Name);
-   end Get_Event_Name;
-
-   --------------------
    -- Get_Event_Info --
    --------------------
 
@@ -1595,7 +1585,7 @@ package body TASTE.Interface_View is
         & Assoc ("Period",                 TI.Period_Or_MIAT'Img)
         & Assoc ("WCET",                   TI.WCET_ms.Value_Or (0)'Img)
         & Assoc ("Queue_Size",             TI.Queue_Size.Value_Or (1)'Img)
-        & Assoc ("Event_Name",             TI.Event_Name)
+        & Assoc ("Event_Name",             TI.Name)
         & Assoc ("Event_Info",             TI.Event_Info)
         & Assoc ("Event_Type",             TI.Event_Type)
         & Assoc ("Event_ID",               TI.Event_ID)
