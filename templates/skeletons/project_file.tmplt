@@ -8,6 +8,8 @@
 INCLUDEPATH += work/dataview/C
 HEADERS += work/dataview/C/dataview-uniq.h
 HEADERS += work/dataview/Ada/src/*.ads
+SOURCES += work/cfs/sample_defs/cpu1_cfe_es_startup.scr
+
 @@TABLE@@
 include(@_LOWER:Function_Names_@/@_LOWER:Function_Names_@.pro)
 @@END_TABLE@@
