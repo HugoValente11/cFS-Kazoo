@@ -5,10 +5,9 @@
 @@-- in vim to open the doc: $HOME/tool-inst/share/kazoo/doc/templates_skeletons_makefile.ascii
 @@--
 @@-- Generate taste.pro, a sub-project file used by Space Creator to include user functional code
-INCLUDEPATH += work/dataview/C
-HEADERS += work/dataview/C/dataview-uniq.h
-HEADERS += work/dataview/Ada/src/*.ads
+HEADERS += work/cfs/libs/dataview_lib/fsw/public_inc/dataview-uniq.h
 SOURCES += work/cfs/sample_defs/cpu1_cfe_es_startup.scr
+
 
 @@TABLE@@
 include(@_LOWER:Function_Names_@/@_LOWER:Function_Names_@.pro)
