@@ -4,12 +4,8 @@
 @@--
 @@IF@@ @_Instance_Of_@ = ""
 @@IF@@ @_Language_@ = C
-@_Deployment_View_@ This is my _Deployment_View
-SOURCES += work/@_LOWER:Name_@/C/src/*.c
-SOURCES += work/@_LOWER:Name_@/fsw/src/*.c
-HEADERS += work/@_LOWER:Name_@/C/src/*.h
-HEADERS += work/@_LOWER:Name_@/fsw/src/*.h
-HEADERS += work/@_LOWER:Name_@/fsw/platform_inc/*.h
+SOURCES += work/cfs/apps/@_LOWER:Name_@_app/fsw/src/*.c
+HEADERS += work/cfs/apps/@_LOWER:Name_@_app/fsw/src/*.h
 @@ELSIF@@ @_Language_@ = Ada
 SOURCES += work/@_LOWER:Name_@/Ada/src/@_LOWER:Name_@.adb
 HEADERS += work/@_LOWER:Name_@/Ada/src/@_LOWER:Name_@.ads
