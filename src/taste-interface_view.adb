@@ -587,7 +587,6 @@ package body TASTE.Interface_View is
          Result.RCM := Get_RCM_Operation_Kind (If_I);
          Result.Period_Or_MIAT := Get_RCM_Period (If_I);
          Result.WCET_ms := Get_Upper_WCET (If_I);
-         Result.Event_Name := US (Get_Event_Name (If_I));
          Result.Event_Info := US (Get_Event_Info (If_I));
          Result.Event_Type := US (Get_Event_Type (If_I));
          Result.Event_ID := US (Get_Event_ID (If_I));

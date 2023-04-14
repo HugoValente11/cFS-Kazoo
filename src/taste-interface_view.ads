@@ -61,7 +61,6 @@ package TASTE.Interface_View is
 
    function Get_RCM_Operation (E : Node_Id) return Node_Id;
 
-   function Get_Event_Name (D : Node_Id) return String;
    function Get_Event_ID (D : Node_Id) return String;
    function Get_Event_Info (D : Node_Id) return String;
    function Get_Event_Type (D : Node_Id) return String;
