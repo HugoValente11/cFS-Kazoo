@@ -7,7 +7,7 @@ clean:
 	rm -rf obj ./xmi
 
 edit:
-	matlab -desktop -sd src
+	matlab -desktop -sd src/QGen
 
 @@-- --------------------------------------
 @@-- Code generation for QGenC:
