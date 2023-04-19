@@ -6,7 +6,7 @@ all: generate-code
 clean:
 	rm -rf obj ./xmi
 
-edit:
+edit: ./src/QGen/.@_LOWER:Name_@_script.m.md5
 	matlab -desktop -sd src/QGen
 
 @@-- --------------------------------------
@@ -16,10 +16,7 @@ edit:
 
 generate-code: ./src/QGen/@_LOWER:Name_@_built
 
-./src/QGen/@_LOWER:Name_@_built: ./src/QGen/@_LOWER:Name_@.slx
-	$(warning ---------------------------------------------------------------------)
-	$(warning NOTE: The following is a patch to generate source code automatically.)
-	$(warning ---------------------------------------------------------------------)
+./src/QGen/@_LOWER:Name_@_built:
 	matlab -batch \
 	    "cd src/QGen; \
 	     run ./Simulink_DataView_asn.m; \
