@@ -18,6 +18,8 @@ To update the kazoo to our modified version that allows to generate code for cFS
 
 `$ git clone https://gitlab.com/HugoSValente/cFS-Kazoo.git ~/tool-src/kazoo`
 
+`$ ~/tool-src/install/87_kazoo.sh`
+
 
 # More information 
 Kazoo is the TASTE tool in charge of generating code skeletons, glue code and build scripts
