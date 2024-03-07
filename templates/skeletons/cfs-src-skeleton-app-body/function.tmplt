@@ -378,6 +378,8 @@ void @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg)
 {
+    (void)Msg;
+    
     @@IF@@ @_TABLES_ENABLED_@
     int i;
     @@END_IF@@
@@ -415,6 +417,7 @@ int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg)
 {
+    (void)Msg;
 
     @_UPPER:Name_@_Data.CmdCounter++;
 
@@ -435,6 +438,7 @@ int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg)
 {
+    (void)Msg;
 
     @_UPPER:Name_@_Data.CmdCounter = 0;
     @_UPPER:Name_@_Data.ErrCounter = 0;
@@ -455,6 +459,8 @@ int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg)
 {
+    (void)Msg;
+
     int32               status;
     @_UPPER:Name_@_Table_t *TblPtr;
     const char *        TableName = "@_UPPER:Name_@_APP_Main.@_UPPER:Name_@AppTable";
