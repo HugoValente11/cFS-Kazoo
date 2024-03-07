@@ -181,8 +181,13 @@ int32 @_UPPER:Name_@_Init(void)
     /*
     ** Initialize housekeeping packet (clear user data area).
     */
-    CFE_MSG_Init(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, CFE_SB_ValueToMsgId(@_UPPER:Name_@_HK_TLM_MID),
+    status = CFE_MSG_Init(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, CFE_SB_ValueToMsgId(@_UPPER:Name_@_HK_TLM_MID),
                  sizeof(@_UPPER:Name_@_Data.HkTlm));
+
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error initializing housekeeping packets, RC = 0x%08lX\n", (unsigned long)status);
+    }
 
     /*
     ** Create Software Bus message pipe.
