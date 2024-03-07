@@ -144,7 +144,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
 
-    strncpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_Data.PipeName));
+    (void)strncpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_Data.PipeName));
     @_UPPER:Name_@_Data.PipeName[sizeof(@_UPPER:Name_@_Data.PipeName) - size_t(1)] = 0;
 
     /*
