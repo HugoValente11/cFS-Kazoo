@@ -1232,6 +1232,7 @@ package body TASTE.Interface_View is
          Result.Provided := Result.Provided & Interface_Tmplt;
          --  Note: List of PIs include timers, while List_Of_(A)Sync do not.
          List_Of_PIs     := List_Of_PIs & Each.Name;
+         List_Of_Events     := List_Of_Events & Each.Event_ID;
          case Each.RCM is
             when Cyclic_Operation | Sporadic_Operation =>
                if Each.RCM = Cyclic_Operation then

@@ -39,6 +39,9 @@
 #define @_UPPER:Name_@_PIPE_ERR_EID          7
 @_Send_Events_@
 
+@_List_Of_PIs_@
+@_List_Of_Events_@
+
 #define @_UPPER:Name_@_EVENT_COUNTS @_ADD(8):List_Of_Events'Length_@
 
 #endif /* @_UPPER:Name_@_EVENTS_H */
