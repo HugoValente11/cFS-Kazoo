@@ -283,17 +283,6 @@ package body TASTE.Backend.Code_Generators is
             return Result;
          end List_Of_PIs;
 
-         function List_Of_Events return Tag is
-            Result : Tag;
-         begin
-            for PI of F.Provided loop
-               if PI.RCM = Event_Operation then
-                  Result := Result & PI.Name;
-               end if;
-            end loop;
-            return Result;
-         end List_Of_Events;
-
          Make_Tmpl   : constant Translate_Set :=
            Join_Sets (Model.Configuration.To_Template,
                       Function_Makefile_Template
@@ -301,8 +290,7 @@ package body TASTE.Backend.Code_Generators is
                           F       => F,
                           Modules => Model.Data_View.Get_Module_List,
                           Files   => Model.Data_View.Get_ASN1_File_List))
-           & Assoc ("List_Of_PIs", List_Of_PIs)
-           & Assoc ("List_Of_Events", List_Of_Events);
+           & Assoc ("List_Of_PIs", List_Of_PIs);
 
          Make_Path   : constant String := Path & "makefile.tmplt";
          Make_Text   : constant String :=
