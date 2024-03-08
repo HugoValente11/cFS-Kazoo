@@ -259,7 +259,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
 
-    strcpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
+    (void)strcpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
     CFE_ES_WriteToSysLog("[@_UPPER:Name_@] COM_PIPE Name = %s", @_UPPER:Name_@_Data.PipeName);
 
     status = CFE_SB_CreatePipe(&@_UPPER:Name_@_Data.CommandPipe, @_UPPER:Name_@_Data.PipeDepth, @_UPPER:Name_@_Data.PipeName);
