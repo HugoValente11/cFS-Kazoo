@@ -38,7 +38,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 {
-    uint32 appId = -1;
+    uint32 appId = (uint32) -1;
     /*
     ** Search the ES Application table for the name that matches @_UPPER:Target_Name_@_APP
     */
