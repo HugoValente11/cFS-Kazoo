@@ -592,6 +592,7 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
 int32 @_UPPER:Name_@_Datastore_Init(void)
 {
     int32 status;
+    int32 restoreStatus;
 
     char cDSName[] = "@_LOWER:Name_@CDS";
 
@@ -605,19 +606,20 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
         // Critical Data Store already exists,
         // get a copy of its current contents and store it in @_UPPER:Name_@_Data.CDSData
         // to see if we can work use it
-        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_Data.CDSData, @_UPPER:Name_@_Data.CDSHandlePtr);
+        restoreStatus = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_Data.CDSData, @_UPPER:Name_@_Data.CDSHandlePtr);
 
-        if (status == CFE_SUCCESS)
+        if (restoreStatus != CFE_SUCCESS)
         {
-            return CFE_ES_CDS_ALREADY_EXISTS;
+            // If restore was not successful, maintain the original error status
+            status = restoreStatus;
         }
-
-        status = CFE_SUCCESS;
     }
 
-    if (status != CFE_SUCCESS) {
+    else if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } else {
+    }
+    else 
+    {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
     }
 
