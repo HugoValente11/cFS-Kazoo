@@ -14,6 +14,6 @@
 @@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
 @@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
-@@IF@@ @_Direction_@ = "PI"
+@@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@  and @_Kind_@ = EVENT_OPERATION
 #define @_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID         @_Event_ID_@
 @@END_IF@@
