@@ -145,7 +145,7 @@ int32 @_UPPER:Name_@_Init(void)
     @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
 
     (void)strncpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_Data.PipeName));
-    @_UPPER:Name_@_Data.PipeName[sizeof(@_UPPER:Name_@_Data.PipeName) - size_t(1)] = 0;
+    @_UPPER:Name_@_Data.PipeName[sizeof(@_UPPER:Name_@_Data.PipeName) - 1U] = 0;
 
     /*
     ** Initialize event filter table...
