@@ -16,7 +16,7 @@ To update the kazoo to our modified version that allows to generate code for cFS
 
 `$ mv ~/tool-src/kazoo ~/tool-src/kazoo-bu`
 
-`$ git clone https://gitlab.com/aurora-software/cfs-kazoo.git ~/tool-src/kazoo`
+`$ git clone https://github.com/HugoValente11/cFS-Kazoo ~/tool-src/kazoo`
 
 `$ ~/tool-src/install/87_kazoo.sh`
 
