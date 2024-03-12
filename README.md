@@ -3,7 +3,7 @@ This tool is part of the cFS modified TASTE toolchain (cFS Creator). Before we c
 
 1. Install the TASTE VM following the instructions in https://gitrepos.estec.esa.int/taste/taste-setup. <strong>All the following instructions assume you are using the TASTE VM.</strong>
 2. Replace the misc folder with our modified one following the instructions in [cFS misc](https://gitlab.com/aurora-software/cFS-misc).
-3. Replace kazoo with our modified Kazoo following the instructions in [cFS Kazoo](https://gitlab.com/aurora-software/cfs-kazoo).
+3. Replace kazoo with our modified Kazoo following the instructions in [cFS Kazoo](https://github.com/HugoValente11/cFS-Kazoo).
 4. Setup our modified QtCreator environment, cFS Creator, following the instructions in [cFS Creator](https://gitlab.com/aurora-software/cFS-Creator).
 5. Add the cFS runtime following the instructions in [TASTE cFS Runtime](https://gitlab.com/aurora-software/taste-cfs-runtime).
 6. Replace the local configuration files for Qt with our modified ones following the instructions in [cFS Local Config](https://gitlab.com/aurora-software/cFS-local-config).
@@ -16,7 +16,7 @@ To update the kazoo to our modified version that allows to generate code for cFS
 
 `$ mv ~/tool-src/kazoo ~/tool-src/kazoo-bu`
 
-`$ git clone https://gitlab.com/aurora-software/cfs-kazoo.git ~/tool-src/kazoo`
+`$ git clone https://github.com/HugoValente11/cFS-Kazoo ~/tool-src/kazoo`
 
 `$ ~/tool-src/install/87_kazoo.sh`
 
