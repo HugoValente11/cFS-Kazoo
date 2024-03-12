@@ -31,9 +31,9 @@
 
 /* Development Build Macro Definitions */
 
-#define @_UPPER:Name_@_BUILD_NUMBER 73 /*!< Development Build: Number of commits since baseline */
+#define @_UPPER:Name_@_BUILD_NUMBER "1" /*!< Development Build: Number of commits since baseline */
 #define @_UPPER:Name_@_BUILD_BASELINE \
-    "v1.2.0-rc1" /*!< Development Build: git tag that is the base for the current development */
+    "v1.0.0-rc1" /*!< Development Build: git tag that is the base for the current development */
 
 /* Version Macro Definitions */
 
@@ -42,22 +42,18 @@
 #define @_UPPER:Name_@_REVISION      99 /*!< @brief ONLY APPLY for OFFICIAL releases. Revision version number. */
 #define @_UPPER:Name_@_MISSION_REV   0  /*!< @brief ONLY USED by MISSION Implementations. Mission revision */
 
-#define @_UPPER:Name_@_STR_HELPER(x) #x /*!< @brief Helper function to concatenate strings from integer macros */
-#define @_UPPER:Name_@_STR(x) \
-    @_UPPER:Name_@_STR_HELPER(x) /*!< @brief Helper function to concatenate strings from integer macros */
-
 /*! @brief Development Build Version Number.
  * @details Baseline git tag + Number of commits since baseline. @n
  * See @ref cfsversions for format differences between development and release versions.
  */
-#define @_UPPER:Name_@_VERSION @_UPPER:Name_@_BUILD_BASELINE "+dev" @_UPPER:Name_@_STR(@_UPPER:Name_@_BUILD_NUMBER)
+#define @_UPPER:Name_@_VERSION @_UPPER:Name_@_BUILD_BASELINE "+dev" @_UPPER:Name_@_BUILD_NUMBER
 
 /*! @brief Development Build Version String.
  * @details Reports the current development build's baseline, number, and name. Also includes a note about the latest
  * official version. @n See @ref cfsversions for format differences between development and release versions.
  */
 #define @_UPPER:Name_@_VERSION_STRING                       \
-    " Sample App DEVELOPMENT BUILD " @_UPPER:Name_@_VERSION \
-    ", Last Official Release: v1.1.0" /* For full support please use this version */
+    " @_Name_@ App DEVELOPMENT BUILD " @_UPPER:Name_@_VERSION \
+    ", Last Official Release: v1.0.0" /* For full support please use this version */
 
 #endif /* @_UPPER:Name_@_VERSION_H */
