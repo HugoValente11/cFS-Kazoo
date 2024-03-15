@@ -1,3 +1,5 @@
+#include "cfe.h"
+
 // Define a simplified version of the CFE_ES_Global structure
 // Adjust the fields according to what your tests actually use
 
@@ -10,3 +12,21 @@ typedef struct {
 
 // Initialize a mock global variable
 CFE_ES_Global_t CFE_ES_Global = {0};
+
+// Define a mock version of CFE_ES_ParseFileEntry
+int32 CFE_ES_ParseFileEntry(const char **TokenList, uint32 NumTokens) {
+    // Mock implementation here
+    // For the purpose of testing, you may return CFE_SUCCESS or any other
+    // relevant status based on your test requirements.
+
+    // You can also set conditions to return different values based on
+    // the input parameters (TokenList and NumTokens) to test different scenarios.
+
+    // Example: return success if NumTokens is what your test expects
+    if (NumTokens == EXPECTED_NUMBER_OF_TOKENS) {
+        return CFE_SUCCESS;
+    }
+
+    // Return an error code if the conditions are not met
+    return CFE_ES_BAD_ARGUMENT;
+}
