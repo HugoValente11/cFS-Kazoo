@@ -21,8 +21,6 @@ ifeq ($(UNAME), Linux)
 	@echo "   Parser_Release : constant String :=" >> src/taste-parser_version.ads.new
 	@echo -n '      "1.0.' >> src/taste-parser_version.ads.new
 	@git log --oneline | head -1 | cut -f1 -d' ' | tr -d '\012' >> src/taste-parser_version.ads.new
-	@echo " ; Commit " | tr -d '\r\n' >> src/taste-parser_version.ads.new
-	@git log | head -3 | tail -1 | cut -f1 -d"+" | tr -d '\r\n' >>  src/taste-parser_version.ads.new
 	@echo "\";" >> src/taste-parser_version.ads.new
 	@echo "   Ocarina_Version : constant String :=" >> src/taste-parser_version.ads.new
 	@echo -n '      "' >> src/taste-parser_version.ads.new
