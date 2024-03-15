@@ -65,4 +65,4 @@ add_cfe_coverage_test(@_LOWER:Name_@_app ALL
 
 # The @_LOWER:Name_@_app uses library functions provided by dataview_lib so must be linked
 # with the dataview_lib stub library 
-add_cfe_coverage_dependency(@_LOWER:Name_@_app ALL sample_lib)
+add_cfe_coverage_dependency(@_LOWER:Name_@_app ALL dataview_lib)
