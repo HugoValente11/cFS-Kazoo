@@ -59,7 +59,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 # OSAL implements a separate coverage test per source unit.
 add_cfe_coverage_test(@_LOWER:Name_@_app ALL 
     "coveragetest/coveragetest_@_LOWER:Name_@_app.c"
-    ../fsw/src/@_LOWER:Name_@_app.c
+    "../fsw/src/@_LOWER:Name_@_app.c"
+    "../fsw/src/@_LOWER:Name_@_app_user.c"
 )
 
 # The @_LOWER:Name_@_app uses library functions provided by dataview_lib so must be linked
