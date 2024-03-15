@@ -18,6 +18,6 @@
 @@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@  and @_Kind_@ = EVENT_OPERATION
 // Event_Name Event_Info  Event_Type Event_ID
 // @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
-@_UPPER:Parent_Function_@_Data.EventFilters[@_Event_ID_@].EventID = @_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID;
-    @_UPPER:Parent_Function_@_Data.EventFilters[@_Event_ID_@].Mask    = 0x0000;
+@_UPPER:Parent_Function_@_APP_Data.EventFilters[@_Event_ID_@].EventID = @_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID;
+    @_UPPER:Parent_Function_@_APP_Data.EventFilters[@_Event_ID_@].Mask    = 0x0000;
 @@END_IF@@

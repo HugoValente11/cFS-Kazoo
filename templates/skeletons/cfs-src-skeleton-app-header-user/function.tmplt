@@ -20,7 +20,7 @@
 /*
 ** global data
 */
-@_UPPER:Name_@_Data_t @_UPPER:Name_@_Data;
+extern @_UPPER:Name_@_APP_Data_t @_UPPER:Name_@_APP_Data;
 int32            status;
 @@IF@@ @_MESSAGES_ENABLED_@
     @@IF@@ @_EXIST:List_Of_RIs_@

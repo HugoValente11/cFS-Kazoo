@@ -89,7 +89,6 @@ typedef struct
 
 @@IF@@ @_MESSAGES_ENABLED_@
 @@IF@@ @_EXIST:List_Of_RIs_@
-    //For the message (line 104):
     CFE_SB_Buffer_t * Buffer;
     @_Send_Messages_Init_@
     @_Receive_Messages_Init_@
@@ -114,7 +113,7 @@ typedef struct
     CFE_TBL_Handle_t    TblHandles[@_UPPER:Name_@_NUMBER_OF_TABLES];
     @@END_IF@@
 
-} @_UPPER:Name_@_Data_t;
+} @_UPPER:Name_@_APP_Data_t;
 
 /****************************************************************************/
 /*
