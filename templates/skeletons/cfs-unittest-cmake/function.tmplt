@@ -48,6 +48,8 @@
 # inclusion of source files that are normally private
 include_directories(${PROJECT_SOURCE_DIR}/fsw/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/stubs)
+
 
 
 # Add a coverage test executable called "@_LOWER:Name_@_app-ALL" that 
@@ -61,6 +63,7 @@ add_cfe_coverage_test(@_LOWER:Name_@_app ALL
     "coveragetest/coveragetest_@_LOWER:Name_@_app.c"
     "../fsw/src/@_LOWER:Name_@_app.c"
     "../fsw/src/@_LOWER:Name_@_app_user.c"
+    ${CMAKE_CURRENT_SOURCE_DIR}/stubs/cfe_es_global_stubs.c
 )
 
 # The @_LOWER:Name_@_app uses library functions provided by dataview_lib so must be linked

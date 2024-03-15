@@ -1,0 +1,12 @@
+// Define a simplified version of the CFE_ES_Global structure
+// Adjust the fields according to what your tests actually use
+
+typedef struct {
+    // Example fields, replace with actual fields used in your tests
+    int SomeField; // Mock equivalent of actual CFE_ES_Global fields
+    char AppName[20]; // If your tests only need the AppName from the AppTable, for example
+    // Add other fields as needed for your test scenarios
+} CFE_ES_Global_t;
+
+// Initialize a mock global variable
+CFE_ES_Global_t CFE_ES_Global = {0};
