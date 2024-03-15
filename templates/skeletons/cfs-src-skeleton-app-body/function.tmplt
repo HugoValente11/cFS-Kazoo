@@ -44,11 +44,10 @@
 @@END_IF@@
 
 
-/* The sample_lib module provides the SAMPLE_LIB_Function() prototype */
 #include <string.h>
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
-/* @_UPPER:Name_@_AppMain() -- Application entry point and main process loop         */
+/* @_UPPER:Name_@_APP_Main() -- Application entry point and main process loop         */
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 void @_UPPER:Name_@_APP_Main(void)
@@ -67,10 +66,10 @@ void @_UPPER:Name_@_APP_Main(void)
     ** If the Initialization fails, set the RunStatus to
     ** CFE_ES_RunStatus_APP_ERROR and the App will not enter the RunLoop
     */
-    status = @_UPPER:Name_@_Init();
+    status = @_UPPER:Name_@_APP_Init();
     if (status != CFE_SUCCESS)
     {
-        @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
     }
 
 
@@ -88,7 +87,7 @@ void @_UPPER:Name_@_APP_Main(void)
     @@END_IF@@
     
     // Main app loop 
-    while (CFE_ES_RunLoop(&@_UPPER:Name_@_Data.RunStatus) == true)
+    while (CFE_ES_RunLoop(&@_UPPER:Name_@_APP_Data.RunStatus) == true)
     {
         // Call user loop
         @_UPPER:Name_@_User_Main();
@@ -96,12 +95,12 @@ void @_UPPER:Name_@_APP_Main(void)
 
 @@IF@@ @_FDIR_@ = "YES"
     // Restart application on error
-    CFE_ES_RestartApp(@_UPPER:Name_@_Data.AppId);
+    CFE_ES_RestartApp(@_UPPER:Name_@_APP_Data.AppId);
 @@END_IF@@
 
 
     // Delete pipe to free resources
-    status = CFE_SB_DeletePipe (@_UPPER:Name_@_Data.CommandPipe);
+    status = CFE_SB_DeletePipe (@_UPPER:Name_@_APP_Data.CommandPipe);
 
     if (status != CFE_SUCCESS)
     {
@@ -116,54 +115,54 @@ void @_UPPER:Name_@_APP_Main(void)
     */
     CFE_ES_PerfLogExit(@_UPPER:Name_@_PERF_ID);
 
-    @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_EXIT;
+    @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_EXIT;
 
-    CFE_ES_ExitApp(@_UPPER:Name_@_Data.RunStatus);
+    CFE_ES_ExitApp(@_UPPER:Name_@_APP_Data.RunStatus);
 
 } /* End of @_UPPER:Name_@_APP_Main() */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
 /*                                                                            */
-/* @_UPPER:Name_@_Init() --  initialization                                       */
+/* @_UPPER:Name_@_APP_Init() --  initialization                                       */
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-int32 @_UPPER:Name_@_Init(void)
+int32 @_UPPER:Name_@_APP_Init(void)
 {
     int32 status = CFE_SUCCESS; // Initialize status to success;
 
-    @_UPPER:Name_@_Data.RunStatus = CFE_ES_RunStatus_APP_RUN;
+    @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_RUN;
 
     /*
     ** Initialize app command execution counters
     */
-    @_UPPER:Name_@_Data.CmdCounter = 0;
-    @_UPPER:Name_@_Data.ErrCounter = 0;
+    @_UPPER:Name_@_APP_Data.CmdCounter = 0;
+    @_UPPER:Name_@_APP_Data.ErrCounter = 0;
 
     /*
     ** Initialize app configuration data
     */
-    @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
+    @_UPPER:Name_@_APP_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
 
-    (void)strncpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_Data.PipeName));
-    @_UPPER:Name_@_Data.PipeName[sizeof(@_UPPER:Name_@_Data.PipeName) - 1U] = 0;
+    (void)strncpy(@_UPPER:Name_@_APP_Data.PipeName, "@_UPPER:Name_@_CMD_PIPE", sizeof(@_UPPER:Name_@_APP_Data.PipeName));
+    @_UPPER:Name_@_APP_Data.PipeName[sizeof(@_UPPER:Name_@_APP_Data.PipeName) - 1U] = 0;
 
     /*
     ** Initialize event filter table...
     */
-    @_UPPER:Name_@_Data.EventFilters[0].EventID = @_UPPER:Name_@_STARTUP_INF_EID;
-    @_UPPER:Name_@_Data.EventFilters[0].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[1].EventID = @_UPPER:Name_@_COMMAND_ERR_EID;
-    @_UPPER:Name_@_Data.EventFilters[1].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[2].EventID = @_UPPER:Name_@_COMMANDNOP_INF_EID;
-    @_UPPER:Name_@_Data.EventFilters[2].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[3].EventID = @_UPPER:Name_@_COMMANDRST_INF_EID;
-    @_UPPER:Name_@_Data.EventFilters[3].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[4].EventID = @_UPPER:Name_@_INVALID_MSGID_ERR_EID;
-    @_UPPER:Name_@_Data.EventFilters[4].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[5].EventID = @_UPPER:Name_@_LEN_ERR_EID;
-    @_UPPER:Name_@_Data.EventFilters[5].Mask    = 0x0000;
-    @_UPPER:Name_@_Data.EventFilters[6].EventID = @_UPPER:Name_@_PIPE_ERR_EID;
-    @_UPPER:Name_@_Data.EventFilters[6].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[0].EventID = @_UPPER:Name_@_STARTUP_INF_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[0].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[1].EventID = @_UPPER:Name_@_COMMAND_ERR_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[1].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[2].EventID = @_UPPER:Name_@_COMMANDNOP_INF_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[2].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[3].EventID = @_UPPER:Name_@_COMMANDRST_INF_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[3].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[4].EventID = @_UPPER:Name_@_INVALID_MSGID_ERR_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[4].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[5].EventID = @_UPPER:Name_@_LEN_ERR_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[5].Mask    = 0x0000;
+    @_UPPER:Name_@_APP_Data.EventFilters[6].EventID = @_UPPER:Name_@_PIPE_ERR_EID;
+    @_UPPER:Name_@_APP_Data.EventFilters[6].Mask    = 0x0000;
     @@IF@@ @_EVENTS_ENABLED_@
     @_Event_Filters_@
     @@END_IF@@
@@ -171,7 +170,7 @@ int32 @_UPPER:Name_@_Init(void)
     /* Register the events */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_EVS_Register(@_UPPER:Name_@_Data.EventFilters, @_UPPER:Name_@_EVENT_COUNTS, CFE_EVS_EventFilter_BINARY);
+        status = CFE_EVS_Register(@_UPPER:Name_@_APP_Data.EventFilters, @_UPPER:Name_@_EVENT_COUNTS, CFE_EVS_EventFilter_BINARY);
         if (status != CFE_SUCCESS)
         {
             CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Registering Events, RC = 0x%08lX\n", (unsigned long)status);
@@ -183,8 +182,8 @@ int32 @_UPPER:Name_@_Init(void)
     */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_MSG_Init(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, CFE_SB_ValueToMsgId(@_UPPER:Name_@_HK_TLM_MID),
-                 sizeof(@_UPPER:Name_@_Data.HkTlm));
+        status = CFE_MSG_Init(&@_UPPER:Name_@_APP_Data.HkTlm.TlmHeader.Msg, CFE_SB_ValueToMsgId(@_UPPER:Name_@_HK_TLM_MID),
+                 sizeof(@_UPPER:Name_@_APP_Data.HkTlm));
             
 
         if (status != CFE_SUCCESS)
@@ -198,7 +197,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_SB_CreatePipe(&@_UPPER:Name_@_Data.CommandPipe, @_UPPER:Name_@_Data.PipeDepth, @_UPPER:Name_@_Data.PipeName);
+        status = CFE_SB_CreatePipe(&@_UPPER:Name_@_APP_Data.CommandPipe, @_UPPER:Name_@_APP_Data.PipeDepth, @_UPPER:Name_@_APP_Data.PipeName);
         if (status != CFE_SUCCESS)
         {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error creating pipe, RC = 0x%08lX\n", (unsigned long)status);
@@ -211,7 +210,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_SEND_HK_MID), @_UPPER:Name_@_Data.CommandPipe);
+        status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_SEND_HK_MID), @_UPPER:Name_@_APP_Data.CommandPipe);
         if (status != CFE_SUCCESS)
         {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Subscribing to HK request, RC = 0x%08lX\n", (unsigned long)status);
@@ -224,7 +223,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_CMD_MID), @_UPPER:Name_@_Data.CommandPipe);
+        status = CFE_SB_Subscribe(CFE_SB_ValueToMsgId(@_UPPER:Name_@_CMD_MID), @_UPPER:Name_@_APP_Data.CommandPipe);
         if (status != CFE_SUCCESS)
         {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Subscribing to Command, RC = 0x%08lX\n", (unsigned long) status);
@@ -238,7 +237,7 @@ int32 @_UPPER:Name_@_Init(void)
     */
     if (status == CFE_SUCCESS)
     {
-        status = CFE_TBL_Register(&@_UPPER:Name_@_Data.TblHandles[0], "@_UPPER:Name_@AppTable", sizeof(@_UPPER:Name_@_Table_t),
+        status = CFE_TBL_Register(&@_UPPER:Name_@_APP_Data.TblHandles[0], "@_UPPER:Name_@AppTable", sizeof(@_UPPER:Name_@_Table_t),
                               CFE_TBL_OPT_DEFAULT, @_UPPER:Name_@_TblValidationFunc);
         if (status != CFE_SUCCESS)
         {
@@ -246,7 +245,7 @@ int32 @_UPPER:Name_@_Init(void)
         }
         else
         {
-        status = CFE_TBL_Load(@_UPPER:Name_@_Data.TblHandles[0], CFE_TBL_SRC_FILE, @_UPPER:Name_@_TABLE_FILE);
+        status = CFE_TBL_Load(@_UPPER:Name_@_APP_Data.TblHandles[0], CFE_TBL_SRC_FILE, @_UPPER:Name_@_TABLE_FILE);
         }
     }
     @@END_IF@@
@@ -257,12 +256,12 @@ int32 @_UPPER:Name_@_Init(void)
     /*
     ** Create Software Bus message pipe.
     */
-    @_UPPER:Name_@_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
+    @_UPPER:Name_@_APP_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
 
-    (void)strcpy(@_UPPER:Name_@_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
-    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] COM_PIPE Name = %s", @_UPPER:Name_@_Data.PipeName);
+    (void)strcpy(@_UPPER:Name_@_APP_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
+    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] COM_PIPE Name = %s", @_UPPER:Name_@_APP_Data.PipeName);
 
-    status = CFE_SB_CreatePipe(&@_UPPER:Name_@_Data.CommandPipe, @_UPPER:Name_@_Data.PipeDepth, @_UPPER:Name_@_Data.PipeName);
+    status = CFE_SB_CreatePipe(&@_UPPER:Name_@_APP_Data.CommandPipe, @_UPPER:Name_@_APP_Data.PipeDepth, @_UPPER:Name_@_APP_Data.PipeName);
     if (status != CFE_SUCCESS)
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error creating communication pipe,210, @_UPPER:Name_@_app.c, RC = 0x%08lX\n",
@@ -387,14 +386,14 @@ int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg)
     /*
     ** Get command execution counters...
     */
-    @_UPPER:Name_@_Data.HkTlm.Payload.CommandErrorCounter = @_UPPER:Name_@_Data.ErrCounter;
-    @_UPPER:Name_@_Data.HkTlm.Payload.CommandCounter      = @_UPPER:Name_@_Data.CmdCounter;
+    @_UPPER:Name_@_APP_Data.HkTlm.Payload.CommandErrorCounter = @_UPPER:Name_@_APP_Data.ErrCounter;
+    @_UPPER:Name_@_APP_Data.HkTlm.Payload.CommandCounter      = @_UPPER:Name_@_APP_Data.CmdCounter;
 
     /*
     ** Send housekeeping telemetry packet...
     */
-    CFE_SB_TimeStampMsg(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg);
-    CFE_SB_TransmitMsg(&@_UPPER:Name_@_Data.HkTlm.TlmHeader.Msg, true);
+    CFE_SB_TimeStampMsg(&@_UPPER:Name_@_APP_Data.HkTlm.TlmHeader.Msg);
+    CFE_SB_TransmitMsg(&@_UPPER:Name_@_APP_Data.HkTlm.TlmHeader.Msg, true);
 
     @@IF@@ @_TABLES_ENABLED_@
     /*
@@ -402,7 +401,7 @@ int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg)
     */
     for (i = 0; i < @_UPPER:Name_@_NUMBER_OF_TABLES; i++)
     {
-        CFE_TBL_Manage(@_UPPER:Name_@_Data.TblHandles[i]);
+        CFE_TBL_Manage(@_UPPER:Name_@_APP_Data.TblHandles[i]);
     }
     @@END_IF@@
 
@@ -419,7 +418,7 @@ int32 @_UPPER:Name_@_Noop(const @_UPPER:Name_@_NoopCmd_t *Msg)
 {
     (void)Msg;
 
-    @_UPPER:Name_@_Data.CmdCounter++;
+    @_UPPER:Name_@_APP_Data.CmdCounter++;
 
     CFE_EVS_SendEvent(@_UPPER:Name_@_COMMANDNOP_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@: NOOP command %s",
                       @_UPPER:Name_@_VERSION);
@@ -440,8 +439,8 @@ int32 @_UPPER:Name_@_ResetCounters(const @_UPPER:Name_@_ResetCountersCmd_t *Msg)
 {
     (void)Msg;
 
-    @_UPPER:Name_@_Data.CmdCounter = 0;
-    @_UPPER:Name_@_Data.ErrCounter = 0;
+    @_UPPER:Name_@_APP_Data.CmdCounter = 0;
+    @_UPPER:Name_@_APP_Data.ErrCounter = 0;
 
     CFE_EVS_SendEvent(@_UPPER:Name_@_COMMANDRST_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@: RESET command");
 
@@ -467,7 +466,7 @@ int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg)
 
     /* @_UPPER:Name_@ Use of Table */
 
-    status = CFE_TBL_GetAddress((void *)&TblPtr, @_UPPER:Name_@_Data.TblHandles[0]);
+    status = CFE_TBL_GetAddress((void *)&TblPtr, @_UPPER:Name_@_APP_Data.TblHandles[0]);
 
     if (status < CFE_SUCCESS)
     {
@@ -479,7 +478,7 @@ int32 @_UPPER:Name_@_Process(const @_UPPER:Name_@_ProcessCmd_t *Msg)
 
     @_UPPER:Name_@_GetCrc(TableName);
 
-    status = CFE_TBL_ReleaseAddress(@_UPPER:Name_@_Data.TblHandles[0]);
+    status = CFE_TBL_ReleaseAddress(@_UPPER:Name_@_APP_Data.TblHandles[0]);
     if (status != CFE_SUCCESS)
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Fail to release table address: 0x%08lx", (unsigned long)status);
@@ -521,7 +520,7 @@ bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLe
 
         result = false;
 
-        @_UPPER:Name_@_Data.ErrCounter++;
+        @_UPPER:Name_@_APP_Data.ErrCounter++;
     }
 
     return (result);
@@ -585,11 +584,11 @@ void @_UPPER:Name_@_GetCrc(const char *TableName)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
-/* @_UPPER:Name_@_Datastore_Init -- Initialize datastore           */
+/* @_UPPER:Name_@_APP_Datastore_Init -- Initialize datastore           */
 /*                                                                 */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-int32 @_UPPER:Name_@_Datastore_Init(void)
+int32 @_UPPER:Name_@_APP_Datastore_Init(void)
 {
     int32 status;
     int32 restoreStatus;
@@ -597,16 +596,16 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
     char cDSName[] = "@_LOWER:Name_@CDS";
 
     // Register CDS
-    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_APP_DataSTORE_SIZE, cDSName);
 
     if (status == CFE_ES_CDS_ALREADY_EXISTS)
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CDS Already exists");
 
         // Critical Data Store already exists,
-        // get a copy of its current contents and store it in @_UPPER:Name_@_Data.CDSData
+        // get a copy of its current contents and store it in @_UPPER:Name_@_APP_Data.CDSData
         // to see if we can work use it
-        restoreStatus = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_Data.CDSData, @_UPPER:Name_@_Data.CDSHandlePtr);
+        restoreStatus = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
 
         if (restoreStatus != CFE_SUCCESS)
         {
@@ -625,14 +624,14 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
 
     return status;
 
-} /* End of @_UPPER:Name_@_Datastore_Init() */
+} /* End of @_UPPER:Name_@_APP_Datastore_Init() */
 
-int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
+int32 @_UPPER:Name_@_APP_Datastore_Store(const void *dataToStore)
 {
     int32 status;
 
     // Copy data to CDS
-    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_Data.CDSHandlePtr, dataToStore);
+    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_APP_Data.CDSHandlePtr, dataToStore);
 
     if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
@@ -642,7 +641,7 @@ int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
 
     return status;
 
-} /* End of @_UPPER:Name_@_Datastore_Store() */
+} /* End of @_UPPER:Name_@_APP_Datastore_Store() */
 
 @@END_IF@@
 
@@ -668,7 +667,7 @@ void @_UPPER:Name_@_FindAppId(void)
 
         if (!strcmp(CFE_ES_Global.AppTable[i].AppName, @_UPPER:Name_@_APP_NAME))
         {
-            CFE_ES_GetAppIDByName(&@_UPPER:Name_@_Data.AppId, CFE_ES_Global.AppTable[i].AppName);
+            CFE_ES_GetAppIDByName(&@_UPPER:Name_@_APP_Data.AppId, CFE_ES_Global.AppTable[i].AppName);
         }
 
     } /* end for */
