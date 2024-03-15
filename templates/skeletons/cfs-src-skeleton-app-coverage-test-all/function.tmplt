@@ -1,0 +1,45 @@
+/*
+ * Includes
+ */
+
+#include "@_LOWER:Name_@_app_coveragetest_common.h"
+#include "ut_@_LOWER:Name_@_app.h"
+
+void Test_@_UPPER:Name_@_Init(void)
+{
+    /*
+     * Test Case For:
+     * int32 @_UPPER:Name_@_Init( void )
+     */
+
+    /* nominal case should return CFE_SUCCESS */
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_Init(), CFE_SUCCESS);
+
+    /* trigger a failure for each of the sub-calls,
+     * and confirm a write to syslog for each.
+     * Note that this count accumulates, because the status
+     * is _not_ reset between these test cases. */
+
+}
+
+
+/*
+ * Setup function prior to every test
+ */
+void @_Name_@sib_UT_Setup(void)
+{
+    UT_ResetState(0);
+}
+
+/*
+ * Teardown function after every test
+ */
+void @_Name_@_UT_TearDown(void) {}
+
+/*
+ * Register the test cases to execute with the unit test tool
+ */
+void UtTest_Setup(void)
+{
+    ADD_TEST(@_UPPER:Name_@_Init);
+}
