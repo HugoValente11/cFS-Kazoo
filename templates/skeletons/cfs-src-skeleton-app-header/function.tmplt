@@ -123,7 +123,7 @@ typedef struct
 **       functions are not called from any other source module.
 */
 void  @_UPPER:Name_@_APP_Main(void);
-int32 @_UPPER:Name_@_Init(void);
+int32 @_UPPER:Name_@_APP_Init(void);
 void  @_UPPER:Name_@_ProcessCommandPacket(CFE_SB_Buffer_t *SBBufPtr);
 void  @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr);
 int32 @_UPPER:Name_@_ReportHousekeeping(const CFE_MSG_CommandHeader_t *Msg);

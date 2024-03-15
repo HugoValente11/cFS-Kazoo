@@ -30,13 +30,13 @@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
     // Initialize message @_Name_@
-    @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
-    @_UPPER:Parent_Function_@_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
+    @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
+    @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
 
-    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_Data.Size_@_Name_@);
+    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@);
 
     if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
     }
 
@@ -45,7 +45,7 @@
     // Subscribe to @_Name_@     0x0@_Message_ID_@ msg id
     
     status = CFE_SB_Subscribe(0x0@_Message_ID_@,
-                              @_UPPER:Parent_Function_@_Data.CommandPipe);
+                              @_UPPER:Parent_Function_@_APP_Data.CommandPipe);
 
     if (status != CFE_SUCCESS)
     {

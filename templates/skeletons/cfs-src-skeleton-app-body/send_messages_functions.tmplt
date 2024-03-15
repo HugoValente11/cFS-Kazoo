@@ -49,23 +49,23 @@ void @_UPPER:Parent_Function_@_Send_@_Name_@() {
     int errorCode;
 
     // Encode
-    if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Encode(&@_UPPER:Parent_Function_@_Data.OUT_@_Param_Names_@, &bitstream, &errorCode, TRUE))
+    if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Encode(&@_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@, &bitstream, &errorCode, TRUE))
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Encode failed. Error code %d.\n", errorCode);
     }
 
 
-    status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@), &perBuffer, sizeof(perBuffer));
+    status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@), &perBuffer, sizeof(perBuffer));
 
     if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error writing the struct, RC = %lu\n", (unsigned long) status);
     }
 
-    status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_Data.MsgPtr_@_Name_@, false);
+    status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, false);
 
     if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending the message, RC = %lu\n", (unsigned long) status);
     } else {
         // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message sent successfully");
@@ -83,8 +83,8 @@ void @_UPPER:Parent_Function_@_Send_@_Name_@() {
 void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
     // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
         
-    status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_Data.Buffer,
-                           @_UPPER:Parent_Function_@_Data.CommandPipe,
+    status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_APP_Data.Buffer,
+                           @_UPPER:Parent_Function_@_APP_Data.CommandPipe,
                            CFE_SB_PEND_FOREVER);
 
     if (status != CFE_SUCCESS)
@@ -95,7 +95,7 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
     } else 
     {
         // Get buffer data
-        byte *data = CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_Data.Buffer->Msg);
+        byte *data = CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.Buffer->Msg);
 
         // Declare bit stream
         BitStream bitstream;
@@ -107,7 +107,7 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
         int errorCode;
 
         // Decode data
-        if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
+        if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
         {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
         }
@@ -116,18 +116,18 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
         @@IF@@ @_Store_Message_@ = "YES"
         // Store message
         char CDSname[] = "@_UPPER:Parent_Function_@_CDS";
-        @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH = sizeof(c);
+        @_UPPER:Parent_Function_@_APP_Data.MAX_STORE_LENGTH = sizeof(c);
 
         // Create datastore
-        status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_Data.CDSHandlePtr,
-                                            @_UPPER:Parent_Function_@_Data.MAX_STORE_LENGTH,
+        status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_APP_Data.CDSHandlePtr,
+                                            @_UPPER:Parent_Function_@_APP_Data.MAX_STORE_LENGTH,
                                             CDSname);
 
         if (status == CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully created datastore");
 
             // Copy to datastore
-            status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_Data.CDSHandlePtr, c);
+            status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_APP_Data.CDSHandlePtr, c);
 
             if (status == CFE_SUCCESS) {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully copied to datastore.");

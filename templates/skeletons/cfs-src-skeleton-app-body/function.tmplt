@@ -46,6 +46,8 @@
 
 #include <string.h>
 
+/* Global instance of @_UPPER:Name_@_APP_Data */
+@_UPPER:Name_@_APP_Data_t @_UPPER:Name_@_APP_Data;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 /* @_UPPER:Name_@_APP_Main() -- Application entry point and main process loop         */
 /*                                                                            */
