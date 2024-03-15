@@ -598,7 +598,7 @@ int32 @_UPPER:Name_@_APP_Datastore_Init(void)
     char cDSName[] = "@_LOWER:Name_@CDS";
 
     // Register CDS
-    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_APP_DataSTORE_SIZE, cDSName);
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
 
     if (status == CFE_ES_CDS_ALREADY_EXISTS)
     {
