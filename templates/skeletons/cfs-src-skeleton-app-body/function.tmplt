@@ -170,14 +170,12 @@ int32 @_UPPER:Name_@_APP_Init(void)
     @@END_IF@@
 
     /* Register the events */
-    if (status == CFE_SUCCESS)
+    status = CFE_EVS_Register(@_UPPER:Name_@_APP_Data.EventFilters, @_UPPER:Name_@_EVENT_COUNTS, CFE_EVS_EventFilter_BINARY);
+    if (status != CFE_SUCCESS)
     {
-        status = CFE_EVS_Register(@_UPPER:Name_@_APP_Data.EventFilters, @_UPPER:Name_@_EVENT_COUNTS, CFE_EVS_EventFilter_BINARY);
-        if (status != CFE_SUCCESS)
-        {
-            CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Registering Events, RC = 0x%08lX\n", (unsigned long)status);
-        }
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error Registering Events, RC = 0x%08lX\n", (unsigned long)status);
     }
+
 
     /*
     ** Initialize housekeeping packet (clear user data area).
