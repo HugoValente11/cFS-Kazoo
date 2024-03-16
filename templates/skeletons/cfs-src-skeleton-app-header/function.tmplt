@@ -87,9 +87,9 @@ typedef struct
     char   PipeName[CFE_MISSION_MAX_API_LEN];
     uint16 PipeDepth;
 
+    CFE_SB_Buffer_t * Buffer;
 @@IF@@ @_MESSAGES_ENABLED_@
 @@IF@@ @_EXIST:List_Of_RIs_@
-    CFE_SB_Buffer_t * Buffer;
     @_Send_Messages_Init_@
     @_Receive_Messages_Init_@
 @@ELSIF@@ @_EXIST:List_Of_PIs_@

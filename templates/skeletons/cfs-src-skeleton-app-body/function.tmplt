@@ -80,6 +80,18 @@ void @_UPPER:Name_@_APP_Main(void)
     {
         // Call user loop
         @_UPPER:Name_@_User_Main();
+
+        /* Pend on receipt of command packet */
+        status = CFE_SB_ReceiveBuffer(&@_UPPER:Name_@_APP_Data.Buffer, @_UPPER:Name_@_APP_Data.CommandPipe, CFE_SB_PEND_FOREVER);
+
+
+        if (status != CFE_SUCCESS)
+        {
+            CFE_EVS_SendEvent(PUB_PIPE_ERR_EID, CFE_EVS_EventType_ERROR,
+                              "PUB APP: SB Pipe Read Error, App Will Exit");
+
+            @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        }
     }
 
 @@IF@@ @_FDIR_@ = "YES"
