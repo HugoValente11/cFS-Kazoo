@@ -5,6 +5,70 @@
 #include "@_LOWER:Name_@_app_coveragetest_common.h"
 #include "ut_@_LOWER:Name_@_app.h"
 
+void Test_@_UPPER:Name_@_APP_Main(void)
+{
+    /*
+     * Test Case For:
+     * void @_UPPER:Name_@_APP_Main( void )
+     */
+
+    /*
+     * @_UPPER:Name_@_APP_Main does not return a value,
+     * but it has several internal decision points
+     * that need to be exercised here.
+     *
+     * First call it in "nominal" mode where all
+     * dependent calls should be successful by default.
+     */
+    @_UPPER:Name_@_APP_Main();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 1, "CFE_ES_ExitApp() called");
+
+    /* trigger a failure for each of the sub-calls,
+     * and confirm a write to syslog for each.
+     * Note that this count accumulates, because the status
+     * is _not_ reset between these test cases. */
+
+
+    // Fail on initialization
+    // Can't stub APP_Init so fail inside init
+    UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, CFE_EVS_INVALID_PARAMETER);
+    @_UPPER:Name_@_APP_Main();
+    UtAssert_True(@_UPPER:Name_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Name_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Name_@_APP_Data.RunStatus);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 2, "CFE_ES_ExitApp() called");
+    
+    // Enter while loop but fail on receive buffer
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RunLoop), 1, true);
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, CFE_SB_BAD_ARGUMENT);
+    @_UPPER:Name_@_APP_Main();
+    UtAssert_True(@_UPPER:Name_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Name_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Name_@_APP_Data.RunStatus);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 3, "CFE_ES_ExitApp() called");
+
+    // Enter while loop and succeed on receive buffer
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RunLoop), 1, true);
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, CFE_SUCCESS);
+    @_UPPER:Name_@_APP_Main();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 4, "CFE_ES_ExitApp() called");
+
+    // Never enter while loop
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RunLoop), 1, false);
+    @_UPPER:Name_@_APP_Main();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 5, "CFE_ES_ExitApp() called");
+
+
+    // Fail on deleting pipe
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_DeletePipe), 1, CFE_SB_BAD_ARGUMENT);
+    @_UPPER:Name_@_APP_Main(); 
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 6, "CFE_ES_ExitApp() called");
+
+
+}
+
+
 void Test_@_UPPER:Name_@_APP_Init(void)
 {
     /*
