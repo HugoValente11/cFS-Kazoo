@@ -74,19 +74,6 @@ void @_UPPER:Name_@_APP_Main(void)
         @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
     }
 
-
-@@IF@@ @_MESSAGES_ENABLED_@
-    // ---------   Send messages  ------------
-    @_Send_Messages_Init_@
-    
-    // --------- Receive messages ------------
-    @_Receive_Messages_Init_@
-@@END_IF@@
-
-    @@IF@@ @_Language_@ = QGenC
-    // Initialize QGen vars
-    init_@_LOWER:Name_@();
-    @@END_IF@@
     
     // Main app loop 
     while (CFE_ES_RunLoop(&@_UPPER:Name_@_APP_Data.RunStatus) == true)
@@ -258,6 +245,19 @@ int32 @_UPPER:Name_@_APP_Init(void)
 
     // Get App Id
     @_UPPER:Name_@_FindAppId();
+
+    @@IF@@ @_MESSAGES_ENABLED_@
+    // ---------   Send messages initialization  ------------
+    @_Send_Messages_Init_@
+    
+    // --------- Receive messages initialization ------------
+    @_Receive_Messages_Init_@
+@@END_IF@@
+
+    @@IF@@ @_Language_@ = QGenC
+    // Initialize QGen vars
+    init_@_LOWER:Name_@();
+    @@END_IF@@
 
     // Call user init 
     @_UPPER:Name_@_User_Init();
