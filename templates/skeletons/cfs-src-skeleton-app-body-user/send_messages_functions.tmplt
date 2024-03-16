@@ -32,7 +32,7 @@
 void @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     // TODO Build structs here
     @@TABLE@@
-    // @_UPPER:Parent_Function_@_Data.OUT_@_Param_Names_@;
+    // @_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@;
     @@END_TABLE@@
 
     // Send message
@@ -45,7 +45,7 @@ void @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
     // Receive message
     @_UPPER:Parent_Function_@_Receive_@_Name_@();
 
-    // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_Data.IN_@_Param_Names_@);
+    // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@);
 
 }
 

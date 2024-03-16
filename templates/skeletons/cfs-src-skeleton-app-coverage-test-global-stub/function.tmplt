@@ -23,7 +23,7 @@ int32 CFE_ES_ParseFileEntry(const char **TokenList, uint32 NumTokens) {
     // the input parameters (TokenList and NumTokens) to test different scenarios.
 
     // Example: return success if NumTokens is what your test expects
-    if (NumTokens == EXPECTED_NUMBER_OF_TOKENS) {
+    if (NumTokens == 8) {
         return CFE_SUCCESS;
     }
 
