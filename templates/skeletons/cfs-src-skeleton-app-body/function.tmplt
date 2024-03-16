@@ -104,8 +104,6 @@ void @_UPPER:Name_@_APP_Main(void)
     */
     CFE_ES_PerfLogExit(@_UPPER:Name_@_PERF_ID);
 
-    @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_EXIT;
-
     CFE_ES_ExitApp(@_UPPER:Name_@_APP_Data.RunStatus);
 
 } /* End of @_UPPER:Name_@_APP_Main() */
