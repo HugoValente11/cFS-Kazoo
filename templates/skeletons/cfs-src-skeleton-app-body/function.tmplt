@@ -256,22 +256,6 @@ int32 @_UPPER:Name_@_APP_Init(void)
                       @_UPPER:Name_@_VERSION_STRING);
     }
 
-    /*
-    ** Create Software Bus message pipe.
-    */
-    @_UPPER:Name_@_APP_Data.PipeDepth = @_UPPER:Name_@_PIPE_DEPTH;
-
-    (void)strcpy(@_UPPER:Name_@_APP_Data.PipeName, "@_UPPER:Name_@_COM_PIPE");
-    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] COM_PIPE Name = %s", @_UPPER:Name_@_APP_Data.PipeName);
-
-    status = CFE_SB_CreatePipe(&@_UPPER:Name_@_APP_Data.CommandPipe, @_UPPER:Name_@_APP_Data.PipeDepth, @_UPPER:Name_@_APP_Data.PipeName);
-    if (status != CFE_SUCCESS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error creating communication pipe,210, @_UPPER:Name_@_app.c, RC = 0x%08lX\n",
-                             (unsigned long)status);
-    }
-    CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Pipe creation successful");
-
     // Get App Id
     @_UPPER:Name_@_FindAppId();
 
