@@ -9,7 +9,7 @@ void Test_@_UPPER:Name_@_APP_Init(void)
 {
     /*
      * Test Case For:
-     * int32 @_UPPER:Name_@_Init( void )
+     * int32 @_UPPER:Name_@_APP_Init( void )
      */
 
     /* nominal case should return CFE_SUCCESS */
@@ -19,6 +19,31 @@ void Test_@_UPPER:Name_@_APP_Init(void)
      * and confirm a write to syslog for each.
      * Note that this count accumulates, because the status
      * is _not_ reset between these test cases. */
+
+    // Fail on register events
+    UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, CFE_EVS_INVALID_PARAMETER);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_EVS_INVALID_PARAMETER);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    
+    // Fail in initializing housekeeping
+    UT_SetDeferredRetcode(UT_KEY(CFE_MSG_Init), 1, CFE_MSG_BAD_ARGUMENT);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_MSG_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+
+    // Fail in creating software bus pipe
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_CreatePipe), 1, CFE_SB_BAD_ARGUMENT);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 3, "CFE_ES_WriteToSysLog() called");
+
+    // Fail in subscribing to house keeping requests
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 1, CFE_SB_BAD_ARGUMENT);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 4, "CFE_ES_WriteToSysLog() called");
+
+    // Fail in subscribing to ground command packets
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 2, CFE_SB_BAD_ARGUMENT);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 5, "CFE_ES_WriteToSysLog() called");
 
 }
 
