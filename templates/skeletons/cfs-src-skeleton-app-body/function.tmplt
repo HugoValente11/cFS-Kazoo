@@ -250,8 +250,11 @@ int32 @_UPPER:Name_@_APP_Init(void)
     }
     @@END_IF@@
 
+    if (status == CFE_SUCCESS)
+    {
     CFE_EVS_SendEvent(@_UPPER:Name_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "@_UPPER:Name_@ App Initialized.%s",
                       @_UPPER:Name_@_VERSION_STRING);
+    }
 
     /*
     ** Create Software Bus message pipe.
