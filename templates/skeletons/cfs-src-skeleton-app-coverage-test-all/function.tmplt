@@ -213,7 +213,8 @@ void UtTest_Setup(void)
 {
     ADD_TEST(@_UPPER:Name_@_APP_Init);
     ADD_TEST(@_UPPER:Name_@_APP_Main);
-    ADD_TEST(@_UPPER:Name_@_Send_Send_Message);
     ADD_TEST(@_UPPER:Name_@_FindAppId);
+    @_Send_Messages_Functions_@
+    @_Receive_Messages_Functions_@
     @_Component_Management_Init_@
 }
