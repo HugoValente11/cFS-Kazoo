@@ -131,4 +131,5 @@ void @_Name_@_UT_TearDown(void) {}
 void UtTest_Setup(void)
 {
     ADD_TEST(@_UPPER:Name_@_APP_Init);
+    ADD_TEST(@_UPPER:Name_@_APP_Main);
 }
