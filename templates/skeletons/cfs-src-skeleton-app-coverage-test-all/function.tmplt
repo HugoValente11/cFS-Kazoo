@@ -112,6 +112,10 @@ void Test_@_UPPER:Name_@_APP_Init(void)
     // Fail on creating pipe to send emssage
     UT_SetDeferredRetcode(UT_KEY(CFE_MSG_Init), 2, CFE_MSG_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(PUB_APP_Init(), CFE_MSG_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 6, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(PUB_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "PUB_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)PUB_APP_Data.RunStatus);
 }
 
 
