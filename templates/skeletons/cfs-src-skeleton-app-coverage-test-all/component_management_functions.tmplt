@@ -67,26 +67,16 @@ void Test_@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 
 }
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Start@_Target_Name_@App -- Starts @_Target_Name_@ app   */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
+void Test_@_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
 {
-    // Build token list with startup params for @_Target_Name_@ app
-    const char * TokenList[] = {"CFE_APP", // Object type
-    "@_LOWER:Target_Name_@_app", // Path/Filename
-    "@_UPPER:Target_Name_@_APP_Main", // Entry point
-    "@_UPPER:Target_Name_@_APP", // CFE_Name
-    "100", // Priority
-    "16384", // Stack size
-    "0x0", // Load address
-    "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
+    // Fail on starting app
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_ParseFileEntry), 1, CFE_ES_BAD_ARGUMENT);
+    @_UPPER:Parent_Function_@_Start@_Target_Name_@App();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
 
-    // Load app
-    CFE_ES_ParseFileEntry(TokenList, 8);
+    // Success on starting app
+    @_UPPER:Parent_Function_@_Start@_Target_Name_@App();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() should not be called");
 }
 
 void Test_@_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
