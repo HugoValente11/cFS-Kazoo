@@ -87,8 +87,8 @@ void @_UPPER:Name_@_APP_Main(void)
 
         if (status != CFE_SUCCESS)
         {
-            CFE_EVS_SendEvent(PUB_PIPE_ERR_EID, CFE_EVS_EventType_ERROR,
-                              "PUB APP: SB Pipe Read Error, App Will Exit");
+            CFE_EVS_SendEvent(@_UPPER:Name_@_PIPE_ERR_EID, CFE_EVS_EventType_ERROR,
+                              "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
 
             @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         }
