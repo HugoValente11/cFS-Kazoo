@@ -153,7 +153,31 @@ void Test_@_UPPER:Name_@_Send_Send_Message(void)
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_TransmitMsg), 1, CFE_SB_BAD_ARGUMENT);
     @_UPPER:Name_@_Send_Send_Message();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 3, "CFE_ES_WriteToSysLog() called");
+}
 
+void Test_@_UPPER:Name_@_FindAppId(void)
+{
+    // Fail on finding app
+    // Initialize AppTable with non-matching names
+    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++)
+    {
+    strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
+    }
+    @_UPPER:Name_@_APP_Data.AppId = CFE_ES_APPID_UNDEFINED;
+    @_UPPER:Name_@_FindAppId();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "@_UPPER:Name_@_APP_Data.AppId should remain unchanged");
+
+    // Success on finding app
+    // Initialize AppTable with matching names
+    strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Name_@_APP");
+    for (int i = 1; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++)
+    {
+    strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
+    }
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_SUCCESS);
+    @_UPPER:Name_@_FindAppId();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
 
 }
 
@@ -179,4 +203,5 @@ void UtTest_Setup(void)
     ADD_TEST(@_UPPER:Name_@_APP_Init);
     ADD_TEST(@_UPPER:Name_@_APP_Main);
     ADD_TEST(@_UPPER:Name_@_Send_Send_Message);
+    ADD_TEST(@_UPPER:Name_@_FindAppId);
 }
