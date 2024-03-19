@@ -191,6 +191,7 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 2, "CFE_ES_GetAppIDByName called");
 }
 
+@_Component_Management_Functions_@
 
 /*
  * Setup function prior to every test
