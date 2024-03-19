@@ -29,7 +29,76 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
-uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void);
-void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void);
-void @_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void);
+
+
+void Test_@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
+{
+    // Fail on finding @_Target_Name_@ app
+    // Initialize AppTable with non-matching names
+    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++)
+    {
+    strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
+    }
+    @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called");
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
+
+    // Succeed on finding app but fail on calling CFE_ES_GetAppIDByName
+    strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
+    // CFE_ES_Global.AppTable->AppId = 42;
+    //for (int i = 1; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++)
+    // {
+    //strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
+    // }
+    uint32 appId;
+    appId = 42;
+    // UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
+    @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
+
+    // Success on finding app and calling CFE_ES_GetAppIDByName
+    appId = 42;
+    UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
+    // UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
+    @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+    UT_TEST_FUNCTION_RC(PUB_FindSubAppId(), 42);
+
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/*                                                                 */
+/* @_UPPER:Parent_Function_@_Start@_Target_Name_@App -- Starts @_Target_Name_@ app   */
+/*                                                                 */
+/*                                                                 */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
+{
+    // Build token list with startup params for @_Target_Name_@ app
+    const char * TokenList[] = {"CFE_APP", // Object type
+    "@_LOWER:Target_Name_@_app", // Path/Filename
+    "@_UPPER:Target_Name_@_APP_Main", // Entry point
+    "@_UPPER:Target_Name_@_APP", // CFE_Name
+    "100", // Priority
+    "16384", // Stack size
+    "0x0", // Load address
+    "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
+
+    // Load app
+    CFE_ES_ParseFileEntry(TokenList, 8);
+}
+
+void Test_@_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
+{
+    // Fail on stopping app
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_DeleteApp), 1, CFE_ES_BAD_ARGUMENT);
+    @_UPPER:Parent_Function_@_Stop@_Target_Name_@App();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+
+    // Success on stopping app
+    @_UPPER:Parent_Function_@_Stop@_Target_Name_@App();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() should not be called");
+}
+
 @@END_IF@@
