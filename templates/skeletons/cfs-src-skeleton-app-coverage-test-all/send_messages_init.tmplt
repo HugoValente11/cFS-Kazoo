@@ -15,7 +15,8 @@
 @@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
-    CFE_MSG_Message_t MsgPtr_@_Name_@;
-    CFE_SB_MsgId_t MsgId_@_Name_@;
-    CFE_MSG_Size_t Size_@_Name_@;
+ADD_TEST(@_UPPER:Parent_Function_@_Send_@_Name_@);
+@@END_IF@@
+@@IF@@ @_Direction_@ = "RI" and @_Kind_@ = MESSAGE_OPERATION
+ADD_TEST(@_UPPER:Parent_Function_@_Receive_@_Name_@);
 @@END_IF@@
