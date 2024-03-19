@@ -38,7 +38,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 {
-    uint32 appId = (uint32) -1;
+    uint32 appId = CFE_ES_APPID_UNDEFINED;
     /*
     ** Search the ES Application table for the name that matches @_UPPER:Target_Name_@_APP
     */
@@ -47,7 +47,11 @@ uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 
         if (!strcmp(CFE_ES_Global.AppTable[i].AppName, "@_UPPER:Target_Name_@_APP"))
         {
-            CFE_ES_GetAppIDByName(&appId, CFE_ES_Global.AppTable[i].AppName);
+            status = CFE_ES_GetAppIDByName(&appId, CFE_ES_Global.AppTable[i].AppName);
+            if (status != CFE_SUCCESS)
+            {
+                CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error getting the App ID of @_UPPER:Target_Name_@_APP, RC = %lu\n", (unsigned long)status);
+            }
             break;
         }
 
