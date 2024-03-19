@@ -54,7 +54,6 @@ void @_UPPER:Parent_Function_@_Send_@_Name_@() {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Encode failed. Error code %d.\n", errorCode);
     }
 
-
     status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@), &perBuffer, sizeof(perBuffer));
 
     if (status != CFE_SUCCESS) {
@@ -62,14 +61,16 @@ void @_UPPER:Parent_Function_@_Send_@_Name_@() {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error writing the struct, RC = %lu\n", (unsigned long) status);
     }
 
-    status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, false);
+    if (status == CFE_SUCCESS)
+    {
+        status = CFE_SB_TransmitMsg(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, false);
 
-    if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending the message, RC = %lu\n", (unsigned long) status);
-    } else {
-        // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message sent successfully");
+        if (status != CFE_SUCCESS) {
+            @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending the message, RC = %lu\n", (unsigned long) status);
+        } 
     }
+
 
 }
 
