@@ -602,22 +602,18 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
         // Critical Data Store already exists,
         // get a copy of its current contents and store it in @_UPPER:Name_@_APP_Data.CDSData
         // to see if we can work use it
-        restoreStatus = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
+        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
 
-        if (restoreStatus != CFE_SUCCESS)
+        if (status != CFE_SUCCESS)
         {
-            // If restore was not successful, maintain the original error status
-            status = restoreStatus;
+            CFE_ES_WriteToSysLog("[SUB] Error restoring CDS, RC = 0x%08lX\n", (unsigned long) status);
         }
     }
 
     else if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
     }
-    else 
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful CDS creation");
-    }
+
 
     return status;
 
