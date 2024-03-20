@@ -77,10 +77,15 @@ void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
     "100", // Priority
     "16384", // Stack size
     "0x0", // Load address
-    "0" }; // Exceptiona action, 0 - Just restart app, != 0 - cFE processor reset
+    "0" }; // Exception action, 0 - Just restart app, != 0 - cFE processor reset
 
     // Load app
-    CFE_ES_ParseFileEntry(TokenList, 8);
+    status = CFE_ES_ParseFileEntry(TokenList, 8);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error adding the App, RC = %lu\n", (unsigned long)status);
+
+    }
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -95,7 +100,12 @@ void @_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
     uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
 
     // Stops application
-    CFE_ES_DeleteApp(appId);
+    status = CFE_ES_DeleteApp(appId);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error deleting the App, RC = %lu\n", (unsigned long)status);
+
+    }
 }
 
 @@END_IF@@
