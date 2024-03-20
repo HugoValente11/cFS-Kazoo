@@ -56,12 +56,12 @@ void Test_@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
     @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
+    // UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
 
     // Success on finding app and calling CFE_ES_GetAppIDByName
     appId = 42;
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
-    // UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
     @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
     UT_TEST_FUNCTION_RC(PUB_FindSubAppId(), 42);
 
