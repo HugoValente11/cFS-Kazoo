@@ -156,6 +156,35 @@ void Test_@_UPPER:Name_@_FindAppId(void)
 
 @_Send_Messages_Functions_@
 
+@@IF@@ @_DataStore_@ = "YES"
+void Test_SUB_Datastore_Init(void)
+{
+    // Nominal case
+    SUB_Datastore_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+
+    // Error registering CDS
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_BAD_ARGUMENT);
+    SUB_Datastore_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+
+    // CDS Already exists and restore successfully
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_SUCCESS);
+    SUB_Datastore_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
+
+    // Error restoring CDS
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_ES_BAD_ARGUMENT);
+    SUB_Datastore_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 3, "CFE_ES_WriteToSysLog called");
+
+
+}
+
+@@END_IF@@
+
 @_Component_Management_Functions_@
 
 /*
@@ -182,4 +211,8 @@ void UtTest_Setup(void)
     @_Send_Messages_Init_@
     // @_Receive_Messages_Init_@
     @_Component_Management_Init_@
+    @@IF@@ @_DataStore_@ = "YES"
+    ADD_TEST(@_UPPER:Name_@_Datastore_Init);
+    @@END_IF@@
+
 }
