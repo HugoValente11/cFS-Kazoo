@@ -180,6 +180,19 @@ void Test_SUB_Datastore_Init(void)
     SUB_Datastore_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 4, "CFE_ES_WriteToSysLog called");
 
+}
+
+void Test_SUB_Datastore_Store(void)
+{
+    int32 store = 42;
+    // Nominal case
+    SUB_Datastore_Store(&store);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+
+    // Fail on storing
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_CopyToCDS), 1, CFE_ES_BAD_ARGUMENT);
+    SUB_Datastore_Store(&store);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
 }
 
@@ -213,6 +226,7 @@ void UtTest_Setup(void)
     @_Component_Management_Init_@
     @@IF@@ @_DataStore_@ = "YES"
     ADD_TEST(@_UPPER:Name_@_Datastore_Init);
+    ADD_TEST(@_UPPER:Name_@_Datastore_Store);
     @@END_IF@@
 
 }
