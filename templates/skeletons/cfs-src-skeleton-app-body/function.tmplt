@@ -628,9 +628,7 @@ int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
 
     if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } else {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Successful copy to CDS");
-    }
+    } 
 
     return status;
 
