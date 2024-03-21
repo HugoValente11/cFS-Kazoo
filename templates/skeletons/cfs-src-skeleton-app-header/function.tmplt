@@ -115,6 +115,13 @@ typedef struct
 
 } @_UPPER:Name_@_APP_Data_t;
 
+int32            status;
+@@IF@@ @_MESSAGES_ENABLED_@
+    @@IF@@ @_EXIST:List_Of_RIs_@
+uint32 i;
+    @@END_IF@@
+@@END_IF@@
+
 /****************************************************************************/
 /*
 ** Local function prototypes.
