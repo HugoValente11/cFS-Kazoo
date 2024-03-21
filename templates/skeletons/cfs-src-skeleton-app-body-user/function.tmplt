@@ -55,9 +55,7 @@ int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
 @_Send_Messages_Functions_@
 @_Receive_Messages_Functions_@
 @@END_IF@@
-@@IF@@ @_EVENTS_ENABLED_@
-@_Send_Events_@
-@@END_IF@@
+
 @@IF@@ @_Language_@ = QGenC
 
 // QGen wrappper

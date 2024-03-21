@@ -681,3 +681,7 @@ void @_UPPER:Name_@_FindAppId(void)
 }
 
 @_Component_Management_Functions_@
+
+@@IF@@ @_EVENTS_ENABLED_@
+@_Send_Events_@
+@@END_IF@@
