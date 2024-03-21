@@ -28,5 +28,7 @@
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@  and @_Kind_@ = EVENT_OPERATION
-    CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID, CFE_EVS_EventType_@_Event_Type_@, "[@_Event_Type_@] @_Event_Info_@\n");
+void @_UPPER:Parent_Function_@_User_@_UPPER:REPLACE_ALL( /_):Event_Name_@_Event(void) {
+    CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID, CFE_EVS_EventType_@_Event_Type_@, "[@_Event_Type_@] @_Event_Info_@");
+}
 @@END_IF@@
