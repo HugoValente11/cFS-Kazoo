@@ -30,12 +30,41 @@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId -- Return @_Target_Name_@ app Id   */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+void @_UPPER:Parent_Function_@_User_Start@_Target_Name_@App(void)
+{
+    // Build token list with startup params for @_Target_Name_@ app
+    const char * TokenList[] = {"CFE_APP", // Object type
+    "@_LOWER:Target_Name_@_app", // Path/Filename
+    "@_UPPER:Target_Name_@_APP_Main", // Entry point
+    "@_UPPER:Target_Name_@_APP", // CFE_Name
+    "100", // Priority
+    "16384", // Stack size
+    "0x0", // Load address
+    "0" }; // Exception action, 0 - Just restart app, != 0 - cFE processor reset
+
+    // Load app
+    status = CFE_ES_ParseFileEntry(TokenList, 8);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error adding the App, RC = %lu\n", (unsigned long)status);
+
+    }
+}
+
+void @_UPPER:Parent_Function_@_User_Stop@_Target_Name_@App(void)
+{
+    // Returns @_Target_Name_@ app id
+    uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+
+    // Stops application
+    status = CFE_ES_DeleteApp(appId);
+    if (status != CFE_SUCCESS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error deleting the App, RC = %lu\n", (unsigned long)status);
+
+    }
+}
+
 uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 {
     uint32 appId = CFE_ES_APPID_UNDEFINED;
@@ -59,53 +88,6 @@ uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 
     return appId;
 
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Start@_Target_Name_@App -- Starts @_Target_Name_@ app   */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_Start@_Target_Name_@App(void)
-{
-    // Build token list with startup params for @_Target_Name_@ app
-    const char * TokenList[] = {"CFE_APP", // Object type
-    "@_LOWER:Target_Name_@_app", // Path/Filename
-    "@_UPPER:Target_Name_@_APP_Main", // Entry point
-    "@_UPPER:Target_Name_@_APP", // CFE_Name
-    "100", // Priority
-    "16384", // Stack size
-    "0x0", // Load address
-    "0" }; // Exception action, 0 - Just restart app, != 0 - cFE processor reset
-
-    // Load app
-    status = CFE_ES_ParseFileEntry(TokenList, 8);
-    if (status != CFE_SUCCESS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error adding the App, RC = %lu\n", (unsigned long)status);
-
-    }
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Stop@_Target_Name_@App -- Stops @_Target_Name_@ app   */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_Stop@_Target_Name_@App(void)
-{
-    // Returns @_Target_Name_@ app id
-    uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
-
-    // Stops application
-    status = CFE_ES_DeleteApp(appId);
-    if (status != CFE_SUCCESS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error deleting the App, RC = %lu\n", (unsigned long)status);
-
-    }
 }
 
 @@END_IF@@

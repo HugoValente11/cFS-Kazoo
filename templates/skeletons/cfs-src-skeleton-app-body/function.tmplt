@@ -48,6 +48,94 @@
 
 /* Global instance of @_UPPER:Name_@_APP_Data */
 @_UPPER:Name_@_APP_Data_t @_UPPER:Name_@_APP_Data;
+
+
+void @_UPPER:Name_@_User_Init(void)
+{
+    // User initialization here
+
+
+}
+
+@@IF@@ @_DataStore_@ = "YES"
+
+int32 @_UPPER:Name_@_Datastore_User_Init()
+{
+    // Check if there's data in Datastore,
+    // if there is recover the data and store it in @_UPPER:Name_@_APP_Data.CDSData
+    int32 status = CFE_SUCCESS;
+
+    char cDSName[] = "@_LOWER:Name_@CDS";
+
+    // Register CDS
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
+
+    if (status == CFE_ES_CDS_ALREADY_EXISTS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CDS Already exists");
+
+        // Critical Data Store already exists,
+        // get a copy of its current contents and store it in @_UPPER:Name_@_APP_Data.CDSData
+        // to see if we can work use it
+        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
+
+        if (status != CFE_SUCCESS)
+        {
+            CFE_ES_WriteToSysLog("[SUB] Error restoring CDS, RC = 0x%08lX\n", (unsigned long) status);
+        }
+    }
+
+    else if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    }
+
+    return status;
+}
+
+int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
+{
+    int32 status;
+
+    // Copy data to CDS
+    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_APP_Data.CDSHandlePtr, dataToStore);
+
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } 
+
+    return status;
+
+} /* End of @_UPPER:Name_@_Datastore_User_Store() */
+
+void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
+{
+    // Read data from CDS
+    status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error restoring from CDS, RC = 0x%08lX\n", (unsigned long) status);
+    }
+}
+
+@@END_IF@@
+
+// Functions
+@@IF@@ @_MESSAGES_ENABLED_@
+@_Send_Messages_Functions_@
+@_Receive_Messages_Functions_@
+@@END_IF@@
+
+
+
+@_Component_Management_Functions_@
+
+@@IF@@ @_EVENTS_ENABLED_@
+@_Send_Events_@
+@@END_IF@@
+
+/*
+** Helper functions, user shouldn't need to change them
+*/
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 /* @_UPPER:Name_@_APP_Main() -- Application entry point and main process loop         */
 /*                                                                            */
@@ -280,95 +368,8 @@ int32 @_UPPER:Name_@_APP_Init(void)
 
 } /* End of @_UPPER:Name_@_Init() */
 
-void @_UPPER:Name_@_User_Init(void)
-{
-    // User initialization here
-
-
-}
-
-@@IF@@ @_DataStore_@ = "YES"
-
-int32 @_UPPER:Name_@_Datastore_User_Init()
-{
-    // Check if there's data in Datastore,
-    // if there is recover the data and store it in @_UPPER:Name_@_APP_Data.CDSData
-    int32 status = @_UPPER:Name_@_Datastore_Init();
-
-    char cDSName[] = "@_LOWER:Name_@CDS";
-
-    // Register CDS
-    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
-
-    if (status == CFE_ES_CDS_ALREADY_EXISTS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CDS Already exists");
-
-        // Critical Data Store already exists,
-        // get a copy of its current contents and store it in @_UPPER:Name_@_APP_Data.CDSData
-        // to see if we can work use it
-        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
-
-        if (status != CFE_SUCCESS)
-        {
-            CFE_ES_WriteToSysLog("[SUB] Error restoring CDS, RC = 0x%08lX\n", (unsigned long) status);
-        }
-    }
-
-    else if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
-    }
-
-    return status;
-}
-
-int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
-{
-    int32 status;
-
-    // Copy data to CDS
-    status = CFE_ES_CopyToCDS(@_UPPER:Name_@_APP_Data.CDSHandlePtr, dataToStore);
-
-    if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error copying to CDS, RC = 0x%08lX\n", (unsigned long) status);
-    } 
-
-    return status;
-
-} /* End of @_UPPER:Name_@_Datastore_User_Store() */
-
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
-{
-    // Read data from CDS
-    status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
-    if (status != CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error restoring from CDS, RC = 0x%08lX\n", (unsigned long) status);
-    }
-}
-
-@@END_IF@@
-
-// Init
 @_Send_Messages_Init_@
 @_Receive_Messages_Init_@
-
-// Functions
-@@IF@@ @_MESSAGES_ENABLED_@
-@_Send_Messages_Functions_@
-@_Receive_Messages_Functions_@
-@@END_IF@@
-
-
-
-@_Component_Management_Functions_@
-
-@@IF@@ @_EVENTS_ENABLED_@
-@_Send_Events_@
-@@END_IF@@
-
-/*
-** Helper functions, user shouldn't need to change them
-*/
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
