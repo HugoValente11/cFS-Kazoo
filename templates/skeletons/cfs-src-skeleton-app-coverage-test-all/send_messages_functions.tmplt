@@ -17,10 +17,17 @@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
 void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 {
-     /*
-     * Test Case For:
-     * void @_UPPER:Parent_Function_@_Send_@_Name_@_Send_@_Name_@_Init( void )
-     */
+    // Fail on creating pipe to send message
+    UT_SetDeferredRetcode(UT_KEY(CFE_MSG_Init), 1, CFE_MSG_BAD_ARGUMENT);
+    @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Parent_Function_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Parent_Function_@_APP_Data.RunStatus);
+
+    // Nominal
+    @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
+
     @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
 }
 
