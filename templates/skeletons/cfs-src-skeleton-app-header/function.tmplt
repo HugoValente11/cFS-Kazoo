@@ -145,9 +145,9 @@ int32 @_UPPER:Name_@_TblValidationFunc(void *TblData);
 @@END_IF@@
 
 @@IF@@ @_DataStore_@ = "YES"
-int32 @_UPPER:Name_@_Datastore_User_Init();
-int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore);
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE]);
+int32 @_UPPER:Name_@_User_Datastore_Init();
+int32 @_UPPER:Name_@_User_Datastore_Store(const void *dataToStore);
+void @_UPPER:Name_@_User_Datastore_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE]);
 @@END_IF@@
 
 bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLength);
