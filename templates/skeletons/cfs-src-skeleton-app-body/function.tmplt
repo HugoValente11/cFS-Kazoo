@@ -256,6 +256,11 @@ int32 @_UPPER:Name_@_APP_Init(void)
     // Get App Id
     @_UPPER:Name_@_FindAppId();
 
+    @@IF@@ @_DataStore_@ = "YES"
+    // Call datastore initialization with @_DataStoreSize_@ bytes
+    @_UPPER:Name_@_Datastore_User_Init();
+    @@END_IF@@
+
     @@IF@@ @_MESSAGES_ENABLED_@
 
     @_Send_Messages_Init_Call_@
@@ -274,6 +279,51 @@ int32 @_UPPER:Name_@_APP_Init(void)
     return status;
 
 } /* End of @_UPPER:Name_@_Init() */
+
+void @_UPPER:Name_@_User_Init(void)
+{
+    // User initialization here
+
+
+}
+
+@@IF@@ @_DataStore_@ = "YES"
+
+int32 @_UPPER:Name_@_Datastore_User_Init()
+{
+    // Check if there's data in Datastore,
+    // if there is recover the data and store it in @_UPPER:Name_@_APP_Data.CDSData
+    int32 status = @_UPPER:Name_@_Datastore_Init();
+
+    char cDSName[] = "@_LOWER:Name_@CDS";
+
+    // Register CDS
+    status = CFE_ES_RegisterCDS(&@_UPPER:Name_@_APP_Data.CDSHandlePtr, @_UPPER:Name_@_DATASTORE_SIZE, cDSName);
+
+    if (status == CFE_ES_CDS_ALREADY_EXISTS)
+    {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] CDS Already exists");
+
+        // Critical Data Store already exists,
+        // get a copy of its current contents and store it in @_UPPER:Name_@_APP_Data.CDSData
+        // to see if we can work use it
+        status = CFE_ES_RestoreFromCDS(&@_UPPER:Name_@_APP_Data.CDSData, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
+
+        if (status != CFE_SUCCESS)
+        {
+            CFE_ES_WriteToSysLog("[SUB] Error restoring CDS, RC = 0x%08lX\n", (unsigned long) status);
+        }
+    }
+
+    else if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    }
+
+    return status;
+}
+
+
+@@END_IF@@
 
 @_Send_Messages_Init_@
 @_Receive_Messages_Init_@
@@ -621,7 +671,7 @@ int32 @_UPPER:Name_@_Datastore_Init(void)
 
 } /* End of @_UPPER:Name_@_Datastore_Init() */
 
-int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
+int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
 {
     int32 status;
 
@@ -634,7 +684,7 @@ int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
 
     return status;
 
-} /* End of @_UPPER:Name_@_Datastore_Store() */
+} /* End of @_UPPER:Name_@_Datastore_User_Store() */
 
 void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
 {
