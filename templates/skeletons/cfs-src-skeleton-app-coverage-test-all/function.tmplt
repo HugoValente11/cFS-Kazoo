@@ -302,6 +302,9 @@ void Test_@_UPPER:Name_@_Datastore_User_Load(void)
 
 @_Component_Management_Functions_@
 
+@_Send_Events_@
+
+
 /*
  * Setup function prior to every test
  */
