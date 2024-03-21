@@ -232,46 +232,46 @@ void Test_@_UPPER:Name_@_FindAppId(void)
 @_Receive_Messages_Functions_@
 
 @@IF@@ @_DataStore_@ = "YES"
-void Test_@_UPPER:Name_@_Datastore_User_Init(void)
+void Test_@_UPPER:Name_@_User_Datastore_Init(void)
 {
     // Nominal case
-    @_UPPER:Name_@_Datastore_User_Init();
+    @_UPPER:Name_@_User_Datastore_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
 
     // Error registering CDS
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_BAD_ARGUMENT);
-    @_UPPER:Name_@_Datastore_User_Init();
+    @_UPPER:Name_@_User_Datastore_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
     // CDS Already exists and restore successfully
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_SUCCESS);
-    @_UPPER:Name_@_Datastore_User_Init();
+    @_UPPER:Name_@_User_Datastore_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
 
     // Error restoring CDS
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_ES_BAD_ARGUMENT);
-    @_UPPER:Name_@_Datastore_User_Init();
+    @_UPPER:Name_@_User_Datastore_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 4, "CFE_ES_WriteToSysLog called");
 
 }
 
-void Test_@_UPPER:Name_@_Datastore_User_Store(void)
+void Test_@_UPPER:Name_@_User_Datastore_Store(void)
 {
     int32 store = 42;
     // Nominal case
-    @_UPPER:Name_@_Datastore_User_Store(&store);
+    @_UPPER:Name_@_User_Datastore_Store(&store);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
 
     // Fail on storing
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_CopyToCDS), 1, CFE_ES_BAD_ARGUMENT);
-    @_UPPER:Name_@_Datastore_User_Store(&store);
+    @_UPPER:Name_@_User_Datastore_Store(&store);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
 }
 
-void Test_@_UPPER:Name_@_Datastore_User_Load(void)
+void Test_@_UPPER:Name_@_User_Datastore_Load(void)
 {   
     uint8 expected_load[@_UPPER:Name_@_DATASTORE_SIZE];
     memset(expected_load, 42, @_UPPER:Name_@_DATASTORE_SIZE);
@@ -281,13 +281,13 @@ void Test_@_UPPER:Name_@_Datastore_User_Load(void)
 
     // Nominal case
     UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), &expected_load, sizeof(expected_load), false);
-    @_UPPER:Name_@_Datastore_User_Load(&actual_load);
+    @_UPPER:Name_@_User_Datastore_Load(&actual_load);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
     UtAssert_MemCmp(expected_load, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Loaded from data store successfully");
 
     // Fail on restoring
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_ES_BAD_ARGUMENT);
-    @_UPPER:Name_@_Datastore_User_Load(&actual_load);
+    @_UPPER:Name_@_User_Datastore_Load(&actual_load);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
 }
@@ -324,9 +324,9 @@ void UtTest_Setup(void)
 @_Receive_Messages_Init_@
     @_Component_Management_Init_@
     @@IF@@ @_DataStore_@ = "YES"
-    ADD_TEST(@_UPPER:Name_@_Datastore_User_Init);
-    ADD_TEST(@_UPPER:Name_@_Datastore_User_Store);
-    ADD_TEST(@_UPPER:Name_@_Datastore_User_Load);
+    ADD_TEST(@_UPPER:Name_@_User_Datastore_Init);
+    ADD_TEST(@_UPPER:Name_@_User_Datastore_Store);
+    ADD_TEST(@_UPPER:Name_@_User_Datastore_Load);
     @@END_IF@@
     @_Event_Filters_@
 
