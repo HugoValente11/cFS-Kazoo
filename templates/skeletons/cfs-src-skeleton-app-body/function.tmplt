@@ -59,7 +59,7 @@ void @_UPPER:Name_@_User_Init(void)
 
 @@IF@@ @_DataStore_@ = "YES"
 
-int32 @_UPPER:Name_@_Datastore_User_Init()
+int32 @_UPPER:Name_@_User_Datastore_Init()
 {
     // Check if there's data in Datastore,
     // if there is recover the data and store it in @_UPPER:Name_@_APP_Data.CDSData
@@ -92,7 +92,7 @@ int32 @_UPPER:Name_@_Datastore_User_Init()
     return status;
 }
 
-int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
+int32 @_UPPER:Name_@_User_Datastore_Store(const void *dataToStore)
 {
     int32 status;
 
@@ -105,9 +105,9 @@ int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
 
     return status;
 
-} /* End of @_UPPER:Name_@_Datastore_User_Store() */
+} /* End of @_UPPER:Name_@_User_Datastore_Store() */
 
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
+void @_UPPER:Name_@_User_Datastore_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
 {
     // Read data from CDS
     status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
@@ -346,7 +346,7 @@ int32 @_UPPER:Name_@_APP_Init(void)
 
     @@IF@@ @_DataStore_@ = "YES"
     // Call datastore initialization with @_DataStoreSize_@ bytes
-    @_UPPER:Name_@_Datastore_User_Init();
+    @_UPPER:Name_@_User_Datastore_Init();
     @@END_IF@@
 
     @@IF@@ @_MESSAGES_ENABLED_@
