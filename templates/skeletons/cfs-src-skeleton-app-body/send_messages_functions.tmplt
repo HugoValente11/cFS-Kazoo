@@ -36,6 +36,11 @@
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 void @_UPPER:Parent_Function_@_Send_@_Name_@() {
+    // TODO Build structs here
+    @@TABLE@@
+    // @_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@;
+    @@END_TABLE@@
+
     // Define buffer where stream will be written to
     byte perBuffer[asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BYTES_FOR_ENCODING];
 
@@ -112,6 +117,11 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
         {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
         }
+
+        // Message received stored in @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@
+        // TODO handle on receive
+        // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@);
+
 
 
         @@IF@@ @_Store_Message_@ = "YES"
