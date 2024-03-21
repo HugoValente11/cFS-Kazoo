@@ -48,12 +48,7 @@ int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
     return @_UPPER:Name_@_Datastore_Store(dataToStore);
 }
 
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
-{
-    // Read data from CDS
-    CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
 
-}
 @@END_IF@@
 @@IF@@ @_MESSAGES_ENABLED_@
 

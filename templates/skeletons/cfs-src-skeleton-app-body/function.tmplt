@@ -634,6 +634,15 @@ int32 @_UPPER:Name_@_Datastore_Store(const void *dataToStore)
 
 } /* End of @_UPPER:Name_@_Datastore_Store() */
 
+void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
+{
+    // Read data from CDS
+    status = CFE_ES_RestoreFromCDS(load, SUB_APP_Data.CDSHandlePtr);
+    if (status != CFE_SUCCESS) {
+        CFE_ES_WriteToSysLog("[SUB] Error restoring from CDS, RC = 0x%08lX\n", (unsigned long) status);
+    }
+}
+
 @@END_IF@@
 
 
