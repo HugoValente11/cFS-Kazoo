@@ -304,6 +304,10 @@ void Test_@_UPPER:Name_@_Datastore_User_Load(void)
 
 @_Send_Events_@
 
+@@IF@@ @_MESSAGES_ENABLED_@
+@_Send_Messages_Functions_@
+@_Receive_Messages_Functions_@
+@@END_IF@@
 
 /*
  * Setup function prior to every test
