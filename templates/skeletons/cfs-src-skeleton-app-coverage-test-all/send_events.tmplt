@@ -28,18 +28,18 @@
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@  and @_Kind_@ = EVENT_OPERATION
-void Test_@_UPPER:Parent_Function_@_User_@_UPPER:REPLACE_ALL( /_):Event_Name_@_Event(void)
+void Test_@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(void)
 {
     // Fail on sending event
     UT_SetDeferredRetcode(UT_KEY(CFE_EVS_SendEvent), 1, CFE_EVS_INVALID_PARAMETER); 
-    @_UPPER:Parent_Function_@_User_@_UPPER:REPLACE_ALL( /_):Event_Name_@_Event();
+    @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
     // Success
     UT_CheckEvent_t EventTest;
     UT_CheckEvent_Setup(&EventTest, 
     @_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID, "[@_UPPER:Parent_Function_@-@_Event_Type_@] @_Event_Info_@");
-    @_UPPER:Parent_Function_@_User_@_UPPER:REPLACE_ALL( /_):Event_Name_@_Event();
+    @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event();
     UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:REPLACE_ALL( /_):Event_Name_@ event generated (%u)",
                   (unsigned int)EventTest.MatchCount);
 }
