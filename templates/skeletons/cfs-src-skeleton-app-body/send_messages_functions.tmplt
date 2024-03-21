@@ -35,7 +35,7 @@
 /*                                                                 */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_Send_@_Name_@() {
+void @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     // TODO Build structs here
     @@TABLE@@
     // @_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@;
@@ -80,13 +80,7 @@ void @_UPPER:Parent_Function_@_Send_@_Name_@() {
 }
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Receive_@_Name_@ -- Receive message   */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
+void @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
     // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
         
     status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_APP_Data.Buffer,
@@ -116,39 +110,14 @@ void @_UPPER:Parent_Function_@_Receive_@_Name_@() {
         if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
         {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
-        }
-
+        } else 
+        {
         // Message received stored in @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@
         // TODO handle on receive
         // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@);
 
+        }
 
-
-        @@IF@@ @_Store_Message_@ = "YES"
-        // Store message
-        char CDSname[] = "@_UPPER:Parent_Function_@_CDS";
-        @_UPPER:Parent_Function_@_APP_Data.MAX_STORE_LENGTH = sizeof(c);
-
-        // Create datastore
-        status = CFE_ES_RegisterCDS(&@_UPPER:Parent_Function_@_APP_Data.CDSHandlePtr,
-                                            @_UPPER:Parent_Function_@_APP_Data.MAX_STORE_LENGTH,
-                                            CDSname);
-
-        if (status == CFE_SUCCESS) {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully created datastore");
-
-            // Copy to datastore
-            status = CFE_ES_CopyToCDS(@_UPPER:Parent_Function_@_APP_Data.CDSHandlePtr, c);
-
-            if (status == CFE_SUCCESS) {
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Successfully copied to datastore.");
-
-            // Send event notification Successfully stored
-            status = CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_STARTUP_INF_EID, CFE_EVS_EventType_INFORMATION, "[@_UPPER:Parent_Function_@] Message stored successfully"); 
-
-            }
-        } 
-        @@END_IF@@
 
 
     }

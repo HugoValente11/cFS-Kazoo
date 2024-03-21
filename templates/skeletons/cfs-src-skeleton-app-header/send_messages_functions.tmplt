@@ -16,9 +16,9 @@
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
 void @_UPPER:Parent_Function_@_Send_@_Name_@_Init(void);
-void @_UPPER:Parent_Function_@_Send_@_Name_@(void);
+void @_UPPER:Parent_Function_@_User_Send_@_Name_@(void);
 @@END_IF@@
 @@IF@@ @_Direction_@ = "RI" and @_Kind_@ = MESSAGE_OPERATION
 void @_UPPER:Parent_Function_@_Receive_@_Name_@_Init(void);
-void @_UPPER:Parent_Function_@_Receive_@_Name_@(void);
+void @_UPPER:Parent_Function_@_User_Receive_@_Name_@(void);
 @@END_IF@@
