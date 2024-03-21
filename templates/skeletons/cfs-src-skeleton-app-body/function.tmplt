@@ -257,11 +257,10 @@ int32 @_UPPER:Name_@_APP_Init(void)
     @_UPPER:Name_@_FindAppId();
 
     @@IF@@ @_MESSAGES_ENABLED_@
-    // ---------   Send messages initialization  ------------
-    @_Send_Messages_Init_@
-    
-    // --------- Receive messages initialization ------------
-    @_Receive_Messages_Init_@
+
+    @_Send_Messages_Init_Call_@
+    @_Receive_Messages_Init_Call_@
+
 @@END_IF@@
 
     @@IF@@ @_Language_@ = QGenC
@@ -275,6 +274,9 @@ int32 @_UPPER:Name_@_APP_Init(void)
     return status;
 
 } /* End of @_UPPER:Name_@_Init() */
+
+@_Send_Messages_Init_@
+@_Receive_Messages_Init_@
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*  Name:  @_UPPER:Name_@_ProcessCommandPacket                                    */

@@ -44,17 +44,5 @@
     }
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION and @_Direction_@ = "RI"
-void @_UPPER:Parent_Function_@_Receive_@_Name_@_Init(void)
-{
-    status = CFE_SB_Subscribe(0x0@_Message_ID_@,
-                              @_UPPER:Parent_Function_@_APP_Data.CommandPipe);
-
-    if (status != CFE_SUCCESS)
-    {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error Subscribing to communication pipe, RC = 0x%08lX\n",
-                             (unsigned long) status);
-       
-    }
-}
-
+@_UPPER:Parent_Function_@_Receive_@_Name_@_Init();
 @@END_IF@@

@@ -329,6 +329,11 @@ package body TASTE.Backend.Code_Generators is
                                      (Func_Tmpl.Provided,
                                      "send_messages_init.tmplt", Path,
                                      CPU_Platform))
+                         & Assoc ("Send_Messages_Init_Call",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Provided,
+                                     "send_messages_init.tmplt", Path,
+                                     CPU_Platform))
                          & Assoc ("Send_Messages_Functions",
                                   Process_Interfaces
                                      (Func_Tmpl.Provided,
