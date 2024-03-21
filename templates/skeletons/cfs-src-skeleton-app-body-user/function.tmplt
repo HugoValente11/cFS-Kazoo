@@ -27,4 +27,3 @@ void @_UPPER:Name_@_QGen_Wrapper_@_List_Of_RIs_@(void) {
 }
 @@END_TABLE@@
 @@END_IF@@
-@_Component_Management_Functions_@
