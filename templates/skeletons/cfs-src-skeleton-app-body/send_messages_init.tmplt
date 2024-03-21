@@ -32,19 +32,18 @@
 void @_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 {
     // Initialize message @_Name_@
-    if (status == CFE_SUCCESS)
-    {
-        @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
-        @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
+    int32 status = CFE_SUCCESS; // Initialize status to success;
+    
+    @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@ = @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_@_Message_ID_@;
+    @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@ = asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING;
 
-        status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@);
+    status = CFE_MSG_Init(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.MsgId_@_Name_@, @_UPPER:Parent_Function_@_APP_Data.Size_@_Name_@);
 
-        if (status != CFE_SUCCESS) {
-            @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
-        }
+    if (status != CFE_SUCCESS) {
+        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error creating the message, RC = %lu\n", (unsigned long) status);
     }
-
+    
 }
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION and @_Direction_@ = "RI"
