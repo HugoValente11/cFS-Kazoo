@@ -5,6 +5,9 @@
 #include "@_LOWER:Name_@_app_coveragetest_common.h"
 #include "ut_@_LOWER:Name_@_app.h"
 
+typedef struct
+{
+    uint16      ExpectedEvent;
     uint32      MatchCount;
     const char *ExpectedFormat;
 } UT_CheckEvent_t;
