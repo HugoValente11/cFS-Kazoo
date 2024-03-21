@@ -17,29 +17,6 @@ void @_UPPER:Name_@_User_Main(void)
 
 }
 
-void @_UPPER:Name_@_User_Init(void)
-{
-    // User initialization here
-
-
-}
-@@IF@@ @_DataStore_@ = "YES"
-
-int32 @_UPPER:Name_@_Datastore_User_Init()
-{
-    // Check if there's data in Datastore,
-    // if there is recover the data and store it in @_UPPER:Name_@_APP_Data.CDSData
-    int32 status = @_UPPER:Name_@_Datastore_Init();
-    if (status == CFE_ES_CDS_ALREADY_EXISTS)
-    {
-        // TODO User implementation to handle data stored
-    }
-
-    return status;
-}
-
-
-@@END_IF@@
 @@IF@@ @_MESSAGES_ENABLED_@
 
 @_Send_Messages_Functions_@
