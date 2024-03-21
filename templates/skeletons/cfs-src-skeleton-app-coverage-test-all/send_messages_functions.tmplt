@@ -57,4 +57,34 @@ void Test_@_UPPER:Parent_Function_@_Send_@_Name_@(void)
 }
 @@END_IF@@
 @@IF@@ @_Direction_@ = "RI" and @_Kind_@ = MESSAGE_OPERATION
+void Test_@_UPPER:Parent_Function_@_Receive_@_Name_@(void)
+{
+    // Mock buffer and message
+    CFE_SB_Buffer_t mockBuffer;
+    memset(&mockBuffer, 0, sizeof(CFE_SB_Buffer_t)); // Clear the buffer
+    memset(mockBuffer.Msg.Byte, 42, sizeof(mockBuffer.Msg.Byte));
+
+    @_UPPER:Parent_Function_@_APP_Data.Buffer = &mockBuffer;
+
+
+    // Error on receive buffer
+    UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, CFE_SB_BAD_ARGUMENT); 
+    @_UPPER:Parent_Function_@_Receive_Send_Message();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+
+    // Fail on decoding
+    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, false);
+    @_UPPER:Parent_Function_@_Receive_Send_Message();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
+
+    // Success
+    byte mockData[40];
+    memset(mockData, 0, sizeof(mockData)); // Initialize the mock data as needed for the test
+    UT_SetDataBuffer(UT_KEY(CFE_SB_ReceiveBuffer), &mockBuffer, sizeof(mockBuffer), false);
+    UT_SetDataBuffer(UT_KEY(CFE_SB_GetUserData), mockData, sizeof(mockData), false);
+    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, true);
+    @_UPPER:Parent_Function_@_Receive_Send_Message();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog should not be called");
+
+}
 @@END_IF@@
