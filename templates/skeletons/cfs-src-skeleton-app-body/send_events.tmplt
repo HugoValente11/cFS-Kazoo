@@ -28,11 +28,11 @@
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@  and @_Kind_@ = EVENT_OPERATION
-void @_UPPER:Parent_Function_@_User_@_UPPER:REPLACE_ALL( /_):Event_Name_@_Event(void) {
+void @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(void) {
     status = CFE_EVS_SendEvent(@_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID, CFE_EVS_EventType_@_Event_Type_@, "[@_UPPER:Parent_Function_@-@_Event_Type_@] @_Event_Info_@");
     if (status != CFE_SUCCESS)
     {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending @_UPPER:REPLACE_ALL( /_):Event_Name_@ event, RC = 0x%08lX\n",
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending @_REPLACE_ALL( /_):Event_Name_@ event, RC = 0x%08lX\n",
                              (unsigned long)status);
     }
 }
