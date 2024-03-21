@@ -15,17 +15,12 @@ void @_UPPER:Name_@_User_Main(void)
 @@END_IF@@
 
 
-    // status = OS_TaskDelay(period_ms);
 }
 
 void @_UPPER:Name_@_User_Init(void)
 {
     // User initialization here
-    @@IF@@ @_DataStore_@ = "YES"
 
-    // Call datastore initialization with @_DataStoreSize_@ bytes
-    @_UPPER:Name_@_Datastore_User_Init();
-    @@END_IF@@
 
 }
 @@IF@@ @_DataStore_@ = "YES"
@@ -41,11 +36,6 @@ int32 @_UPPER:Name_@_Datastore_User_Init()
     }
 
     return status;
-}
-
-int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore)
-{
-    return @_UPPER:Name_@_Datastore_Store(dataToStore);
 }
 
 
