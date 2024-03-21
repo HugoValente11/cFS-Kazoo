@@ -150,6 +150,11 @@ bool @_UPPER:Name_@_VerifyCmdLength(CFE_MSG_Message_t *MsgPtr, size_t ExpectedLe
 @_Receive_Messages_Functions_@
 @@END_IF@@
 
+@@IF@@ @_EVENTS_ENABLED_@
+
+@_Send_Events_@
+@@END_IF@@
+
 @_Component_Management_Functions_@
 
 #endif /* @_UPPER:Name_@_H */
