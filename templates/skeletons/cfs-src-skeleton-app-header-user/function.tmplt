@@ -21,31 +21,10 @@
 ** global data
 */
 extern @_UPPER:Name_@_APP_Data_t @_UPPER:Name_@_APP_Data;
-int32            status;
-@@IF@@ @_MESSAGES_ENABLED_@
-    @@IF@@ @_EXIST:List_Of_RIs_@
-uint32 i;
-    @@END_IF@@
-@@END_IF@@
+
 
 void @_UPPER:Name_@_User_Main(void);
-void @_UPPER:Name_@_User_Init(void);
-@@IF@@ @_DataStore_@ = "YES"
 
-int32 @_UPPER:Name_@_Datastore_User_Init(void);
-int32 @_UPPER:Name_@_Datastore_User_Store(const void *dataToStore);
-void @_UPPER:Name_@_Datastore_User_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE]);
-@@END_IF@@
-@@IF@@ @_MESSAGES_ENABLED_@
-
-@_Send_Messages_Functions_@
-@_Receive_Messages_Functions_@
-@@END_IF@@
-@@IF@@ @_EVENTS_ENABLED_@
-
-@_Send_Events_@
-@@END_IF@@
-@_Component_Management_Functions_@
 @@IF@@ @_Language_@ = QGenC
 
 @@TABLE@@
