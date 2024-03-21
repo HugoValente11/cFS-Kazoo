@@ -196,6 +196,27 @@ void Test_SUB_Datastore_Store(void)
 
 }
 
+void Test_@_UPPER:Name_@_Datastore_Load(void)
+{   
+    uint8 expected_load[@_UPPER:Name_@_DATASTORE_SIZE];
+    memset(expected_load, 42, @_UPPER:Name_@_DATASTORE_SIZE);
+    uint8 actual_load[@_UPPER:Name_@_DATASTORE_SIZE];
+    memset(actual_load, 0, @_UPPER:Name_@_DATASTORE_SIZE);
+
+
+    // Nominal case
+    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), &expected_load, sizeof(expected_load), false);
+    @_UPPER:Name_@_Datastore_Load(&actual_load);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+    UtAssert_MemCmp(expected_load, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Loaded from data store successfully");
+
+    // Fail on restoring
+    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_ES_BAD_ARGUMENT);
+    @_UPPER:Name_@_Datastore_Load(&actual_load);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+
+}
+
 @@END_IF@@
 
 @_Component_Management_Functions_@
@@ -227,6 +248,7 @@ void UtTest_Setup(void)
     @@IF@@ @_DataStore_@ = "YES"
     ADD_TEST(@_UPPER:Name_@_Datastore_Init);
     ADD_TEST(@_UPPER:Name_@_Datastore_Store);
+    ADD_TEST(@_UPPER:Name_@_Datastore_Load);
     @@END_IF@@
 
 }
