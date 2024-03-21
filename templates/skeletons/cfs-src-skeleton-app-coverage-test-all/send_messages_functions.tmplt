@@ -15,11 +15,20 @@
 @@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
+void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
+{
+     /*
+     * Test Case For:
+     * void @_UPPER:Parent_Function_@_Send_@_Name_@_Send_@_Name_@_Init( void )
+     */
+    @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
+}
+
 void Test_@_UPPER:Parent_Function_@_Send_@_Name_@(void)
 {
-        /*
+     /*
      * Test Case For:
-     * void @_UPPER:Parent_Function_@_Send_@_Name_@_Send_Send_Message( void )
+     * void @_UPPER:Parent_Function_@_Send_@_Name_@_Send_@_Name_@( void )
      */
 
     /*
