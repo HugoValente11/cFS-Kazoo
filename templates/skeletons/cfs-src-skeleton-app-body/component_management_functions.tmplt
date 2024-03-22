@@ -30,7 +30,7 @@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
 
-void @_UPPER:Parent_Function_@_User_Start@_Target_Name_@App(void)
+void @_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(void)
 {
     // Build token list with startup params for @_Target_Name_@ app
     const char * TokenList[] = {"CFE_APP", // Object type
@@ -51,7 +51,7 @@ void @_UPPER:Parent_Function_@_User_Start@_Target_Name_@App(void)
     }
 }
 
-void @_UPPER:Parent_Function_@_User_Stop@_Target_Name_@App(void)
+void @_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(void)
 {
     // Returns @_Target_Name_@ app id
     uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
@@ -65,7 +65,7 @@ void @_UPPER:Parent_Function_@_User_Stop@_Target_Name_@App(void)
     }
 }
 
-uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
+uint32 @_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
 {
     uint32 appId = CFE_ES_APPID_UNDEFINED;
     /*
@@ -91,3 +91,8 @@ uint32 @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
 }
 
 @@END_IF@@
+
+
+@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(void)
+@_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(void)
+@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId
