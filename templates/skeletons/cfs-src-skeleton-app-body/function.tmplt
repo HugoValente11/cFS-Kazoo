@@ -453,6 +453,9 @@ void @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr)
             if (@_UPPER:Name_@_VerifyCmdLength(&SBBufPtr->Msg, sizeof(@_UPPER:Name_@_NoopCmd_t)))
             {
                 @_UPPER:Name_@_Noop((@_UPPER:Name_@_NoopCmd_t *)SBBufPtr);
+            } else
+            {
+                CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Invalid command length\n");
             }
 
             break;
@@ -461,6 +464,9 @@ void @_UPPER:Name_@_ProcessGroundCommand(CFE_SB_Buffer_t *SBBufPtr)
             if (@_UPPER:Name_@_VerifyCmdLength(&SBBufPtr->Msg, sizeof(@_UPPER:Name_@_ResetCountersCmd_t)))
             {
                 @_UPPER:Name_@_ResetCounters((@_UPPER:Name_@_ResetCountersCmd_t *)SBBufPtr);
+            } else
+            {
+                CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Invalid command length\n");
             }
 
             break;
