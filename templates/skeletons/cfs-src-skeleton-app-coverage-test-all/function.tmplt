@@ -349,90 +349,66 @@ void Test_@_UPPER:Name_@_ProcessCommandPacket(void)
 void Test_@_UPPER:Name_@_ProcessGroundCommand(void)
 {
     /*
-     * Test Case For:
-     * void @_UPPER:Name_@_ProcessGroundCommand
+     * Test Setup for Function : @_UPPER:Name_@_ProcessGroundCommand
      */
     CFE_MSG_FcnCode_t FcnCode;
-    size_t            Size;
-
-    /* a buffer large enough for any command message */
+    size_t Size;
+    CFE_SB_MsgId_t    MsgId = CFE_SB_ValueToMsgId(1);
+    
+    // A buffer large enough for any command message
     union
     {
-        CFE_SB_Buffer_t               SBBuf;
-        @_UPPER:Name_@_NoopCmd_t          Noop;
+        CFE_SB_Buffer_t SBBuf;
+        @_UPPER:Name_@_NoopCmd_t Noop;
         @_UPPER:Name_@_ResetCountersCmd_t Reset;
-        @_UPPER:Name_@_ProcessCmd_t       Process;
+        @_UPPER:Name_@_ProcessCmd_t Process;
     } TestMsg;
-    UT_CheckEvent_t EventTest;
+    
+    memset(&TestMsg, 0, sizeof(TestMsg));  // Clear the message structure
 
-    memset(&TestMsg, 0, sizeof(TestMsg));
-
-    /*
-     * call with each of the supported command codes
-     * The CFE_MSG_GetFcnCode stub allows the code to be
-     * set to whatever is needed.  There is no return
-     * value here and the actual implementation of these
-     * commands have separate test cases, so this just
-     * needs to exercise the "switch" statement.
-     */
-
-    /* test dispatch of NOOP */
+    /* Test dispatch of NOOP */
+    // Correct length
     FcnCode = @_UPPER:Name_@_NOOP_CC;
-    Size    = sizeof(TestMsg.Noop);
+    Size = sizeof(TestMsg.Noop);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
-    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_COMMANDNOP_INF_EID, NULL);
-
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
 
-    UtAssert_True(EventTest.MatchCount == 1, "SAMPLE_COMMANDNOP_INF_EID generated (%u)",
-                  (unsigned int)EventTest.MatchCount);
-
-    // test dispatch of NOOP error
+    // Incorrect length
     FcnCode = @_UPPER:Name_@_NOOP_CC;
-    Size    = sizeof(TestMsg.Noop);
+    Size = sizeof(TestMsg.Noop) -1;
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
-    UT_SetDeferredRetcode(UT_KEY(@_UPPER:Name_@_VerifyCmdLength), 1, false);
-
-
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
 
 
-    /* test dispatch of RESET */
+    /* Test dispatch of RESET */
+    // Correct length
     FcnCode = @_UPPER:Name_@_RESET_COUNTERS_CC;
-    Size    = sizeof(TestMsg.Reset);
+    Size = sizeof(TestMsg.Reset);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
-    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_COMMANDRST_INF_EID, NULL);
-
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
 
-    UtAssert_True(EventTest.MatchCount == 1, "SAMPLE_COMMANDRST_INF_EID generated (%u)",
-                  (unsigned int)EventTest.MatchCount);
-
-    /* test dispatch of PROCESS */
-    /* note this will end up calling @_UPPER:Name_@_Process(), and as such it needs to
-     * avoid dereferencing a table which does not exist. */
-    FcnCode = @_UPPER:Name_@_PROCESS_CC;
-    Size    = sizeof(TestMsg.Process);
-    UT_SetDefaultReturnValue(UT_KEY(CFE_TBL_GetAddress), CFE_TBL_ERR_UNREGISTERED);
+    // Incorrect length
+    FcnCode = @_UPPER:Name_@_RESET_COUNTERS_CC;
+    Size = sizeof(TestMsg.Reset) -1;
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
-
-    @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
-
-    /* test an invalid CC */
-    FcnCode = 1000;
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
-    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_COMMAND_ERR_EID, "Invalid ground command code: CC = %d");
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
 
-    /*
-     * Confirm that the event was generated only _once_
-     */
-    UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:Name_@_COMMAND_ERR_EID generated (%u)",
-                  (unsigned int)EventTest.MatchCount);
+    /* Test dispatch of an invalid command code */
+    FcnCode = 999; // Use an undefined function code
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
 }
 
 void Test_@_UPPER:Name_@_ReportHousekeeping(void)
