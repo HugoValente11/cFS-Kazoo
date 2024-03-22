@@ -29,7 +29,7 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
-ADD_TEST(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId);
+ADD_TEST(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId);
     ADD_TEST(@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App);
     ADD_TEST(@_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App);
 @@END_IF@@
