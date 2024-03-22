@@ -54,7 +54,7 @@ void @_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(void)
 void @_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(void)
 {
     // Returns @_Target_Name_@ app id
-    uint32 appId = @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
+    uint32 appId = @_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId();
 
     // Stops application
     status = CFE_ES_DeleteApp(appId);
