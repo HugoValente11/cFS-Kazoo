@@ -85,8 +85,12 @@ int32 @_UPPER:Name_@_User_Datastore_Init()
         }
     }
 
-    else if (status != CFE_SUCCESS) {
+    else if (status != CFE_SUCCESS)
+    {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error registering CDS, RC = 0x%08lX\n", (unsigned long) status);
+    } else 
+    {
+        // Success. Only here to be MISRA compliant since all else ifs need to terminated by an else
     }
 
     return status;
