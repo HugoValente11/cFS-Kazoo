@@ -329,5 +329,11 @@ void UtTest_Setup(void)
     ADD_TEST(@_UPPER:Name_@_User_Datastore_Load);
     @@END_IF@@
     @_Event_Filters_@
+    ADD_TEST(@_UPPER:Name_@_ProcessCommandPacket);
+    ADD_TEST(@_UPPER:Name_@_ProcessGroundCommand);
+    ADD_TEST(@_UPPER:Name_@_ReportHousekeeping);
+    ADD_TEST(@_UPPER:Name_@_Noop);
+    ADD_TEST(@_UPPER:Name_@_ResetCounters);
+    ADD_TEST(@_UPPER:Name_@_VerifyCmdLength);
 
 }
