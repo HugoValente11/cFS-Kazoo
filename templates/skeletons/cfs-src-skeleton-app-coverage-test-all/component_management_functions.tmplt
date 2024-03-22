@@ -63,7 +63,7 @@ void Test_@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(void)
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
     @_UPPER:Parent_Function_@_Find@_Target_Name_@AppId();
-    UT_TEST_FUNCTION_RC(PUB_FindSubAppId(), 42);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find@_Target_Name_@AppId(), 42);
 
 }
 
