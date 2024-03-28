@@ -34,7 +34,7 @@ void Test_@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(v
     UT_CheckEvent_t EventTest;
     UT_CheckEvent_Setup(&EventTest, 
     @_UPPER:Parent_Function_@_@_UPPER:REPLACE_ALL( /_):Event_Name_@_EID, "[@_UPPER:Parent_Function_@-@_Event_Type_@] @_Event_Info_@");
-    @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event();
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(), CFE_SUCCESS);
     UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:REPLACE_ALL( /_):Event_Name_@ event generated (%u)",
                   (unsigned int)EventTest.MatchCount);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent called");
@@ -52,7 +52,7 @@ void Test_@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(v
         UT_ResetState(UT_KEY(CFE_EVS_SendEvent));
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_EVS_SendEvent), 1, failureCodes[i]);
-        @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event();
+        UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(), failureCodes[i]);
         UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent called");
         UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
     }
