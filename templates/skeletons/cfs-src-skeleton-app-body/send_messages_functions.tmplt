@@ -54,6 +54,7 @@ int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Encode failed. Error code %d.\n", errorCode);
         status = CFE_SB_BAD_ARGUMENT;
+        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
     }
 
     if (status == CFE_SUCCESS)
