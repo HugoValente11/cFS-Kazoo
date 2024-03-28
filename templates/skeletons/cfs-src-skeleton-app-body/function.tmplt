@@ -111,13 +111,14 @@ int32 @_UPPER:Name_@_User_Datastore_Store(const void *dataToStore)
 
 } /* End of @_UPPER:Name_@_User_Datastore_Store() */
 
-void @_UPPER:Name_@_User_Datastore_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
+int32 @_UPPER:Name_@_User_Datastore_Load(uint8 load[@_UPPER:Name_@_DATASTORE_SIZE])
 {
     // Read data from CDS
     status = CFE_ES_RestoreFromCDS(load, @_UPPER:Name_@_APP_Data.CDSHandlePtr);
     if (status != CFE_SUCCESS) {
         CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error restoring from CDS, RC = 0x%08lX\n", (unsigned long) status);
     }
+    return status;
 }
 
 @@END_IF@@
@@ -381,7 +382,7 @@ int32 @_UPPER:Name_@_APP_Init(void)
 /*                                                                 */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Name_@_FindAppId(void)
+int32 @_UPPER:Name_@_FindAppId(void)
 {
     CFE_ES_AppId_t TempAppId;
     /*
@@ -405,6 +406,7 @@ void @_UPPER:Name_@_FindAppId(void)
         }
 
     } /* end for */
+    return status;
 }
 
 

@@ -15,5 +15,5 @@
 @@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
 @@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
 @@IF@@ @_Direction_@ = "PI" and @_EXIST:Event_Name_@ and @_Kind_@ = EVENT_OPERATION
-void @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(void);
+int32 @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(void);
 @@END_IF@@

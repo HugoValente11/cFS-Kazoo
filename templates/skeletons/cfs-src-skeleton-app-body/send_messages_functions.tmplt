@@ -35,7 +35,7 @@
 /*                                                                 */
 /*                                                                 */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-void @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
+int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     // TODO Build structs here
     @@TABLE@@
     // @_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@;
@@ -75,12 +75,11 @@ void @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error sending the message, RC = %lu\n", (unsigned long) status);
         } 
     }
-
-
+    return status;
 }
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
-void @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
+int32 @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
     // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
         
     status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_APP_Data.Buffer,
@@ -117,10 +116,8 @@ void @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
         // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@);
 
         }
-
-
-
     }
+    return status;
 }
 
 @@END_IF@@

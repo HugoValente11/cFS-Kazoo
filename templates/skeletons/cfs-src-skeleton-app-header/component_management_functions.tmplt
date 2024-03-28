@@ -29,7 +29,7 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = COMPONENT_MANAGEMENT_OPERATION
-uint32 @_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void);
-void @_UPPER:Parent_Function_@_Start_@_Target_Name_@App(void);
-void @_UPPER:Parent_Function_@_Stop_@_Target_Name_@App(void);
+int32 @_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void);
+int32 @_UPPER:Parent_Function_@_Start_@_Target_Name_@App(void);
+int32 @_UPPER:Parent_Function_@_Stop_@_Target_Name_@App(void);
 @@END_IF@@
