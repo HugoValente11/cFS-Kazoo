@@ -109,6 +109,8 @@ int32 @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
         if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
         {
             CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
+            status = CFE_SB_BAD_ARGUMENT;
+
         } else 
         {
         // Message received stored in @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@

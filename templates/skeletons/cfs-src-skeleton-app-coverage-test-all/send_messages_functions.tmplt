@@ -134,15 +134,16 @@ void Test_@_UPPER:Parent_Function_@_User_Receive_@_Name_@(void)
 
     @_UPPER:Parent_Function_@_APP_Data.Buffer = &mockBuffer;
 
+    @_UPPER:Parent_Function_@_User_Receive_@_Name_@();
 
     // Error on receive buffer
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, CFE_SB_BAD_ARGUMENT); 
-    @_UPPER:Parent_Function_@_User_Receive_@_Name_@();
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), CFE_SB_BAD_ARGUMENT);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
 
     // Fail on decoding
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, false);
-    @_UPPER:Parent_Function_@_User_Receive_@_Name_@();
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), CFE_SB_BAD_ARGUMENT);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
 
     // Success
@@ -151,7 +152,8 @@ void Test_@_UPPER:Parent_Function_@_User_Receive_@_Name_@(void)
     UT_SetDataBuffer(UT_KEY(CFE_SB_ReceiveBuffer), &mockBuffer, sizeof(mockBuffer), false);
     UT_SetDataBuffer(UT_KEY(CFE_SB_GetUserData), mockData, sizeof(mockData), false);
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, true);
-    @_UPPER:Parent_Function_@_User_Receive_@_Name_@();
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), CFE_SUCCESS);
+        @_UPPER:Parent_Function_@_User_Receive_@_Name_@();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog should not be called");
 
 }
