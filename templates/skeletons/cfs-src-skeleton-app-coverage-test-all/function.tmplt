@@ -152,8 +152,14 @@ void Test_@_UPPER:Name_@_APP_Main(void)
 
 void Test_@_UPPER:Name_@_APP_Init(void)
 {
-    // Nominal
+    // Nominal and check event
+    UT_CheckEvent_t EventTest;
+    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_STARTUP_INF_EID, "@_UPPER:Name_@ App Initialized.%s");
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SUCCESS);
+    UtAssert_True(EventTest.MatchCount == 1, "Initialized event generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
 
     // Test multiple failures on register events
      UT_ResetState(0);
