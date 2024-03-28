@@ -12,6 +12,13 @@ typedef struct
     const char *ExpectedFormat;
 } UT_CheckEvent_t;
 
+typedef struct
+{
+    size_t      ExpectedBlockSize;
+    const char *ExpectedName;
+    uint32      MatchCount;
+} UT_CheckCDSReg_t;
+
 /*
  * An example hook function to check for a specific event.
  */
@@ -72,6 +79,34 @@ static int32 UT_CheckEvent_Hook(void *UserObj, int32 StubRetcode, uint32 CallCou
     }
 
     return 0;
+}
+
+static int32 UT_RegisterCDS_Hook(void *UserObj, int32 StubRetcode, uint32 CallCount, const UT_StubContext_t *Context)
+{
+    UT_CheckCDSReg_t *State = UserObj;
+    size_t BlockSize = 0;
+    const char *Name = NULL;
+    CFE_ES_CDSHandle_t **HandlePtr = NULL;
+
+    // Retrieve the BlockSize and Name parameters from the stub context.
+    BlockSize = UT_Hook_GetArgValueByName(Context, "BlockSize", size_t);
+    Name = UT_Hook_GetArgValueByName(Context, "Name", const char *);
+    HandlePtr = UT_Hook_GetArgValueByName(Context, "CDSHandlePtr", CFE_ES_CDSHandle_t **);
+
+    // Verify if the retrieved parameters match the expected ones.
+    if (BlockSize == State->ExpectedBlockSize && strcmp(Name, State->ExpectedName) == 0)
+    {
+        ++State->MatchCount; // Increment match count if parameters match.
+
+        // If a handle pointer is provided, set it to a mock value (e.g., 42).
+
+        if (HandlePtr != NULL)
+        {
+            *HandlePtr = (CFE_ES_CDSHandle_t) 42;
+        }
+    }
+
+    return StubRetcode; // Return the original stub return code.
 }
 
 /*
