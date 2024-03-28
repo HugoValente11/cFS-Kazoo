@@ -178,21 +178,55 @@ void Test_@_UPPER:Name_@_APP_Init(void)
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_MSG_BAD_ARGUMENT);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
 
-    // Fail in creating software bus pipe
-    UT_SetDeferredRetcode(UT_KEY(CFE_SB_CreatePipe), 1, CFE_SB_BAD_ARGUMENT);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 3, "CFE_ES_WriteToSysLog() called");
+    // Test multiple failures in creating software bus pipe
+    UT_ResetState(0);
+    CFE_Status_t failureCreatePipeCodes[] = {
+        CFE_SB_BAD_ARGUMENT, CFE_SB_MAX_PIPES_MET, CFE_SB_PIPE_CR_ERR
+        };
 
-    // Fail in subscribing to house keeping requests
-    UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 1, CFE_SB_BAD_ARGUMENT);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 4, "CFE_ES_WriteToSysLog() called");
 
-    // Fail in subscribing to ground command packets
-    UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 2, CFE_SB_BAD_ARGUMENT);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SB_BAD_ARGUMENT);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 5, "CFE_ES_WriteToSysLog() called");
+    numFailures = sizeof(failureCreatePipeCodes) / sizeof(failureCreatePipeCodes[0]);
+    for (int i = 0; i < numFailures; i++)
+    {
+        /* Reset the state before each test case */
+        UT_ResetState(UT_KEY(CFE_SB_CreatePipe));
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_SB_CreatePipe), 1, failureCreatePipeCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureCreatePipeCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_CreatePipe)) == 1, "CFE_SB_CreatePipe() called");
+    }
 
+    // Test multiple failures in subscribing to house keeping requests
+    UT_ResetState(0);
+    CFE_Status_t failureSubscribeCodes[] = {
+        CFE_SB_MAX_MSGS_MET, CFE_SB_MAX_DESTS_MET, CFE_SB_BAD_ARGUMENT, CFE_SB_BUF_ALOC_ERR
+        };
+
+    numFailures = sizeof(failureSubscribeCodes) / sizeof(failureSubscribeCodes[0]);
+    for (int i = 0; i < numFailures; i++)
+    {
+        /* Reset the state before each test case */
+        UT_ResetState(UT_KEY(CFE_SB_Subscribe));
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 1, failureSubscribeCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureSubscribeCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 1, "CFE_SB_Subscribe() called");
+    }
+
+    // Test multiple failures in subscribing to ground command packets
+    UT_ResetState(0);
+    for (int i = 0; i < numFailures; i++)
+    {
+        /* Reset the state before each test case */
+        UT_ResetState(UT_KEY(CFE_SB_Subscribe));
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 2, failureSubscribeCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureSubscribeCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 2, "CFE_SB_Subscribe() called");
+    }
 }
 
 void Test_@_UPPER:Name_@_FindAppId(void)
