@@ -51,8 +51,8 @@ void Test_@_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event(v
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_EVS_SendEvent), 1, failureCodes[i]);
         @_UPPER:Parent_Function_@_User_@_REPLACE_ALL( /_):Event_Name_@_Event();
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog should not be called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent should not be called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent called");
     }
 }
 @@END_IF@@
