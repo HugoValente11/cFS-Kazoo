@@ -301,6 +301,15 @@ void Test_@_UPPER:Name_@_User_Datastore_Load(void)
         UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
     }
 
+
+    // Test Boundary
+    UT_ResetState(0);
+    uint8 oversized_data[@_UPPER:Name_@_DATASTORE_SIZE + 1];
+    memset(oversized_data, 42, @_UPPER:Name_@_DATASTORE_SIZE + 1);
+    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), oversized_data, @_UPPER:Name_@_DATASTORE_SIZE + 1, false);
+    @_UPPER:Name_@_User_Datastore_Load(&actual_load);
+    UtAssert_MemCmp(oversized_data, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Oversize data shouldn't match actual data");
+
 }
 
 @@END_IF@@
