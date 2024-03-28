@@ -29,12 +29,6 @@
 @@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
 @@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@, @_Target_Name_@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/*                                                                 */
-/* @_UPPER:Parent_Function_@_Send_@_Name_@ -- Send message         */
-/*                                                                 */
-/*                                                                 */
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     // TODO Build structs here
     @@TABLE@@
@@ -53,18 +47,24 @@ int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
     // Initialize error code
     int errorCode;
 
+    status = CFE_SUCCESS;
+
     // Encode
     if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Encode(&@_UPPER:Parent_Function_@_APP_Data.OUT_@_Param_Names_@, &bitstream, &errorCode, TRUE))
     {
         CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Encode failed. Error code %d.\n", errorCode);
+        status = CFE_SB_BAD_ARGUMENT;
     }
 
-    status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@), &perBuffer, sizeof(perBuffer));
+    if (status == CFE_SUCCESS)
+    {
+        status = CFE_PSP_MemCpy(CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.MsgPtr_@_Name_@), &perBuffer, sizeof(perBuffer));
 
-    if (status != CFE_SUCCESS) {
-        @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error writing the struct, RC = %lu\n", (unsigned long) status);
-    }
+        if (status != CFE_SUCCESS) {
+            @_UPPER:Parent_Function_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
+            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error writing the struct, RC = %lu\n", (unsigned long) status);
+        }
+    } 
 
     if (status == CFE_SUCCESS)
     {
