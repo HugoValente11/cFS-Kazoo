@@ -152,24 +152,27 @@ void Test_@_UPPER:Name_@_APP_Main(void)
 
 void Test_@_UPPER:Name_@_APP_Init(void)
 {
-    /*
-     * Test Case For:
-     * int32 @_UPPER:Name_@_APP_Init( void )
-     */
-
-    /* nominal case should return CFE_SUCCESS */
+    // Nominal
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SUCCESS);
 
-    /* trigger a failure for each of the sub-calls,
-     * and confirm a write to syslog for each.
-     * Note that this count accumulates, because the status
-     * is _not_ reset between these test cases. */
+    // Test multiple failures on register events
+     UT_ResetState(0);
+     CFE_Status_t failureRegisterEventCodes[] = {
+         CFE_EVS_APP_FILTER_OVERLOAD, CFE_EVS_UNKNOWN_FILTER, CFE_EVS_APP_ILLEGAL_APP_ID, CFE_ES_BAD_ARGUMENT
+        };
 
-    // Fail on register events
-    UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, CFE_EVS_INVALID_PARAMETER);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_EVS_INVALID_PARAMETER);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-    
+    int numFailures = sizeof(failureRegisterEventCodes) / sizeof(failureRegisterEventCodes[0]);
+    for (int i = 0; i < numFailures; i++)
+    {
+        /* Reset the state before each test case */
+        UT_ResetState(UT_KEY(CFE_EVS_Register));
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, failureRegisterEventCodes[i]);
+        UT_TEST_FUNCTION_RC(SUB2_APP_Init(), failureRegisterEventCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_Register)) == 1, "CFE_EVS_Register() called");
+    }
+
     // Fail in initializing housekeeping
     UT_SetDeferredRetcode(UT_KEY(CFE_MSG_Init), 1, CFE_MSG_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_MSG_BAD_ARGUMENT);
