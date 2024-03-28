@@ -168,7 +168,7 @@ void Test_@_UPPER:Name_@_APP_Init(void)
         UT_ResetState(UT_KEY(CFE_EVS_Register));
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, failureRegisterEventCodes[i]);
-        UT_TEST_FUNCTION_RC(SUB2_APP_Init(), failureRegisterEventCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureRegisterEventCodes[i]);
         UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
         UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_Register)) == 1, "CFE_EVS_Register() called");
     }
