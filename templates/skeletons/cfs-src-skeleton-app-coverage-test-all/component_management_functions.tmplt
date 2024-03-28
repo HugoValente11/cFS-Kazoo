@@ -39,7 +39,7 @@ void Test_@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
     appId = 42;
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId, appId);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), appId);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
 
@@ -50,7 +50,7 @@ void Test_@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
     {
     strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
     }
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId, CFE_ES_APPID_UNDEFINED);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");    
     
@@ -58,7 +58,7 @@ void Test_@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
     UT_ResetState(0);
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId, CFE_ES_APPID_UNDEFINED);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
 
@@ -66,7 +66,7 @@ void Test_@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
     UT_ResetState(0);
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_ERR_NAME_NOT_FOUND);
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId, CFE_ES_APPID_UNDEFINED);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
 
