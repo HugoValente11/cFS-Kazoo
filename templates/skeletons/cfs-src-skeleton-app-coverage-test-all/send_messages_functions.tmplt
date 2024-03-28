@@ -48,9 +48,7 @@ void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 
 void Test_@_UPPER:Parent_Function_@_User_Send_@_Name_@(void)
 {
-    @_UPPER:Parent_Function_@_User_Send_@_Name_@();
-
-     // Nominal
+    // Nominal
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Encode), 1, true);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Send_@_Name_@(), CFE_SUCCESS);
 
