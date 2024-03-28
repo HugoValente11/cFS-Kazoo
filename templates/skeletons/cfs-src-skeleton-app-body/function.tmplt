@@ -384,6 +384,7 @@ int32 @_UPPER:Name_@_APP_Init(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 int32 @_UPPER:Name_@_FindAppId(void)
 {
+    status = CFE_ES_ERR_NAME_NOT_FOUND;  
     CFE_ES_AppId_t TempAppId;
     /*
     ** Search the ES Application table for the name that matches this app
