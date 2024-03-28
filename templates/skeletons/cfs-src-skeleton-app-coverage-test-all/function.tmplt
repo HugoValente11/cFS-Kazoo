@@ -311,13 +311,13 @@ void Test_@_UPPER:Name_@_User_Datastore_Init(void)
     // Nominal case
     UT_CheckCDSReg_t CDSRegTest;
     memset(&CDSRegTest, 0, sizeof(CDSRegTest));
-    CDSRegTest.ExpectedBlockSize = SUB2_DATASTORE_SIZE; 
-    CDSRegTest.ExpectedName = "sub2CDS";
+    CDSRegTest.ExpectedBlockSize = @_UPPER:Name_@_DATASTORE_SIZE; 
+    CDSRegTest.ExpectedName = "@_LOWER:Name_@CDS";
     int32 mockhandle = 42;
     UT_SetHookFunction(UT_KEY(CFE_ES_RegisterCDS), UT_RegisterCDS_Hook, &CDSRegTest);
     @_UPPER:Name_@_User_Datastore_Init();
     UtAssert_True(CDSRegTest.MatchCount == 1, "CFE_ES_RegisterCDS was called with expected parameters");
-    UtAssert_True(SUB2_APP_Data.CDSHandlePtr == mockhandle, "CDS Handle was set correctly");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.CDSHandlePtr == mockhandle, "CDS Handle was set correctly");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
 
     // Error registering CDS
