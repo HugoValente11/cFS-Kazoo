@@ -43,40 +43,36 @@ void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 
 void Test_@_UPPER:Parent_Function_@_User_Send_@_Name_@(void)
 {
-     /*
-     * Test Case For:
-     * void @_UPPER:Parent_Function_@_User_Send_@_Name_@( void )
-     */
-
-    /*
-     *
-     * First call it in "nominal" mode where all
-     * dependent calls should be successful by default.
-     */
+     // Nominal
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Encode), 1, true);
     @_UPPER:Parent_Function_@_User_Send_@_Name_@();
-
-    /* trigger a failure for each of the sub-calls,
-     * and confirm a write to syslog for each.
-     * Note that this count accumulates, because the status
-     * is _not_ reset between these test cases. */
 
     // Fail on encoding
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Encode), 1, false);
     @_UPPER:Parent_Function_@_User_Send_@_Name_@();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Parent_Function_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Parent_Function_@_APP_Data.RunStatus);
 
     // Fail on memcpy
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Encode), 1, true);
     UT_SetDeferredRetcode(UT_KEY(CFE_PSP_MemCpy), 1, CFE_PSP_ERROR);
     @_UPPER:Parent_Function_@_User_Send_@_Name_@();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Parent_Function_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Parent_Function_@_APP_Data.RunStatus);
 
     // Fail on transmit message
     UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Encode), 1, true);
     UT_SetDeferredRetcode(UT_KEY(CFE_SB_TransmitMsg), 1, CFE_SB_BAD_ARGUMENT);
     @_UPPER:Parent_Function_@_User_Send_@_Name_@();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 3, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
+                  "@_UPPER:Parent_Function_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
+                  (unsigned long)@_UPPER:Parent_Function_@_APP_Data.RunStatus);
+
 }
 @@END_IF@@
 @@IF@@ @_Direction_@ = "RI" and @_Kind_@ = MESSAGE_OPERATION
