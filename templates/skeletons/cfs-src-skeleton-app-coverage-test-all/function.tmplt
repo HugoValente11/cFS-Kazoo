@@ -285,10 +285,21 @@ void Test_@_UPPER:Name_@_User_Datastore_Load(void)
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
     UtAssert_MemCmp(expected_load, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Loaded from data store successfully");
 
-    // Fail on restoring
-    UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_ES_BAD_ARGUMENT);
-    @_UPPER:Name_@_User_Datastore_Load(&actual_load);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+    // Test multiple failures
+     CFE_Status_t failureCodes[] = {
+         CFE_ES_ERR_RESOURCEID_NOT_VALID, CFE_ES_CDS_BLOCK_CRC_ERR, CFE_ES_BAD_ARGUMENT
+    };
+    int numFailures = sizeof(failureCodes) / sizeof(failureCodes[0]);
+    for (int i = 0; i < numFailures; i++)
+    {
+        /* Reset the state before each test case */
+        UT_ResetState(UT_KEY(CFE_ES_RestoreFromCDS));
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, failureCodes[i]);
+        @_UPPER:Name_@_User_Datastore_Load(&actual_load);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+    }
 
 }
 
