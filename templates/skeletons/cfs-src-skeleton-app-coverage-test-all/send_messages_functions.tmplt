@@ -68,6 +68,7 @@ void Test_@_UPPER:Parent_Function_@_User_Send_@_Name_@(void)
     UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_ERROR,
                   "@_UPPER:Parent_Function_@_APP_Data.RunStatus (%lu) == CFE_ES_RunStatus_APP_ERROR",
                   (unsigned long)@_UPPER:Parent_Function_@_APP_Data.RunStatus);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
 
     // Test multiple failures on transmit message
     UT_ResetState(0);
