@@ -397,7 +397,7 @@ void @_UPPER:Name_@_FindAppId(void)
             {
                 @_UPPER:Name_@_APP_Data.AppId = TempAppId;
             }
-            if (status != CFE_SUCCESS)
+            else
             {
                 CFE_ES_WriteToSysLog("[@_UPPER:Name_@] Error getting the App ID, RC = %lu\n", (unsigned long)status);
             }
