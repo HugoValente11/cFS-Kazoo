@@ -24,6 +24,7 @@ void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 
 
     // Test multiple failures
+    UT_ResetState(0);
      CFE_Status_t failureCodes[] = {
          CFE_SB_MAX_MSGS_MET, CFE_SB_MAX_DESTS_MET, CFE_SB_BAD_ARGUMENT, CFE_SB_BUF_ALOC_ERR
          };
