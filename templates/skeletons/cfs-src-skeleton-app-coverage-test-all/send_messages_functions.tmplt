@@ -18,10 +18,13 @@
 void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
 {
     // Nominal
-    @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 1, "CFE_SB_Subscribe called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
-
+    UT_ResetState(0);
+    memset(&@_UPPER:Parent_Function_@_APP_Data, 0, sizeof(@_UPPER:Parent_Function_@_APP_Data));
+    @_UPPER:Parent_Function_@_Send_Send_Message_Init();
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_RUN, "RunStatus should remain APP_RUN in nominal case");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.MsgId_Send_Message == @_UPPER:Parent_Function_@_APP_COMMUNICATION_MID_10, "MsgId should be correctly set in nominal case");
+    UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.Size_Send_Message == asn1SccMyInteger_REQUIRED_BITS_FOR_ENCODING, "Size should be correctly set in nominal case");
 
     // Test multiple failures
     UT_ResetState(0);
