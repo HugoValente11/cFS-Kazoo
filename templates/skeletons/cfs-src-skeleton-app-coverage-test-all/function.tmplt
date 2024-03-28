@@ -337,6 +337,7 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == ExpectedAppId, "@_UPPER:Name_@_APP_Data.AppId set correctly");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
+
     
     // Empty table
     UT_ResetState(0);
