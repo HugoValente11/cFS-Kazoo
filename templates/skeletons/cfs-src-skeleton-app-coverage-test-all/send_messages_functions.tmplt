@@ -20,6 +20,8 @@ void Test_@_UPPER:Parent_Function_@_Send_@_Name_@_Init(void)
     // Nominal
     UT_ResetState(0);
     memset(&@_UPPER:Parent_Function_@_APP_Data, 0, sizeof(@_UPPER:Parent_Function_@_APP_Data));
+    @_UPPER:Parent_Function_@_APP_Data.MsgId_Send_Message = 0; // Ensure MsgId is zero to check if it gets set
+    @_UPPER:Parent_Function_@_APP_Data.Size_Send_Message = 0; // Ensure Size is zero to check if it gets set
     @_UPPER:Parent_Function_@_Send_Send_Message_Init();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
     UtAssert_True(@_UPPER:Parent_Function_@_APP_Data.RunStatus == CFE_ES_RunStatus_APP_RUN, "RunStatus should remain APP_RUN in nominal case");
