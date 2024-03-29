@@ -35,70 +35,67 @@ void Test_@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(void)
 {
     uint32 appId;
 
-    // Success on finding app and calling CFE_ES_GetAppIDByName
+    // Test case: Successfully find the application and correctly call CFE_ES_GetAppIDByName
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
-    appId = 42;
+    appId = 42; // Mock App ID
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &appId, sizeof(appId), false);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), appId);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "Successfully called CFE_ES_GetAppIDByName with correct parameters.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No SysLog entries should be generated for successful app ID retrieval.");
 
-    // Fail on finding @_Target_Name_@ app
-    // Initialize AppTable with non-matching names
+    // Test case: Fail to find the target application due to non-matching application names
     UT_ResetState(0);
-    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++)
-    {
-    strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
+    for (int i = 0; i < CFE_PLATFORM_ES_MAX_APPLICATIONS; i++) {
+        strcpy(CFE_ES_Global.AppTable[i].AppName, "NON_MATCHING_APP");
     }
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");    
-    
-    // Succeed on finding app but fail on calling CFE_ES_GetAppIDByName bad argument
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be invoked for non-matching app names.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No SysLog entries should be generated when the target app is not found.");
+
+    // Test case: Successfully find the application but fail due to a bad argument in CFE_ES_GetAppIDByName
     UT_ResetState(0);
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName was called despite an issue.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "A SysLog entry should be generated for the failure due to bad argument.");
 
-    // Succeed on finding app but fail on calling CFE_ES_GetAppIDByName bad argument
+    // Test case: Successfully find the application but CFE_ES_GetAppIDByName returns name not found
     UT_ResetState(0);
     strcpy(CFE_ES_Global.AppTable[0].AppName, "@_UPPER:Target_Name_@_APP");
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_ERR_NAME_NOT_FOUND);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_Find_@_Target_Name_@AppId(), CFE_ES_APPID_UNDEFINED);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName was called, indicating an attempt to find the app.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "A SysLog entry should be generated for the failure due to name not found.");
 }
 
 void Test_@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(void)
 {
-    // Fail on creating app bad argument
+    // Test case: Failure in creating the application due to bad argument
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_ParseFileEntry), 1, CFE_ES_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(), CFE_ES_BAD_ARGUMENT);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Log entry should be made for bad argument failure in app creation");
 
-    // Fail on creating app
+    // Test case: Failure in creating the application due to application create error
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_ParseFileEntry), 1, CFE_ES_ERR_APP_CREATE);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(), CFE_ES_ERR_APP_CREATE);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "Log entry should be made for app creation failure");
 
-    // Success on starting app
+    // Test case: Successful application start
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Start_@_Target_Name_@App(), CFE_SUCCESS);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() should not be called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "No additional log entries should be made for a successful app start");
 }
 
 void Test_@_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(void)
 {
-    // Fail on stopping app
+    // Test case: Failure in stopping the application due to invalid resource ID
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_DeleteApp), 1, CFE_ES_ERR_RESOURCEID_NOT_VALID);
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(), CFE_ES_ERR_RESOURCEID_NOT_VALID);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Log entry should be made for invalid resource ID failure in app stopping");
 
-    // Success on stopping app
+    // Test case: Successful application stop
     UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Stop_@_Target_Name_@App(), CFE_SUCCESS);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() should not be called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "No additional log entries should be made for a successful app stop");
 }
 
 @@END_IF@@
