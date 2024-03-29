@@ -277,7 +277,7 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     }
     @_UPPER:Name_@_APP_Data.AppId = CFE_ES_APPID_UNDEFINED;
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_FindAppId(), CFE_ES_ERR_NAME_NOT_FOUND);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName was not invoked due to no matching app found in the table.");
     UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "@_UPPER:Name_@_APP_Data.AppId should remain unchanged");
 
     // Success on finding app
@@ -291,8 +291,8 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &ExpectedAppId, sizeof(ExpectedAppId), false);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_SUCCESS);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_FindAppId(), CFE_SUCCESS);
-    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == ExpectedAppId, "@_UPPER:Name_@_APP_Data.AppId set correctly");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == ExpectedAppId, "App ID correctly identified and updated in app data structure.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName successfully invoked once for app ID retrieval.");
 
     // Success on finding app but es error bad argument on GetAppID
     UT_ResetState(0);
@@ -304,9 +304,9 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     @_UPPER:Name_@_APP_Data.AppId = CFE_ES_APPID_UNDEFINED;
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_FindAppId(), CFE_ES_BAD_ARGUMENT);
-    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "@_UPPER:Name_@_APP_Data.AppId should remain unchanged on error");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "App ID remains unchanged due to CFE_ES_GetAppIDByName returning an error.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Error logged to system log due to bad argument in CFE_ES_GetAppIDByName.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called once but resulted in error due to bad argument.");
 
     // Success on finding app but es error name not found on GetAppID
     UT_ResetState(0);
@@ -318,9 +318,9 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     @_UPPER:Name_@_APP_Data.AppId = CFE_ES_APPID_UNDEFINED;
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_ES_ERR_NAME_NOT_FOUND);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_FindAppId(), CFE_ES_ERR_NAME_NOT_FOUND);
-    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "@_UPPER:Name_@_APP_Data.AppId should remain unchanged on error");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "App ID remains unchanged as the app name was not found.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "System log entry generated due to app name not found in CFE_ES_GetAppIDByName.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName invoked once but failed due to app name not found.");
 
     // Boundary test success if match is last app
     UT_ResetState(0);
@@ -333,9 +333,9 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     UT_SetDataBuffer(UT_KEY(CFE_ES_GetAppIDByName), &ExpectedAppId, sizeof(ExpectedAppId), false);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_GetAppIDByName), 1, CFE_SUCCESS);
     @_UPPER:Name_@_FindAppId();
-    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == ExpectedAppId, "@_UPPER:Name_@_APP_Data.AppId set correctly");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == ExpectedAppId, "App ID successfully found even when the match is the last app in the table.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 1, "CFE_ES_GetAppIDByName called successfully for the last app in the table.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No system log entries generated for successful last app match.");
 
 
     // Empty table
@@ -346,8 +346,8 @@ void Test_@_UPPER:Name_@_FindAppId(void)
     }
     @_UPPER:Name_@_APP_Data.AppId = CFE_ES_APPID_UNDEFINED;
     @_UPPER:Name_@_FindAppId();
-    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "@_UPPER:Name_@_APP_Data.AppId should remain unchanged with empty AppTable");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName should not be called with empty AppTable");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.AppId == CFE_ES_APPID_UNDEFINED, "App ID remains undefined when AppTable is empty, as expected.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_GetAppIDByName)) == 0, "CFE_ES_GetAppIDByName was not called due to an empty AppTable.");
 }
 
 @_Send_Messages_Functions_@
