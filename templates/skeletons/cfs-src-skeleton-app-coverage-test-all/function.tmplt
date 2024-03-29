@@ -544,6 +544,38 @@ void Test_@_UPPER:Name_@_ResetCounters(void)
         "RESET command should generate a single event, confirming counters reset.");
 }
 
+void Test_@_UPPER:Name_@_VerifyCmdLength(void)
+{
+    UT_CheckEvent_t EventTest;
+    size_t size = 1; // Assume 1 byte for test message size
+    CFE_MSG_FcnCode_t fcncode = 2; // Function code for command, arbitrary value for testing
+    CFE_SB_MsgId_t msgid = CFE_SB_ValueToMsgId(3); // Message ID for the command, arbitrary value for testing
+
+    // Test case: Message size matches expected size
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &size, sizeof(size), false);
+    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_LEN_ERR_EID, 
+                        "Invalid message length: ID = 0x%X, CC = %u, Length = %u, Expected = %u");
+    
+    // Perform the command length verification with the expected size
+    @_UPPER:Name_@_VerifyCmdLength(NULL, size);
+
+    // Verify that the event indicating a length error was not generated
+    UtAssert_True(EventTest.MatchCount == 0, 
+        "No length error event should be generated when command size matches the expected size.");
+
+    // Test case: Message size does not match expected size
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &size, sizeof(size), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &msgid, sizeof(msgid), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &fcncode, sizeof(fcncode), false);
+
+    // Perform the command length verification with an incorrect size (expected size + 1)
+    @_UPPER:Name_@_VerifyCmdLength(NULL, size + 1);
+
+    // Verify that the event indicating a length error was generated
+    UtAssert_True(EventTest.MatchCount == 1, 
+        "A length error event should be generated when command size does not match the expected size, indicating the command length validation is functioning.");
+}
+
 /*
  * Setup function prior to every test
  */
