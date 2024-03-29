@@ -356,121 +356,91 @@ void Test_@_UPPER:Name_@_FindAppId(void)
 @@IF@@ @_DataStore_@ = "YES"
 void Test_@_UPPER:Name_@_User_Datastore_Init(void)
 {
-    // Nominal case
+    // Nominal case: Datastore initialization with expected parameters.
     UT_CheckCDSReg_t CDSRegTest;
     memset(&CDSRegTest, 0, sizeof(CDSRegTest));
-    CDSRegTest.ExpectedBlockSize = @_UPPER:Name_@_DATASTORE_SIZE; 
+    CDSRegTest.ExpectedBlockSize = @_UPPER:Name_@_DATASTORE_SIZE;
     CDSRegTest.ExpectedName = "@_LOWER:Name_@CDS";
-    int32 mockhandle = 42;
     UT_SetHookFunction(UT_KEY(CFE_ES_RegisterCDS), UT_RegisterCDS_Hook, &CDSRegTest);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), CFE_SUCCESS);
-    UtAssert_True(CDSRegTest.MatchCount == 1, "CFE_ES_RegisterCDS was called with expected parameters");
-    UtAssert_True(@_UPPER:Name_@_APP_Data.CDSHandlePtr == mockhandle, "CDS Handle was set correctly");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+    UtAssert_True(CDSRegTest.MatchCount == 1, "CFE_ES_RegisterCDS was called with expected parameters, indicating correct datastore initialization.");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.CDSHandlePtr == 42, "CDS Handle was set correctly, validating the datastore registration process.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No SysLog messages should be generated during nominal initialization.");
 
-    // CDS Already exists and restore successfully
+    // CDS already exists: Ensure data is restored successfully.
     UT_ResetState(0);
     uint8 expected_data[@_UPPER:Name_@_DATASTORE_SIZE];
-    memset(expected_data, 42, @_UPPER:Name_@_DATASTORE_SIZE);
+    memset(expected_data, 42, sizeof(expected_data)); // Example pattern
     UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), expected_data, sizeof(expected_data), false);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_SUCCESS);
-    memset(@_UPPER:Name_@_APP_Data.CDSData, 0, @_UPPER:Name_@_DATASTORE_SIZE);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), CFE_SUCCESS);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
-    UtAssert_True(memcmp(@_UPPER:Name_@_APP_Data.CDSData, expected_data, @_UPPER:Name_@_DATASTORE_SIZE) == 0, "CDSData restored correctly");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called to retrieve existing datastore data.");
+    UtAssert_True(memcmp(@_UPPER:Name_@_APP_Data.CDSData, expected_data, sizeof(expected_data)) == 0, "Data successfully restored from CDS, verifying data integrity.");
 
-    // Multiple errors on Registering CDS
+    // Multiple errors during datastore registration.
     UT_ResetState(0);
-    CFE_Status_t failureRegisteringCodes[] = {
-         CFE_ES_NOT_IMPLEMENTED,  CFE_ES_CDS_INVALID_SIZE, CFE_ES_CDS_INVALID_NAME, CFE_ES_BAD_ARGUMENT, CFE_ES_CDS_INVALID
-        };
-    int numRegisteringFailures = sizeof(failureRegisteringCodes) / sizeof(failureRegisteringCodes[0]);
-    for (int i = 0; i < numRegisteringFailures; i++)
-    {
-        UT_ResetState(UT_KEY(CFE_ES_RegisterCDS));
-        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
-        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, failureRegisteringCodes[i]);
-        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), failureRegisteringCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+    CFE_Status_t failureCodes[] = { CFE_ES_NOT_IMPLEMENTED, CFE_ES_CDS_INVALID_SIZE, CFE_ES_CDS_INVALID_NAME, CFE_ES_BAD_ARGUMENT, CFE_ES_CDS_INVALID };
+    for (size_t i = 0; i < sizeof(failureCodes)/sizeof(failureCodes[0]); ++i) {
+        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, failureCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), failureCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called indicating registration failure.");
     }
 
-    // Multiple errors on Restoring CDS
+    // Multiple errors during data restoration from CDS.
     UT_ResetState(0);
-    CFE_Status_t failureRestoringCodes[] = {
-         CFE_ES_ERR_RESOURCEID_NOT_VALID, CFE_ES_CDS_BLOCK_CRC_ERR, CFE_ES_BAD_ARGUMENT
-        };
-    int numRestoringFailures = sizeof(failureRestoringCodes) / sizeof(failureRestoringCodes[0]);
-    for (int i = 0; i < numRestoringFailures; i++)
-    {
-        UT_ResetState(UT_KEY(CFE_ES_RegisterCDS));
-        UT_ResetState(UT_KEY(CFE_ES_RestoreFromCDS));
-        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
-        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
-        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, failureRestoringCodes[i]);
-        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), failureRestoringCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
+    CFE_Status_t restoreErrors[] = { CFE_ES_ERR_RESOURCEID_NOT_VALID, CFE_ES_CDS_BLOCK_CRC_ERR, CFE_ES_BAD_ARGUMENT };
+    for (size_t i = 0; i < sizeof(restoreErrors)/sizeof(restoreErrors[0]); ++i) {
+        UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, restoreErrors[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), restoreErrors[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "SysLog message indicates failure to restore data from CDS.");
     }
-
 }
 
 void Test_@_UPPER:Name_@_User_Datastore_Store(void)
 {
     int32 store = 42;
-    // Nominal case
+    // Verify that no SysLog messages are generated during nominal data store operation.
     @_UPPER:Name_@_User_Datastore_Store(&store);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "Nominal data storage operation should not produce SysLog messages.");
 
-    // Fail on storing
+    // Ensure SysLog is called upon failed data storage operation.
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_CopyToCDS), 1, CFE_ES_BAD_ARGUMENT);
     @_UPPER:Name_@_User_Datastore_Store(&store);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
-
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Failed data storage operation should generate a SysLog message.");
 }
 
 void Test_@_UPPER:Name_@_User_Datastore_Load(void)
 {   
     uint8 expected_load[@_UPPER:Name_@_DATASTORE_SIZE];
-    memset(expected_load, 42, @_UPPER:Name_@_DATASTORE_SIZE);
+    memset(expected_load, 42, sizeof(expected_load));
     uint8 actual_load[@_UPPER:Name_@_DATASTORE_SIZE];
-    memset(actual_load, 0, @_UPPER:Name_@_DATASTORE_SIZE);
+    memset(actual_load, 0, sizeof(actual_load));
 
-    // Nominal case
-    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), &expected_load, sizeof(expected_load), false);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(&actual_load), CFE_SUCCESS);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
-    UtAssert_MemCmp(expected_load, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Loaded from data store successfully");
+    // Confirm data is accurately loaded from the datastore under nominal conditions.
+    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), expected_load, sizeof(expected_load), false);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(actual_load), CFE_SUCCESS);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "Datastore load operation under nominal conditions should not produce SysLog messages.");
+    UtAssert_MemCmp(expected_load, actual_load, sizeof(expected_load), "Data should match expected content after nominal load operation.");
 
-    // Test multiple failures
-     CFE_Status_t failureCodes[] = {
-         CFE_ES_ERR_RESOURCEID_NOT_VALID, CFE_ES_CDS_BLOCK_CRC_ERR, CFE_ES_BAD_ARGUMENT
-    };
-    int numFailures = sizeof(failureCodes) / sizeof(failureCodes[0]);
-    for (int i = 0; i < numFailures; i++)
-    {
-        /* Reset the state before each test case */
+    // Evaluate handling of different failure modes during data restoration.
+    CFE_Status_t failureCodes[] = { CFE_ES_ERR_RESOURCEID_NOT_VALID, CFE_ES_CDS_BLOCK_CRC_ERR, CFE_ES_BAD_ARGUMENT };
+    for (int i = 0; i < sizeof(failureCodes) / sizeof(failureCodes[0]); ++i) {
         UT_ResetState(UT_KEY(CFE_ES_RestoreFromCDS));
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, failureCodes[i]);
-        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(&actual_load), failureCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+        UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(actual_load), failureCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "Restoration attempts should be made for each failure scenario.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Each restoration failure should result in a SysLog message.");
     }
 
-
-    // Test Boundary
+    // Test handling of boundary condition with oversized data.
     UT_ResetState(0);
     uint8 oversized_data[@_UPPER:Name_@_DATASTORE_SIZE + 1];
-    memset(oversized_data, 42, @_UPPER:Name_@_DATASTORE_SIZE + 1);
-    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), oversized_data, @_UPPER:Name_@_DATASTORE_SIZE + 1, false);
-    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(&actual_load), CFE_SUCCESS);
-    UtAssert_MemCmp(oversized_data, actual_load, @_UPPER:Name_@_DATASTORE_SIZE, "Oversize data shouldn't match actual data");
-
+    memset(oversized_data, 42, sizeof(oversized_data));
+    UT_SetDataBuffer(UT_KEY(CFE_ES_RestoreFromCDS), oversized_data, sizeof(oversized_data), false);
+    UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Load(actual_load), CFE_SUCCESS);
+    UtAssert_MemCmp(oversized_data, actual_load, sizeof(expected_load), "Actual loaded data should not include data beyond expected boundary.");
 }
 
 @@END_IF@@
