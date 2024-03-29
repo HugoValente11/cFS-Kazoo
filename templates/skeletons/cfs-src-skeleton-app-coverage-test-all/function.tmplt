@@ -187,10 +187,9 @@ void Test_@_UPPER:Name_@_APP_Init(void)
     UT_CheckEvent_t EventTest;
     UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_STARTUP_INF_EID, "@_UPPER:Name_@ App Initialized.%s");
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_SUCCESS);
-    UtAssert_True(EventTest.MatchCount == 1, "Initialized event generated (%u)",
-                  (unsigned int)EventTest.MatchCount);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "CFE_EVS_SendEvent called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+    UtAssert_True(EventTest.MatchCount == 1, "Startup event confirmed, indicating successful app initialization.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_SendEvent)) == 1, "Exactly one startup event was dispatched, confirming app initialization success.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No SysLog messages were generated, indicating a clean initialization without errors or warnings.");
 
     // Test multiple failures on register events
      UT_ResetState(0);
@@ -206,14 +205,14 @@ void Test_@_UPPER:Name_@_APP_Init(void)
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_EVS_Register), 1, failureRegisterEventCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureRegisterEventCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_Register)) == 1, "CFE_EVS_Register() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Event registration error logged for failure code, verifying system log was written.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_EVS_Register)) == 1, "CFE_EVS_Register was correctly called, ensuring event registration attempt.");
     }
 
     // Fail in initializing housekeeping
     UT_SetDeferredRetcode(UT_KEY(CFE_MSG_Init), 1, CFE_MSG_BAD_ARGUMENT);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), CFE_MSG_BAD_ARGUMENT);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "Initialization failure logged due to housekeeping packet initialization with bad argument.");
 
     // Test multiple failures in creating software bus pipe
     UT_ResetState(0);
@@ -230,8 +229,8 @@ void Test_@_UPPER:Name_@_APP_Init(void)
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_SB_CreatePipe), 1, failureCreatePipeCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureCreatePipeCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_CreatePipe)) == 1, "CFE_SB_CreatePipe() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Software bus pipe creation error logged, validating error handling in system log.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_CreatePipe)) == 1, "CFE_SB_CreatePipe call confirmed, indicating an attempt to create a software bus pipe.");
     }
 
     // Test multiple failures in subscribing to house keeping requests
@@ -248,8 +247,8 @@ void Test_@_UPPER:Name_@_APP_Init(void)
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 1, failureSubscribeCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureSubscribeCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 1, "CFE_SB_Subscribe() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Subscription to housekeeping requests failure is logged, verifying the system log captured the error.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 1, "CFE_SB_Subscribe call count is correct, confirming a subscription attempt was made.");
     }
 
     // Test multiple failures in subscribing to ground command packets
@@ -261,8 +260,8 @@ void Test_@_UPPER:Name_@_APP_Init(void)
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_SB_Subscribe), 2, failureSubscribeCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_APP_Init(), failureSubscribeCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 2, "CFE_SB_Subscribe() called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Ground command packet subscription failure is accurately logged, ensuring error handling was triggered.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_Subscribe)) == 2, "CFE_SB_Subscribe was correctly invoked twice, reflecting the attempted subscriptions to ground command packets.");
     }
 }
 
