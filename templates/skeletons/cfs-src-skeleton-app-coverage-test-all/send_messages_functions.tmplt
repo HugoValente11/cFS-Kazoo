@@ -96,38 +96,39 @@ void Test_@_UPPER:Parent_Function_@_Receive_@_Name_@_Init(void)
 
 void Test_@_UPPER:Parent_Function_@_User_Receive_@_Name_@(void)
 {
-    // Test setup: Mock the message buffer and data to simulate receiving a message
+    // Mock buffer and message
     CFE_SB_Buffer_t mockBuffer;
-    memset(&mockBuffer, 0, sizeof(CFE_SB_Buffer_t)); // Clear the buffer to simulate a fresh message
-    memset(mockBuffer.Msg.Byte, 42, sizeof(mockBuffer.Msg.Byte)); // Use a mock value to simulate message data
+    memset(&mockBuffer, 0, sizeof(CFE_SB_Buffer_t)); // Clear the buffer
+    memset(mockBuffer.Msg.Byte, 42, sizeof(mockBuffer.Msg.Byte));
 
-    @_UPPER:Parent_Function_@_APP_Data.Buffer = &mockBuffer; // Set the global buffer to point to the mock buffer
+    @_UPPER:Parent_Function_@_APP_Data.Buffer = &mockBuffer;
 
-    // Test case: Failures in receiving the buffer due to various reasons
+    // Multiple failures on receive buffer
     CFE_Status_t failureCodes[] = {
         CFE_SB_BAD_ARGUMENT, CFE_SB_TIME_OUT, CFE_SB_PIPE_RD_ERR, CFE_SB_NO_MESSAGE
-    };
-    int numFailures = sizeof(failureCodes) / sizeof(failureCodes[0]);
-    for (int i = 0; i < numFailures; i++)
+        };
+    int numRegisteringFailures = sizeof(failureCodes) / sizeof(failureCodes[0]);
+    for (int i = 0; i < numRegisteringFailures; i++)
     {
-        UT_ResetState(UT_KEY(CFE_SB_ReceiveBuffer)); // Reset state to ensure clean environment for each test
-        UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, failureCodes[i]); // Simulate failure
-        UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_@_Name_@(), failureCodes[i]); // Execute test
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Failed receiving message due to: %d", failureCodes[i]);
+        UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
+        UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, failureCodes[i]);
+        UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), failureCodes[i]);
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
     }
 
-    // Test case: Failures in decoding the received message
-    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, false); // Simulate decode failure
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_@_Name_@(), CFE_SB_BAD_ARGUMENT); // Execute test
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "Decode failure logged correctly.");
+    // Fail on decoding
+    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, false);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), CFE_SB_BAD_ARGUMENT);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
 
-    // Test case: Successful message reception and decoding
+    // Success
     byte mockData[40];
-    memset(mockData, 0, sizeof(mockData)); // Prepare mock data for successful test
-    UT_SetDataBuffer(UT_KEY(CFE_SB_ReceiveBuffer), &mockBuffer, sizeof(mockBuffer), false); // Mock buffer reception
-    UT_SetDataBuffer(UT_KEY(CFE_SB_GetUserData), mockData, sizeof(mockData), false); // Mock user data reception
-    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, true); // Simulate successful decode
-    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_@_Name_@(), CFE_SUCCESS); // Execute test
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "Successful reception and decoding of the message.");
+    memset(mockData, 0, sizeof(mockData)); // Initialize the mock data as needed for the test
+    UT_SetDataBuffer(UT_KEY(CFE_SB_ReceiveBuffer), &mockBuffer, sizeof(mockBuffer), false);
+    UT_SetDataBuffer(UT_KEY(CFE_SB_GetUserData), mockData, sizeof(mockData), false);
+    UT_SetDeferredRetcode(UT_KEY(asn1SccMyInteger_Decode), 1, true);
+    UT_TEST_FUNCTION_RC(@_UPPER:Parent_Function_@_User_Receive_Send_Message(), CFE_SUCCESS);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog should not be called");
+
 }
 @@END_IF@@
