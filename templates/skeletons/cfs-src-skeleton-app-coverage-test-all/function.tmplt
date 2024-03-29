@@ -364,9 +364,9 @@ void Test_@_UPPER:Name_@_User_Datastore_Init(void)
     int32 mockhandle = 42;
     UT_SetHookFunction(UT_KEY(CFE_ES_RegisterCDS), UT_RegisterCDS_Hook, &CDSRegTest);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), CFE_SUCCESS);
-    UtAssert_True(CDSRegTest.MatchCount == 1, "CFE_ES_RegisterCDS was called with expected parameters");
-    UtAssert_True(@_UPPER:Name_@_APP_Data.CDSHandlePtr == mockhandle, "CDS Handle was set correctly");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog should not be called");
+    UtAssert_True(CDSRegTest.MatchCount == 1, "CFE_ES_RegisterCDS was called with expected parameters, indicating correct datastore initialization.");
+    UtAssert_True(@_UPPER:Name_@_APP_Data.CDSHandlePtr == mockhandle, "CDS Handle was set correctly, validating the datastore registration process.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "No SysLog messages should be generated during nominal initialization.");
 
     // CDS Already exists and restore successfully
     UT_ResetState(0);
@@ -377,10 +377,10 @@ void Test_@_UPPER:Name_@_User_Datastore_Init(void)
     UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, CFE_SUCCESS);
     memset(@_UPPER:Name_@_APP_Data.CDSData, 0, @_UPPER:Name_@_DATASTORE_SIZE);
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), CFE_SUCCESS);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
-    UtAssert_True(memcmp(@_UPPER:Name_@_APP_Data.CDSData, expected_data, @_UPPER:Name_@_DATASTORE_SIZE) == 0, "CDSData restored correctly");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called to retrieve existing datastore data.");
+UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS was invoked as expected, confirming the app's attempt to register the CDS even though it already exists.");
+UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "A SysLog message was generated due to the CDS already existing, indicating correct error handling and logging.");
+    UtAssert_True(memcmp(@_UPPER:Name_@_APP_Data.CDSData, expected_data, @_UPPER:Name_@_DATASTORE_SIZE) == 0, "Data successfully restored from CDS, verifying data integrity.");
 
     // Multiple errors on Registering CDS
     UT_ResetState(0);
@@ -394,8 +394,8 @@ void Test_@_UPPER:Name_@_User_Datastore_Init(void)
         UT_ResetState(UT_KEY(CFE_ES_WriteToSysLog));
         UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, failureRegisteringCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), failureRegisteringCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "Attempted to register the CDS, verifying the registration process is called despite known errors.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "A SysLog message was generated for each registration failure, effectively logging the specific error encountered.");
     }
 
     // Multiple errors on Restoring CDS
@@ -412,9 +412,9 @@ void Test_@_UPPER:Name_@_User_Datastore_Init(void)
         UT_SetDeferredRetcode(UT_KEY(CFE_ES_RegisterCDS), 1, CFE_ES_CDS_ALREADY_EXISTS);
         UT_SetDeferredRetcode(UT_KEY(CFE_ES_RestoreFromCDS), 1, failureRestoringCodes[i]);
         UT_TEST_FUNCTION_RC(@_UPPER:Name_@_User_Datastore_Init(), failureRestoringCodes[i]);
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "CFE_ES_RegisterCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "CFE_ES_RestoreFromCDS called");
-        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog called");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RegisterCDS)) == 1, "Confirmed registration check for CDS even when CDS already exists, as part of restoration attempt.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_RestoreFromCDS)) == 1, "Restoration attempt from CDS was made for each failure scenario, testing resilience against data corruption and invalid arguments.");
+        UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "Two SysLog messages were generated during the process, capturing the outcome of both registration and restoration attempts, and logging specific restoration failures.");
     }
 
 }
