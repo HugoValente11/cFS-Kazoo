@@ -451,129 +451,235 @@ void Test_@_UPPER:Name_@_User_Datastore_Load(void)
 
 void Test_@_UPPER:Name_@_ProcessCommandPacket(void)
 {
+    /*
+     * Test Case For:
+     * void @_UPPER:Name_@_ProcessCommandPacket
+     */
+    /* a buffer large enough for any command message */
     union
     {
         CFE_SB_Buffer_t      SBBuf;
         @_UPPER:Name_@_NoopCmd_t Noop;
     } TestMsg;
     CFE_SB_MsgId_t    TestMsgId;
+    CFE_MSG_FcnCode_t FcnCode;
+    size_t            MsgSize;
     UT_CheckEvent_t   EventTest;
 
     memset(&TestMsg, 0, sizeof(TestMsg));
-    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_INVALID_MSGID_ERR_EID, 
-                        "@_UPPER:Name_@: invalid command packet, MID = 0x%x");
+    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_INVALID_MSGID_ERR_EID, "@_UPPER:Name_@: invalid command packet,MID = 0x%x");
 
+    /*
+     * The CFE_MSG_GetMsgId() stub uses a data buffer to hold the
+     * message ID values to return.
+     */
     TestMsgId = CFE_SB_ValueToMsgId(@_UPPER:Name_@_CMD_MID);
+    FcnCode   = @_UPPER:Name_@_NOOP_CC;
+    MsgSize   = sizeof(TestMsg.Noop);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &MsgSize, sizeof(MsgSize), false);
     @_UPPER:Name_@_ProcessCommandPacket(&TestMsg.SBBuf);
 
     TestMsgId = CFE_SB_ValueToMsgId(@_UPPER:Name_@_SEND_HK_MID);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
     @_UPPER:Name_@_ProcessCommandPacket(&TestMsg.SBBuf);
 
+    /* invalid message id */
     TestMsgId = CFE_SB_INVALID_MSG_ID;
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
     @_UPPER:Name_@_ProcessCommandPacket(&TestMsg.SBBuf);
 
-    UtAssert_True(EventTest.MatchCount == 1, 
-        "Expected event for invalid command packet MID was generated once, verifying error handling.");
+    /*
+     * Confirm that the event was generated only _once_
+     */
+    UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:Name_@_COMMAND_ERR_EID generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
 }
 
 void Test_@_UPPER:Name_@_ProcessGroundCommand(void)
 {
+    /*
+     * Test Setup for Function : @_UPPER:Name_@_ProcessGroundCommand
+     */
+    CFE_MSG_FcnCode_t FcnCode;
+    size_t Size;
+    CFE_SB_MsgId_t    MsgId = CFE_SB_ValueToMsgId(1);
+
+    // A buffer large enough for any command message
     union
     {
         CFE_SB_Buffer_t SBBuf;
         @_UPPER:Name_@_NoopCmd_t Noop;
         @_UPPER:Name_@_ResetCountersCmd_t Reset;
+        @_UPPER:Name_@_ProcessCmd_t Process;
     } TestMsg;
-    CFE_MSG_FcnCode_t FcnCode;
-    size_t Size;
 
-    memset(&TestMsg, 0, sizeof(TestMsg));
+    memset(&TestMsg, 0, sizeof(TestMsg));  // Clear the message structure
+
+    /* Test dispatch of NOOP */
+    // Correct length
     FcnCode = @_UPPER:Name_@_NOOP_CC;
     Size = sizeof(TestMsg.Noop);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, 
-        "No SysLog messages expected for valid NOOP command processing.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 0, "CFE_ES_WriteToSysLog() should not be called");
 
+    // Incorrect length
     FcnCode = @_UPPER:Name_@_NOOP_CC;
-    Size = sizeof(TestMsg.Noop) - 1;
+    Size = sizeof(TestMsg.Noop) -1;
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
+    @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+
+
+    /* Test dispatch of RESET */
+    // Correct length
+    FcnCode = @_UPPER:Name_@_RESET_COUNTERS_CC;
+    Size = sizeof(TestMsg.Reset);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
     @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, 
-        "SysLog message expected for NOOP command with incorrect length, verifying parameter validation.");
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 1, "CFE_ES_WriteToSysLog() called");
+
+    // Incorrect length
+    FcnCode = @_UPPER:Name_@_RESET_COUNTERS_CC;
+    Size = sizeof(TestMsg.Reset) -1;
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &Size, sizeof(Size), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
+    @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_WriteToSysLog)) == 2, "CFE_ES_WriteToSysLog() called");
+
+    /* Test dispatch of an invalid command code */
+    FcnCode = 999; // Use an undefined function code
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &FcnCode, sizeof(FcnCode), false);
+    @_UPPER:Name_@_ProcessGroundCommand(&TestMsg.SBBuf);
 }
 
 void Test_@_UPPER:Name_@_ReportHousekeeping(void)
 {
+    /*
+     * Test Case For:
+     * void @_UPPER:Name_@_ReportHousekeeping( const CFE_SB_CmdHdr_t *Msg )
+     */
     CFE_MSG_Message_t *MsgSend;
+    CFE_MSG_Message_t *MsgTimestamp;
+    CFE_SB_MsgId_t     MsgId = CFE_SB_ValueToMsgId(@_UPPER:Name_@_SEND_HK_MID);
+
+    /* Set message id to return so @_UPPER:Name_@_Housekeeping will be called */
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
+
+    /* Set up to capture send message address */
     UT_SetDataBuffer(UT_KEY(CFE_SB_TransmitMsg), &MsgSend, sizeof(MsgSend), false);
 
-    @_UPPER:Name_@_ReportHousekeeping((CFE_MSG_CommandHeader_t *)NULL);
-    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_TransmitMsg)) == 1, 
-        "Housekeeping message should be sent exactly once, confirming HK reporting functionality.");
+    /* Set up to capture timestamp message address */
+    UT_SetDataBuffer(UT_KEY(CFE_SB_TimeStampMsg), &MsgTimestamp, sizeof(MsgTimestamp), false);
+
+    /* Call unit under test, NULL pointer confirms command access is through APIs */
+    @_UPPER:Name_@_ProcessCommandPacket((CFE_SB_Buffer_t *)NULL);
+
+    /* Confirm message sent*/
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_TransmitMsg)) == 1, "CFE_SB_TransmitMsg() called once");
+    UtAssert_True(MsgSend == &@_UPPER:Name_@_APP_Data.HkTlm.TlmHeader.Msg, "CFE_SB_TransmitMsg() address matches expected");
+
+    /* Confirm timestamp msg address */
+    UtAssert_True(UT_GetStubCount(UT_KEY(CFE_SB_TimeStampMsg)) == 1, "CFE_SB_TimeStampMsg() called once");
+    UtAssert_True(MsgTimestamp == &@_UPPER:Name_@_APP_Data.HkTlm.TlmHeader.Msg,
+                  "CFE_SB_TimeStampMsg() address matches expected");
+
 }
 
 void Test_@_UPPER:Name_@_Noop(void)
 {
+    /*
+     * Test Case For:
+     * void @_UPPER:Name_@_NoopCmd( const @_UPPER:Name_@_Noop_t *Msg )
+     */
     @_UPPER:Name_@_NoopCmd_t TestMsg;
-    UT_CheckEvent_t EventTest;
+    UT_CheckEvent_t      EventTest;
 
     memset(&TestMsg, 0, sizeof(TestMsg));
+
+    /* test dispatch of NOOP */
     UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_COMMANDNOP_INF_EID, NULL);
 
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_Noop(&TestMsg), CFE_SUCCESS);
-    UtAssert_True(EventTest.MatchCount == 1, 
-        "NOOP command should generate a single event, confirming operation acknowledgment.");
+
+    /*
+     * Confirm that the event was generated
+     */
+    UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:Name_@_COMMANDNOP_INF_EID generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
 }
 
 void Test_@_UPPER:Name_@_ResetCounters(void)
 {
+    /*
+     * Test Case For:
+     * void @_UPPER:Name_@_ResetCounters( const @_UPPER:Name_@_ResetCounters_t *Msg )
+     */
     @_UPPER:Name_@_ResetCountersCmd_t TestMsg;
-    UT_CheckEvent_t EventTest;
+    UT_CheckEvent_t               EventTest;
 
     memset(&TestMsg, 0, sizeof(TestMsg));
+
     UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_COMMANDRST_INF_EID, "@_UPPER:Name_@: RESET command");
 
     UT_TEST_FUNCTION_RC(@_UPPER:Name_@_ResetCounters(&TestMsg), CFE_SUCCESS);
-    UtAssert_True(EventTest.MatchCount == 1, 
-        "RESET command should generate a single event, confirming counters reset.");
+
+    /*
+     * Confirm that the event was generated
+     */
+    UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:Name_@_COMMANDRST_INF_EID generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
 }
+
 
 void Test_@_UPPER:Name_@_VerifyCmdLength(void)
 {
-    UT_CheckEvent_t EventTest;
-    size_t size = 1; // Assume 1 byte for test message size
-    CFE_MSG_FcnCode_t fcncode = 2; // Function code for command, arbitrary value for testing
-    CFE_SB_MsgId_t msgid = CFE_SB_ValueToMsgId(3); // Message ID for the command, arbitrary value for testing
+    /*
+     * Test Case For:
+     * bool @_UPPER:Name_@_VerifyCmdLength
+     */
+    UT_CheckEvent_t   EventTest;
+    size_t            size    = 1;
+    CFE_MSG_FcnCode_t fcncode = 2;
+    CFE_SB_MsgId_t    msgid   = CFE_SB_ValueToMsgId(3);
 
-    // Test case: Message size matches expected size
+    /*
+     * test a match case
+     */
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &size, sizeof(size), false);
-    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_LEN_ERR_EID, 
-                        "Invalid message length: ID = 0x%X, CC = %u, Length = %u, Expected = %u");
-    
-    // Perform the command length verification with the expected size
+    UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_LEN_ERR_EID,
+                        "Invalid Msg length: ID = 0x%X,  CC = %u, Len = %u, Expected = %u");
+
     @_UPPER:Name_@_VerifyCmdLength(NULL, size);
 
-    // Verify that the event indicating a length error was not generated
-    UtAssert_True(EventTest.MatchCount == 0, 
-        "No length error event should be generated when command size matches the expected size.");
+    /*
+     * Confirm that the event was NOT generated
+     */
+    UtAssert_True(EventTest.MatchCount == 0, "@_UPPER:Name_@_LEN_ERR_EID NOT generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
 
-    // Test case: Message size does not match expected size
+    /*
+     * test a mismatch case
+     */
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetSize), &size, sizeof(size), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &msgid, sizeof(msgid), false);
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetFcnCode), &fcncode, sizeof(fcncode), false);
-
-    // Perform the command length verification with an incorrect size (expected size + 1)
     @_UPPER:Name_@_VerifyCmdLength(NULL, size + 1);
 
-    // Verify that the event indicating a length error was generated
-    UtAssert_True(EventTest.MatchCount == 1, 
-        "A length error event should be generated when command size does not match the expected size, indicating the command length validation is functioning.");
+    /*
+     * Confirm that the event WAS generated
+     */
+    UtAssert_True(EventTest.MatchCount == 1, "@_UPPER:Name_@_LEN_ERR_EID generated (%u)",
+                  (unsigned int)EventTest.MatchCount);
 }
 
 /*
