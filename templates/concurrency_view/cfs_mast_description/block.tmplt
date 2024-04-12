@@ -1,0 +1,80 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@             : Protected block name
+@@-- @_Language_@         : Implementation language
+@@-- @_Calling_Threads_@  : List of calling threads
+@@-- @_Node name_@        : Node name
+@@-- @_Protected_PIs_@    : Protected Provided interfaces (from pi.tmplt)
+@@-- @_Unprotected_PIs_@  : Unprotected Provided interfaces (from pi.tmplt)
+@@-- @_Required_@         : Required interfaces (from ri.tmplt)
+@@-- And all the system configuration obtained from the command line:
+@@-- Interface_View, Deployment_View, Data_View, Binary_Path, Check_Data_View,
+@@-- Output_Dir, Skeletons, Glue, Use_POHIC, Timer_Resolution, Debug_Flag,
+@@-- No_Stdlib_Flag, Timer_Resolution, Other_Files (list of aadl files)
+@_LOWER:Name_@ - Block name
+
+Calling provided interface
+@_Provided_Interfaces_@
+
+
+----------------------
+
+Name = @_Name_@
+Language = @_Language_@
+Calling_Threads = @_Calling_Threads_@
+Protected_PIs = @_Protected_PIs_@
+Unprotected_PIs = @_Unprotected_PIs_@
+Required = @_Required_@
+List_Of_PIs = @_List_Of_PIs_@
+List_Of_ASync_RIs = @_List_Of_ASync_RIs_@
+ASync_RI_Param_Name = @_ASync_RI_Param_Name_@
+ASync_RI_Param_Type = @_ASync_RI_Param_Type_@
+RIs_Have_Params = @_RIs_Have_Params_@
+List_Of_Sync_RIs = @_List_Of_Sync_RIs_@
+List_Of_ASync_PIs = @_List_Of_ASync_PIs_@
+ASync_PI_Kind = @_ASync_PI_Kind_@
+ASync_PI_Is_Connected = @_ASync_PI_Is_Connected_@
+ASync_PI_Param_Name = @_ASync_PI_Param_Name_@
+ASync_PI_Param_Type = @_ASync_PI_Param_Type_@
+Timer_Resolution = @_Timer_Resolution_@
+Property_Names = @_Property_Names_@
+Property_Values = @_Property_Values_@
+Skeletons = @_Skeletons_@
+Interface_View = @_Interface_View_@
+Binary_Path = @_Binary_Path_@
+CP_Names = @_CP_Names_@
+CP_Values = @_CP_Values_@
+CP_Asn1Modules = @_CP_Asn1Modules_@
+CP_Asn1Filenames = @_CP_Asn1Filenames_@
+CP_Types = @_CP_Types_@
+Deployment_View = @_Deployment_View_@
+No_Stdlib_Flag = @_No_Stdlib_Flag_@
+Glue = @_Glue_@
+Partition_Name = @_Partition_Name_@
+Async_RIs_Parent = @_Async_RIs_Parent_@
+Zip_File = @_Zip_File_@
+Node_Name = @_Node_Name_@
+List_Of_Sync_PIs = @_List_Of_Sync_PIs_@
+Has_Context = @_Has_Context_@
+Output_Dir = @_Output_Dir_@
+PIs_Have_Params = @_PIs_Have_Params_@
+Timers = @_Timers_@
+Check_Data_View = @_Check_Data_View_@
+Use_POHIC = @_Use_POHIC_@
+Other_Files = @_Other_Files_@
+Sync_RIs_Parent = @_Sync_RIs_Parent_@
+List_Of_RIs = @_List_Of_RIs_@
+Data_View = @_Data_View_@
+Target = @_Target_@
+Shared_Types = @_Shared_Types_@
+Shared_Lib_Dir = @_Shared_Lib_Dir_@
+Is_Type = @_Is_Type_@
+Instance_Of = @_Instance_Of_@
+Debug_Flag = @_Debug_Flag_@
+Is_Shared_Type = @_Is_Shared_Type_@
+Coord.Y2 = @_Coord.Y2_@
+Coord.Y1 = @_Coord.Y1_@
+Coord.X2 = @_Coord.X2_@
+Coord.X1 = @_Coord.X1_@
+
+--------------------------------------

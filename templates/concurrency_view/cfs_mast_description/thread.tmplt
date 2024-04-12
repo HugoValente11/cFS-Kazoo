@@ -1,0 +1,59 @@
+Scheduling_Server (
+   Type                   	=> Regular,
+   Name                   	=> s@_CAPITALIZE:Thread_Name_@,
+   Server_Sched_Parameters	=>
+  	( Type     	=> Fixed_Priority_Policy,
+    	The_Priority => @_Priority_@,
+    	Preassigned  => NO),
+   Scheduler              	=> processor_1);
+ 
+Operation (
+   Type                   	=> Simple,
+   Name                   	=> @_CAPITALIZE:Thread_Name_@,
+   Worst_Case_Execution_Time  => @_WCET_@
+   );
+ 
+Transaction (
+   Type        	=> regular,
+   Name        	=> @_CAPITALIZE:Thread_Name_@,
+   External_Events =>
+  	(
+     	( Type   	=> Sporadic,
+      	Name   	=> @_Pro_Block_Name_@,
+      	Min_Interarrival => @_Period_@
+      	)),
+   Internal_Events =>
+  	(
+    	( Type => Regular,
+      	Name => @_Remote_Function_Names_@,
+      	Timing_Requirements =>
+        	( Type         	=> Hard_Global_Deadline,
+          	Deadline     	=> @_Period_@,
+          	Referenced_Event => @_Pro_Block_Name_@))),
+   Event_Handlers =>
+   (
+  	(Type           	=> Activity,
+  	Input_Event    	=> @_Pro_Block_Name_@,
+  	Output_Event   	=> @_Remote_Function_Names_@,
+  	Activity_Operation => @_CAPITALIZE:Thread_Name_@,
+  	Activity_Server	=> s@_CAPITALIZE:Thread_Name_@)
+));
+
+@@-- Thread_Name = @_Thread_Name_@
+@@-- Entry_Port_Name = @_Entry_Port_Name_@
+@@-- Pro_Block_Name = @_Pro_Block_Name_@
+@@-- Parent_Function = @_Parent_Function_@
+@@-- Remote_Function_Names = @_Remote_Function_Names_@
+@@-- Name = @_Name_@
+@@-- Remote_Interface_Names = @_Remote_Interface_Names_@
+@@-- Param_Names = @_Param_Names_@
+@@-- Param_Types = @_Param_Types_@
+@@-- Param_Basic_Types = @_Param_Basic_Types_@
+@@-- Period = @_Period_@
+@@-- WCET = @_WCET_@
+@@-- Queue_Size = @_Queue_Size_@
+@@-- IF_Property_Names = @_IF_Property_Names_@
+@@-- IF_Property_Values = @_IF_Property_Values_@
+@@-- Param_ASN1_Modules = @_Param_ASN1_Modules_@
+@@-- Priority = @_Priority_@
+@@-- IF_Priority = @_IF_Priority_@
