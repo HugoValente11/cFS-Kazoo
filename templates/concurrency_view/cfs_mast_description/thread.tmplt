@@ -1,7 +1,8 @@
 
+@@TABLE@@
 Scheduling_Server (
    Type                   	=> Regular,
-   Name                   	=> s@_CAPITALIZE:Thread_Name_@,
+   Name                   	=> s@_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
    Server_Sched_Parameters	=>
   	( Type     	=> Fixed_Priority_Policy,
     	The_Priority => @_Priority_@,
@@ -10,13 +11,13 @@ Scheduling_Server (
  
 Operation (
    Type                   	=> Simple,
-   Name                   	=> @_CAPITALIZE:Thread_Name_@,
+   Name                   	=> @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
    Worst_Case_Execution_Time  => @_WCET_@
    );
  
 Transaction (
    Type        	=> regular,
-   Name        	=> @_CAPITALIZE:Thread_Name_@,
+   Name        	=> @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
    External_Events =>
   	(
      	( Type   	=> Sporadic,
@@ -42,9 +43,13 @@ Transaction (
   	(Type           	=> Activity,
   	Input_Event    	=> @_Pro_Block_Name_@,
   	Output_Event   	=> @_Remote_Function_Names_@,
-  	Activity_Operation => @_CAPITALIZE:Thread_Name_@,
-  	Activity_Server	=> s@_CAPITALIZE:Thread_Name_@)
+  	Activity_Operation => @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
+  	Activity_Server	=> s@_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@)
 ));
+
+@@END_TABLE@@
+
+
 
 @@-- Thread_Name = @_Thread_Name_@
 @@-- Entry_Port_Name = @_Entry_Port_Name_@
