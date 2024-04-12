@@ -21,7 +21,6 @@ with Ada.Exceptions,
      Ocarina.ME_AADL.AADL_Tree.Nutils,
      Ocarina.ME_AADL.AADL_Instances.Nutils,
      Ocarina.ME_AADL.AADL_Instances.Entities,
-     Ocarina.Backends.Utils,
      TASTE.Backend;
 
 package body TASTE.Interface_View is
@@ -39,7 +38,6 @@ package body TASTE.Interface_View is
        Ocarina.ME_AADL.AADL_Instances.Nutils,
        Ocarina.ME_AADL.AADL_Instances.Entities,
        Ocarina.ME_AADL,
-       Ocarina.Backends.Utils,
        TASTE.Backend;
 
    package ATN  renames Ocarina.ME_AADL.AADL_Tree.Nodes;
@@ -200,6 +198,17 @@ package body TASTE.Interface_View is
    begin
       return Get_String_Property (D, Event_Name);
    end Get_Message_ID;
+
+   --------------------
+   -- Get_WCET --
+   --------------------
+
+   function Get_WCET (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::wcet");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_WCET;
 
    --------------------
    -- Get_Message_Content --
@@ -374,36 +383,6 @@ package body TASTE.Interface_View is
       raise Interface_Error with "ASN.1 Basic type undefined!";
       return ASN1_Unknown;
    end Get_ASN1_Basic_Type;
-
-   ----------------------------------------------------------------
-   -- Get Optional Worse Case Execution Time (Upper bound in ms) --
-   ----------------------------------------------------------------
-
-   function Get_Upper_WCET (Func : Node_Id) return Option_ULL.Option is
-      Res : Time_Array (0 .. 1);
-   begin
-      --  The WCET of AADL v2.2 models can be parsed simply like this:
-      Res := Get_Execution_Time (Corresponding_Instance (Func));
-      return Just (To_Milliseconds (Res (1)));
-   exception
-      when Constraint_Error =>
-         --  However it fails with older AADL models. We have to use an
-         --  insanely complex method (found in buildsupport code)
-         --  to retrieve the WCET
-         --  This method does not work with v2.2 models, it always returns
-         --  Nothing
-         return
-           (if Is_Subprogram_Access (Func) and then Sources (Func) /= No_List
-            and then AIN.First_Node (Sources (Func)) /= No_Node
-            and then Get_Execution_Time (Corresponding_Instance (AIN.Item
-              (AIN.First_Node (Sources (Func))))) /= Empty_Time_Array
-            then
-               Just (To_Milliseconds
-              (Get_Execution_Time (Corresponding_Instance
-                   (AIN.Item (AIN.First_Node (Sources (Func)))))(1)))
-            else
-               Option_ULL.Nothing);
-   end Get_Upper_WCET;
 
    ---------------------------
    -- AST Builder Functions --
@@ -586,7 +565,8 @@ package body TASTE.Interface_View is
             else Option_ULL.Nothing);
          Result.RCM := Get_RCM_Operation_Kind (If_I);
          Result.Period_Or_MIAT := Get_RCM_Period (If_I);
-         Result.WCET_ms := Get_Upper_WCET (If_I);
+         --  Result.WCET_ms := Get_Upper_WCET (If_I);
+         Result.WCET_ms := US (Get_WCET (If_I));
          Result.Event_Info := US (Get_Event_Info (If_I));
          Result.Event_Type := US (Get_Event_Type (If_I));
          Result.Event_ID := US (Get_Event_ID (If_I));
@@ -1401,8 +1381,8 @@ package body TASTE.Interface_View is
          Put_Line (Output, Pre & "├─ RCM Kind    : " & I.RCM'Img);
          Put_Line (Output, Pre & "├─ Period/MIAT : "
                                & I.Period_Or_MIAT'Img);
-         Put_Line (Output, Pre & "├─ WCET (ms)   : "
-                   & I.WCET_ms.Value_Or (0)'Img);
+         --  Put_Line (Output, Pre & "├─ WCET (ms)   : "
+         --            & I.WCET_ms.Value_Or (0)'Img);
          Put_Line (Output, Pre & "├─ Queue Size  : "
                    & I.Queue_Size.Value_Or (1)'Img);
          Put_Line (Output, Pre & "├─ Parameters  :");
@@ -1583,7 +1563,7 @@ package body TASTE.Interface_View is
         & Assoc ("Parent_Function",        TI.Parent_Function)
         & Assoc ("Language",               TI_Language)
         & Assoc ("Period",                 TI.Period_Or_MIAT'Img)
-        & Assoc ("WCET",                   TI.WCET_ms.Value_Or (0)'Img)
+        & Assoc ("WCET",                   TI.WCET_ms)
         & Assoc ("Queue_Size",             TI.Queue_Size.Value_Or (1)'Img)
         & Assoc ("Event_Name",             TI.Name)
         & Assoc ("Event_Info",             TI.Event_Info)
