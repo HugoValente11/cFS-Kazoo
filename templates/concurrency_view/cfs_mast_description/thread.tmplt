@@ -1,11 +1,3 @@
-Thread test
-@@IF@@ @_Deadline_@ /= 0
-@_Deadline_@
-@@ELSE@@
-@_Period_@
-@@END_IF@@
-
-
 
 Scheduling_Server (
    Type                   	=> Regular,
