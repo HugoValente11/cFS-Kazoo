@@ -718,7 +718,7 @@ package body TASTE.AADL_Parser is
                   Block.Block_Provided.Insert (Key      => To_String (PI.Name),
                                                New_Item => New_PI);
                end;
-               if PI.RCM = Cyclic_Operation or PI.RCM = Sporadic_Operation then
+               if PI.RCM = Message_Operation then
                   declare
                      Thread : constant AADL_Thread :=
                        (Name                 =>
