@@ -68,6 +68,7 @@ package TASTE.Interface_View is
    function Get_Message_Content (D : Node_Id) return String;
    function Get_Message_Size (D : Node_Id) return String;
    function Get_WCET (D : Node_Id) return String;
+   function Get_Deadline (D : Node_Id) return String;
    function Get_Store_Message (D : Node_Id) return String;
    function Get_Target_Component (D : Node_Id) return String;
 
@@ -135,6 +136,7 @@ package TASTE.Interface_View is
          RCM               : Supported_RCM_Operation_Kind;
          Period_Or_MIAT    : Unsigned_Long_Long;
          WCET_ms           : Unbounded_String;
+         Deadline           : Unbounded_String;
          Queue_Size        : Option_ULL.Option := Option_ULL.Nothing;
          Event_Name        : Unbounded_String;
          Event_Info        : Unbounded_String;

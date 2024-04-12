@@ -1,3 +1,12 @@
+Thread test
+@@IF@@ @_Deadline_@ /= 0
+@_Deadline_@
+@@ELSE@@
+@_Period_@
+@@END_IF@@
+
+
+
 Scheduling_Server (
    Type                   	=> Regular,
    Name                   	=> s@_CAPITALIZE:Thread_Name_@,
@@ -28,7 +37,13 @@ Transaction (
       	Name => @_Remote_Function_Names_@,
       	Timing_Requirements =>
         	( Type         	=> Hard_Global_Deadline,
-          	Deadline     	=> @_Deadline_@,
+			@@INLINE(Deadline     	=> )()(,)@@
+@@IF@@ @_Deadline_@ /= 0
+@_Deadline_@
+@@ELSE@@
+@_Period_@
+@@END_IF@@
+@@END_INLINE@@
           	Referenced_Event => @_Pro_Block_Name_@))),
    Event_Handlers =>
    (
