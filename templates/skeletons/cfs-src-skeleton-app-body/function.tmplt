@@ -33,7 +33,6 @@
 */
 #include "@_LOWER:Name_@_app_version.h"
 #include "@_LOWER:Name_@_app.h"
-#include "@_LOWER:Name_@_app_user.h"
 @@IF@@ @_TABLES_ENABLED_@
 #include "@_LOWER:Name_@_app_table.h"
 @@END_IF@@
@@ -54,6 +53,12 @@ void @_UPPER:Name_@_User_Init(void)
 {
     // User initialization here
 
+
+}
+
+void @_UPPER:Name_@_User_Main(void)
+{    
+    // User main loop here
 
 }
 

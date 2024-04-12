@@ -62,7 +62,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/stubs)
 add_cfe_coverage_test(@_LOWER:Name_@_app ALL 
     "coveragetest/coveragetest_@_LOWER:Name_@_app.c"
     "../fsw/src/@_LOWER:Name_@_app.c"
-    "../fsw/src/@_LOWER:Name_@_app_user.c"
     ${CMAKE_CURRENT_SOURCE_DIR}/stubs/cfe_es_global_stubs.c
 )
 
