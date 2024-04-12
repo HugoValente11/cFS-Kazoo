@@ -28,7 +28,7 @@ Transaction (
       	Name => @_Remote_Function_Names_@,
       	Timing_Requirements =>
         	( Type         	=> Hard_Global_Deadline,
-          	Deadline     	=> @_Period_@,
+          	Deadline     	=> @_Deadline_@,
           	Referenced_Event => @_Pro_Block_Name_@))),
    Event_Handlers =>
    (

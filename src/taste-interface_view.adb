@@ -211,6 +211,17 @@ package body TASTE.Interface_View is
    end Get_WCET;
 
    --------------------
+   -- Get_Deadline --
+   --------------------
+
+   function Get_Deadline (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::deadline");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Deadline;
+
+   --------------------
    -- Get_Message_Content --
    --------------------
 
@@ -567,6 +578,7 @@ package body TASTE.Interface_View is
          Result.Period_Or_MIAT := Get_RCM_Period (If_I);
          --  Result.WCET_ms := Get_Upper_WCET (If_I);
          Result.WCET_ms := US (Get_WCET (If_I));
+         Result.Deadline := US (Get_Deadline (If_I));
          Result.Event_Info := US (Get_Event_Info (If_I));
          Result.Event_Type := US (Get_Event_Type (If_I));
          Result.Event_ID := US (Get_Event_ID (If_I));
@@ -1564,6 +1576,7 @@ package body TASTE.Interface_View is
         & Assoc ("Language",               TI_Language)
         & Assoc ("Period",                 TI.Period_Or_MIAT'Img)
         & Assoc ("WCET",                   TI.WCET_ms)
+        & Assoc ("Deadline",                   TI.Deadline)
         & Assoc ("Queue_Size",             TI.Queue_Size.Value_Or (1)'Img)
         & Assoc ("Event_Name",             TI.Name)
         & Assoc ("Event_Info",             TI.Event_Info)
