@@ -1,5 +1,13 @@
-# Each target board can have its own HW arch selection and set of included apps
-SET(@_LOWER:Name_@_PROCESSORID Add_processor_id_var)
+@@INLINE()( )()@@
+SET(@_LOWER:Name_@_PROCESSORID 
+@@TABLE@@
+@@IF@@ @_Property_Names_@ = TASTE::Processor_id
+@_Property_Values_@
+@@END_IF@@
+@@END_TABLE@@
+)
+@@END_INLINE@@
+
 @@INLINE()( )()@@
 SET(@_LOWER:Name_@_APPLIST 
 @@TABLE@@

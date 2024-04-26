@@ -123,22 +123,5 @@ SET(MISSION_CPUNAMES
 )
 @@END_INLINE@@
 
-// Done until here
-Nodes here
+# Each target board can have its own HW arch selection and set of included apps
 @_Nodes_@
-
-----------------------
-
-Bus names length
-
-
-Block names
-@_Block_Names_@
-
-Node Names
-@_Node_Names_@
-
-Partitions
-@_Partitions_@
-This will be the startup file for cfs
-
