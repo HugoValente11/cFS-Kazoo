@@ -32,6 +32,9 @@
 @@-- @_Out_Port_Type_Name_@   :     |_ corresponding parameter type name (optional)
 CFE_LIB, cfe_assert,  CFE_Assert_LibInit, ASSERT_LIB,    0,   0,     0x0, 0;
 CFE_LIB, dataview_lib,  DATAVIEW_Init,    DATAVIEW_LIB,    0,   0,     0x0, 0;
+@@IF@@ @_EXIST:Device_Bus_Name_@
+CFE_APP, sbn,  SBN_AppMain,    SBN,    50,   1600192,     0x0, 0;
+@@END_IF@@   
 @_Blocks_@
 
 !
