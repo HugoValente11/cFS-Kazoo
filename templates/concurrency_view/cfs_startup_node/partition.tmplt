@@ -1,0 +1,96 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@            : Partition name (usually the name of the binary)
+@@-- @_Threads_@         : Code generated for the threads
+@@-- @_Thread_Names_@    : Tag: list of thread names
+@@-- @_Node_Name_@       : Name of the node containing this partition
+@@-- @_Blocks_@          : Code generated for protected functions
+@@-- @_Block_Names@      : Vector Tag: list of block (user functions) names
+@@-- @_Block_Languages@  :   |_ Corresponding implementation language
+@@-- @_Block_Instance_Of_@:  |_ Name of parent function (if instance)
+@@-- @_Coverage_@        : True if user requested code coverage enable
+@@-- @_Package_Name_@    : AADL Package name for the target (e.g. ocarina_porocessors_x86)
+@@-- @_CPU_Name_@        : CPU Name (e.g. x86_linux)
+@@-- @_CPU_Platform_@    : AADL CPU_Platform (e.g. PLATFORM_NATIVE)
+@@-- @_CPU_Classifier_@  : AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+@@-- @_CPU_Family_@      : e.g. gr740 or x86
+@@-- @_CPU_Instance_@    : e.g. rtems51_posix or linux
+@@-- @_VP_Name_@         : Virtual processor name on which the partition is bounded
+@@-- @_VP_Platform_@     : Virtual processor platform (e.g. PLATFORM_AIR)
+@@-- @_VP_Classifier_@   : Virtual processor classifier
+@@-- @_Ada_Runtime_@     : Set if CPU_Platform = PLATFORM_GNAT_RUNTIME
+@@-- @_Bound_Functions_@ : List of user functions from Interface view
+@@-- @_Thread_Src_Name_@ : Vector tag : connection thread name (source)
+@@-- @_Thread_Dst_Name_@ : Vector tag : connection thread name (dest)
+@@-- @_Thread_Src_Port_@ : Vector tag : connection port name (source)
+@@-- @_Thread_Dst_Port_@ : Vector tag : connection port name (dest)
+@@-- @_In_Port_Names_@        : Vector tag: input ports of the partition
+@@-- @_In_Port_Thread_Name_@  :     |_ corresponding thread inside the partition
+@@-- @_In_Port_Type_Name_@    :     |_ corresponding parameter type name (optional)
+@@-- @_Out_Port_Names_@       : Vector tag: output ports of the partition
+@@-- @_Out_Port_Thread_Name_@ :     |_ corresponding thread inside the partition
+@@-- @_Out_Port_Type_Name_@   :     |_ corresponding parameter type name (optional)
+CFE_LIB, cfe_assert,  CFE_Assert_LibInit, ASSERT_LIB,    0,   0,     0x0, 0;
+CFE_LIB, dataview_lib,  DATAVIEW_Init,    DATAVIEW_LIB,    0,   0,     0x0, 0;
+@_Blocks_@
+
+!
+! Startup script fields:
+! 1. Object Type      -- CFE_APP for an Application, or CFE_LIB for a library.
+! 2. Path/Filename    -- This is a cFE Virtual filename, not a vxWorks device/pathname
+! 3. Entry Point      -- This is the "main" function for Apps.
+! 4. CFE Name         -- The cFE name for the APP or Library
+! 5. Priority         -- This is the Priority of the App, not used for Library
+! 6. Stack Size       -- This is the Stack size for the App, not used for the Library
+! 7. Load Address     -- This is the Optional Load Address for the App or Library. Currently not implemented
+!                        so keep it at 0x0.
+! 8. Exception Action -- This is the Action the cFE should take if the App has an exception.
+!                        0        = Just restart the Application
+!                        Non-Zero = Do a cFE Processor Reset
+!
+! Other  Notes:
+! 1. The software will not try to parse anything after the first '!' character it sees. That
+!    is the End of File marker.
+! 2. Common Application file extensions:
+!    Linux = .so  ( ci.so )
+!    OS X  = .bundle  ( ci.bundle )
+!    Cygwin = .dll ( ci.dll )
+!    vxWorks = .o ( ci.o )
+!    RTEMS with S-record Loader = .s3r ( ci.s3r )
+!    RTEMS with CEXP Loader = .o ( ci.o )
+! 3. The filename field (2) no longer requires a fully-qualified filename; the path and extension
+!    may be omitted.  If omitted, the standard virtual path (/cf) and a platform-specific default
+!    extension will be used, which is derived from the build system.
+
+
+
+@_Name_@            : Partition name (usually the name of the binary)
+@_Threads_@         : Code generated for the threads
+@_Thread_Names_@    : Tag: list of thread names
+@_Node_Name_@       : Name of the node containing this partition
+@_Blocks_@          : Code generated for protected functions
+@_Block_Names_@      : Vector Tag: list of block (user functions) names
+@_Block_Languages_@  :   |_ Corresponding implementation language
+@_Block_Instance_Of_@:  |_ Name of parent function (if instance)
+@_Coverage_@        : True if user requested code coverage enable
+@_Package_Name_@    : AADL Package name for the target (e.g. ocarina_porocessors_x86)
+@_CPU_Name_@        : CPU Name (e.g. x86_linux)
+@_CPU_Platform_@    : AADL CPU_Platform (e.g. PLATFORM_NATIVE)
+@_CPU_Classifier_@  : AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+@_CPU_Family_@      : e.g. gr740 or x86
+@_CPU_Instance_@    : e.g. rtems51_posix or linux
+@_VP_Name_@         : Virtual processor name on which the partition is bounded
+@_VP_Platform_@     : Virtual processor platform (e.g. PLATFORM_AIR)
+@_VP_Classifier_@   : Virtual processor classifier
+@_Ada_Runtime_@     : Set if CPU_Platform = PLATFORM_GNAT_RUNTIME
+@_Bound_Functions_@ : List of user functions from Interface view
+@_Thread_Src_Name_@ : Vector tag : connection thread name (source)
+@_Thread_Dst_Name_@ : Vector tag : connection thread name (dest)
+@_Thread_Src_Port_@ : Vector tag : connection port name (source)
+@_Thread_Dst_Port_@ : Vector tag : connection port name (dest)
+@_In_Port_Names_@        : Vector tag: input ports of the partition
+@_In_Port_Thread_Name_@  :     |_ corresponding thread inside the partition
+@_In_Port_Type_Name_@    :     |_ corresponding parameter type name (optional)
+@_Out_Port_Names_@       : Vector tag: output ports of the partition
+@_Out_Port_Thread_Name_@ :     |_ corresponding thread inside the partition
+@_Out_Port_Type_Name_@   :     |_ corresponding parameter type name (optional)
