@@ -92,6 +92,7 @@ package TASTE.Deployment_View is
          Associated_Processor_Name,
          Device_Configuration,
          Device_Packetizer,
+         Device_Address,
          Init_Function,
          Init_Language,
          Send_Function,

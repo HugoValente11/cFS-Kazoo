@@ -82,6 +82,7 @@ package body TASTE.Deployment_View is
       Device_Associated_Processor_Names,
       Device_Configurations,
       Device_Packetizers,
+      Device_Addresses,
       Device_Accessed_Bus_Names,
       Device_Accessed_Port_Names,
       Device_Init_Entrypoints,
@@ -134,6 +135,7 @@ package body TASTE.Deployment_View is
         & Assoc ("Device_CPU",           Device_Associated_Processor_Names)
         & Assoc ("Device_Config",        Device_Configurations)
         & Assoc ("Device_Packetizer",    Device_Packetizers)
+        & Assoc ("Device_Address",    Device_Addresses)
         & Assoc ("Device_Bus_Name",      Device_Accessed_Bus_Names)
         & Assoc ("Device_Port_Name",     Device_Accessed_Port_Names)
         & Assoc ("Device_ASN1_File",     Device_ASN1_Filenames)
@@ -463,6 +465,16 @@ package body TASTE.Deployment_View is
                   (Get_String_Property (CI, "deployment::packetizer")));
          else
             Result.Device_Packetizer := US ("default");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::address") and then
+            Get_String_Property (CI, "taste::address") /= No_Name
+         then
+            Result.Device_Address :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::address")));
+         else
+            Result.Device_Address := US ("127.0.0.1:1234");
          end if;
 
          Find_Connected_Bus (CI, Accessed_Bus, Accessed_Port);
@@ -955,6 +967,8 @@ package body TASTE.Deployment_View is
                          & To_String (Driver.Device_Configuration));
                Put_Line (Output, "    |_ Packetizer : "
                          & To_String (Driver.Device_Packetizer));
+               Put_Line (Output, "    |_ Address : "
+                         & To_String (Driver.Device_Address));
                Put_Line (Output, "    |_ Bus_Name      : "
                          & Driver.Accessed_Bus_Name.Element);
                Put_Line (Output, "    |_ Port_Name     : "
