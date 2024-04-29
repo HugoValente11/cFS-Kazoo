@@ -109,6 +109,8 @@ package body TASTE.Deployment_View is
               & Driver.Device_Configuration;
             Device_Packetizers := Device_Packetizers
               & Driver.Device_Packetizer;
+            Device_Addresses := Device_Addresses
+              & Driver.Device_Address;
             Device_Accessed_Bus_Names :=  Device_Accessed_Bus_Names
               & Driver.Accessed_Bus_Name.Element;
             Device_Accessed_Port_Names := Device_Accessed_Port_Names
