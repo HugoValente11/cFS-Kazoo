@@ -93,6 +93,7 @@ package TASTE.Deployment_View is
          Device_Configuration,
          Device_Packetizer,
          Device_Address,
+         Device_Network_Number,
          Init_Function,
          Init_Language,
          Send_Function,

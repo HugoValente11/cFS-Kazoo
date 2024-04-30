@@ -79,3 +79,18 @@
 @_Device_Packetizer_@ = Device_Packetizer	DOCUMENTATION MISSING
 @_Unique_Out_Port_Remote_Port_Names_@ = Unique_Out_Port_Remote_Port_Names	Vector tag: list of unique remote port names of out ports
 @_Out_Port_Remote_Node_@ = Out_Port_Remote_Node	Remote node name (may be the same as current node if there are multiple partitions in the node, e.g. in TSP systems)
+
+
+
+----------------
+@_Device_Address_@ = Address 
+@_Device_Network_Number_@ = Network Number 
+
+
+@@TABLE@@
+@@IF@@ @_Property_Names_@ = TASTE::Processor_id
+Processor Id = @_Property_Values_@
+@@END_IF@@
+@@END_TABLE@@
+
+--------------------
