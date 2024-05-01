@@ -121,6 +121,7 @@ package body TASTE.Dump is
             Nodes       : Unbounded_String;
             Source_Functions,                  -- Connections in deployment
             Source_Ports,
+            Protocols,
             Bus_Names,
             Dest_Functions,
             Dest_Ports  : Vector_Tag;
@@ -178,6 +179,7 @@ package body TASTE.Dump is
                         Config,
                         Bus_Names,
                         Port_Names,
+                        Protocols,
                         Asn1_Files,
                         Asn1_Typenames,
                         Asn1_Modules       : Vector_Tag;
@@ -203,6 +205,8 @@ package body TASTE.Dump is
                                 Asn1_Typenames & Driver.ASN1_Typename;
                               Asn1_Modules   :=
                                   Asn1_Modules & Driver.ASN1_Module;
+                              Protocols   :=
+                                  Protocols & Driver.Protocol;
                            end if;
                         end loop;
 
@@ -215,6 +219,7 @@ package body TASTE.Dump is
                           & Assoc ("Config",             Config)
                           & Assoc ("Bus_Names",          Bus_Names)
                           & Assoc ("Port_Names",         Port_Names)
+                          & Assoc ("Protocols",         Protocols)
                           & Assoc ("Asn1_Files",         Asn1_Files)
                           & Assoc ("Asn1_Typenames",     Asn1_Typenames)
                           & Assoc ("Asn1_Modules",       Asn1_Modules);
@@ -244,6 +249,7 @@ package body TASTE.Dump is
                      Source_Functions := Source_Functions & C.Source_Function;
                      Source_Ports     := Source_Ports     & C.Source_Port;
                      Bus_Names        := Bus_Names        & C.Bus_Name;
+                     Protocols        := Protocols        & C.Protocol;
                      Dest_Functions   := Dest_Functions   & C.Dest_Function;
                      Dest_Ports       := Dest_Ports       & C.Dest_Port;
                   end loop;
@@ -262,6 +268,7 @@ package body TASTE.Dump is
                  & Assoc ("Source_Functions", Source_Functions)
                  & Assoc ("Source_Ports", Source_Ports)
                  & Assoc ("Bus_Names",    Bus_Names)
+                 & Assoc ("Protocols",    Protocols)
                  & Assoc ("Dest_Functions",   Dest_Functions)
                  & Assoc ("Dest_Ports",   Dest_Ports);
 

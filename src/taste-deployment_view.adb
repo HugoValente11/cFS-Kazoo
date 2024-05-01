@@ -431,6 +431,14 @@ package body TASTE.Deployment_View is
               & Get_Name_String (Name (Identifier (CI))) & ")";
          end if;
 
+         if Is_Defined_Property
+               (Configuration_Data, "taste::protocol")
+         then
+            Result.Protocol := US (Get_Name_String
+                                             (Get_String_Property
+               (Configuration_Data, "taste::protocol")));
+         end if;
+
          Set_Str_To_Name_Buffer ("");
          if ATN.Namespace (Corresponding_Declaration (CI)) /= No_Node
          then
@@ -935,6 +943,8 @@ package body TASTE.Deployment_View is
 
                      --  Update the information in the deployment view
                      C_DV.Source_Function := C_IV.Caller;
+
+                     --  C_DV.Protocol := C_IV.Caller;
                   --  C_DV.Source_Port     := C_IV.Callee & "_" & C_IV.RI_Name;
                      --  Port name
                      C_DV.Source_Port     := C_IV.Caller
@@ -1029,6 +1039,8 @@ package body TASTE.Deployment_View is
    begin
       for Each of DV.Connections loop
          Put_Line (Output, "Connection on bus : " & To_String (Each.Bus_Name));
+         Put_Line (Output, "  |_ Protocol : "
+                   & To_String (Each.Protocol));
          Put_Line (Output, "  |_ Source Function : "
                    & To_String (Each.Source_Function));
          Put_Line (Output, "  |_ Source Port : "

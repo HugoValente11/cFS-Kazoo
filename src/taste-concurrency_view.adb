@@ -770,6 +770,7 @@ package body TASTE.Concurrency_View is
             Unique_Connect_Port_Name_Set : String_Sets.Set;
             Unique_ASN1_Files,
             Unique_ASN1_Sorts,
+            Unique_Protocols,
             Unique_ASN1_Modules : Vector_Tag;
             Connect_From_Partition,           --  Partition to bus connections
             Connect_Port_Name,
@@ -812,6 +813,7 @@ package body TASTE.Concurrency_View is
                   Unique_Connect_In_Port_Name :=
                      Unique_Connect_In_Port_Name & BC.Dest_Port;
                end if;
+
                Connect_Via_Bus   := Connect_Via_Bus   & BC.Bus_Name;
                Connect_Port_Name := Connect_Port_Name & BC.Source_Port;
                Found := False;
@@ -987,6 +989,8 @@ package body TASTE.Concurrency_View is
                             Unique_ASN1_Sorts & D.ASN1_Typename;
                         Unique_ASN1_Modules :=
                           Unique_ASN1_Modules & D.ASN1_Module;
+                        Unique_Protocols :=
+                            Unique_Protocols & D.Device_Protocol;
                         Unique_ASN1_Files :=
                             Unique_ASN1_Files & D.ASN1_Filename;
                      end if;
@@ -1035,6 +1039,7 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Device_Node_Name",    Device_Node_Name)
                  & Assoc ("Device_Partition",    Device_Partition_Name)
                  & Assoc ("Unique_Dev_ASN1_Files", Unique_ASN1_Files)
+                 & Assoc ("Unique_Protocols", Unique_Protocols)
                  & Assoc ("Unique_Dev_ASN1_Mod",   Unique_ASN1_Modules)
                  & Assoc ("Unique_Dev_ASN1_Sorts", Unique_ASN1_Sorts)
                  & Assoc ("Connect_From_Part",   Connect_From_Partition)

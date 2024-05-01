@@ -76,6 +76,7 @@ package TASTE.Deployment_View is
          Channel_Name,
          Source_Function,
          Source_Port,
+         Protocol,
          Bus_Name,
          Dest_Function,
          Dest_Port   : Unbounded_String;
@@ -99,6 +100,7 @@ package TASTE.Deployment_View is
          Init_Language,
          Send_Function,
          ASN1_Filename,
+         Protocol,
          ASN1_Typename,
          ASN1_Module               : Unbounded_String;
          --  Optional fields: exist only if device is connected
