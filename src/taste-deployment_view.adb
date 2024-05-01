@@ -84,6 +84,7 @@ package body TASTE.Deployment_View is
       Device_Packetizers,
       Device_Addresses,
       Device_Network_Numbers,
+      Device_Protocols,
       Device_Accessed_Bus_Names,
       Device_Accessed_Port_Names,
       Device_Init_Entrypoints,
@@ -114,6 +115,8 @@ package body TASTE.Deployment_View is
               & Driver.Device_Address;
             Device_Network_Numbers := Device_Network_Numbers
               & Driver.Device_Network_Number;
+            Device_Protocols := Device_Protocols
+              & Driver.Device_Protocol;
             Device_Accessed_Bus_Names :=  Device_Accessed_Bus_Names
               & Driver.Accessed_Bus_Name.Element;
             Device_Accessed_Port_Names := Device_Accessed_Port_Names
@@ -142,6 +145,7 @@ package body TASTE.Deployment_View is
         & Assoc ("Device_Packetizer",    Device_Packetizers)
         & Assoc ("Device_Address",    Device_Addresses)
         & Assoc ("Device_Network_Number",    Device_Network_Numbers)
+        & Assoc ("Device_Protocol",    Device_Protocols)
         & Assoc ("Device_Bus_Name",      Device_Accessed_Bus_Names)
         & Assoc ("Device_Port_Name",     Device_Accessed_Port_Names)
         & Assoc ("Device_ASN1_File",     Device_ASN1_Filenames)
@@ -491,6 +495,16 @@ package body TASTE.Deployment_View is
                   (Get_String_Property (CI, "taste::networknumber")));
          else
             Result.Device_Network_Number := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::protocol") and then
+            Get_String_Property (CI, "taste::protocol") /= No_Name
+         then
+            Result.Device_Protocol :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::protocol")));
+         else
+            Result.Device_Protocol := US ("udp");
          end if;
 
          Find_Connected_Bus (CI, Accessed_Bus, Accessed_Port);
@@ -987,6 +1001,8 @@ package body TASTE.Deployment_View is
                          & To_String (Driver.Device_Address));
                Put_Line (Output, "    |_ Network Number : "
                          & To_String (Driver.Device_Network_Number));
+               Put_Line (Output, "    |_ Protocol : "
+                         & To_String (Driver.Device_Protocol));
                Put_Line (Output, "    |_ Bus_Name      : "
                          & Driver.Accessed_Bus_Name.Element);
                Put_Line (Output, "    |_ Port_Name     : "

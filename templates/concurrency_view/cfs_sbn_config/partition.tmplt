@@ -85,6 +85,7 @@
 ----------------
 @_Device_Address_@ = Address 
 @_Device_Network_Number_@ = Network Number 
+@_Device_Protocol_@ = Protocol
 
 
 @@TABLE@@
