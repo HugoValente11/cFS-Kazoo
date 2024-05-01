@@ -8,7 +8,7 @@ SBN_ConfTbl_t SBN_ConfTbl = {.ProtocolModules = {
                                                     .LibFileName = "/cf/sbn_@_LOWER:Unique_Protocols_@.so",
                                                     .LibSymbol   = "SBN_@_UPPER:Unique_Protocols_@_Ops",
                                                     .BaseEID     = 0x0100
-                                                  }
+                                                  },
     @@END_TABLE@@
                                                 },
                              .ProtocolCnt     = @_Unique_Protocols'Length_@,
