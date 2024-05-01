@@ -4,7 +4,7 @@
                                       .ProcessorID  = 
 @@TABLE@@
 @@IF@@ @_Property_Names_@ = TASTE::Processor_id
-Processor Id = @_Property_Values_@
+@_Property_Values_@
 @@END_IF@@
 @@END_TABLE@@
 ,

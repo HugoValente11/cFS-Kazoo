@@ -99,9 +99,12 @@ SET(SPACECRAFT_ID 0x42)
 
 @@INLINE()( )()@@
 list(APPEND MISSION_GLOBAL_APPLIST dataview_lib 
-@@IF@@ @_Bus_Names'Length_@ > 0
+@@IF@@ @_Unique_Protocols'Length_@ > 0
 sbn
 @@END_IF@@   
+@@TABLE@@
+sbn_@_LOWER:Unique_Protocols_@
+@@END_TABLE@@
 )
 @@END_INLINE@@
 
