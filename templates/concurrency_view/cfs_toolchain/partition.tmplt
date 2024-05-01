@@ -1,0 +1,57 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@            : Partition name (usually the name of the binary)
+@@-- @_Threads_@         : Code generated for the threads
+@@-- @_Thread_Names_@    : Tag: list of thread names
+@@-- @_Node_Name_@       : Name of the node containing this partition
+@@-- @_Blocks_@          : Code generated for protected functions
+@@-- @_Block_Names@      : Vector Tag: list of block (user functions) names
+@@-- @_Block_Languages@  :   |_ Corresponding implementation language
+@@-- @_Block_Instance_Of_@:  |_ Name of parent function (if instance)
+@@-- @_Coverage_@        : True if user requested code coverage enable
+@@-- @_Package_Name_@    : AADL Package name for the target (e.g. ocarina_porocessors_x86)
+@@-- @_CPU_Name_@        : CPU Name (e.g. x86_linux)
+@@-- @_CPU_Platform_@    : AADL CPU_Platform (e.g. PLATFORM_NATIVE)
+@@-- @_CPU_Classifier_@  : AADL CPU Classifier (e.g. ocarina_processors_x86::x86.linux)
+@@-- @_CPU_Family_@      : e.g. gr740 or x86
+@@-- @_CPU_Instance_@    : e.g. rtems51_posix or linux
+@@-- @_VP_Name_@         : Virtual processor name on which the partition is bounded
+@@-- @_VP_Platform_@     : Virtual processor platform (e.g. PLATFORM_AIR)
+@@-- @_VP_Classifier_@   : Virtual processor classifier
+@@-- @_Ada_Runtime_@     : Set if CPU_Platform = PLATFORM_GNAT_RUNTIME
+@@-- @_Bound_Functions_@ : List of user functions from Interface view
+@@-- @_Thread_Src_Name_@ : Vector tag : connection thread name (source)
+@@-- @_Thread_Dst_Name_@ : Vector tag : connection thread name (dest)
+@@-- @_Thread_Src_Port_@ : Vector tag : connection port name (source)
+@@-- @_Thread_Dst_Port_@ : Vector tag : connection port name (dest)
+@@-- @_In_Port_Names_@        : Vector tag: input ports of the partition
+@@-- @_In_Port_Thread_Name_@  :     |_ corresponding thread inside the partition
+@@-- @_In_Port_Type_Name_@    :     |_ corresponding parameter type name (optional)
+@@-- @_Out_Port_Names_@       : Vector tag: output ports of the partition
+@@-- @_Out_Port_Thread_Name_@ :     |_ corresponding thread inside the partition
+@@-- @_Out_Port_Type_Name_@   :     |_ corresponding parameter type name (optional)
+# This example toolchain file describes the cross compiler to use for
+# the target architecture indicated in the configuration file.
+
+# Basic cross system configuration
+SET(CMAKE_SYSTEM_NAME           Linux)
+SET(CMAKE_SYSTEM_VERSION        1)
+SET(CMAKE_SYSTEM_PROCESSOR      i686)
+
+# Specify the cross compiler executables
+# Typically these would be installed in a home directory or somewhere
+# in /opt.  However in this example the system compiler is used.
+SET(CMAKE_C_COMPILER            "/usr/bin/gcc")
+SET(CMAKE_CXX_COMPILER          "/usr/bin/g++")
+
+# Configure the find commands
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM   NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY   NEVER)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE   NEVER)
+
+# These variable settings are specific to cFE/OSAL and determines which 
+# abstraction layers are built when using this toolchain
+SET(CFE_SYSTEM_PSPNAME      "pc-linux")
+SET(OSAL_SYSTEM_BSPNAME     "pc-linux")
+SET(OSAL_SYSTEM_OSTYPE      "posix")
+

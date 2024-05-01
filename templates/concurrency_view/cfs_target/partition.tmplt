@@ -11,7 +11,7 @@ SET(@_LOWER:Name_@_PROCESSORID
 @@INLINE()( )()@@
 SET(@_LOWER:Name_@_APPLIST 
 @@TABLE@@
-@_LOWER:Block_Names_@
+@_LOWER:Block_Names_@_app
 @@END_TABLE@@
 )
 @@END_INLINE@@
