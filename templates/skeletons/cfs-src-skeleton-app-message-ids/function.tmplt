@@ -38,6 +38,7 @@
 #define @_UPPER:Name_@_HK_TLM_MID 0x0883
 
 @_Send_Messages_Init_@
+@_Receive_Messages_Init_@
 
 
 #endif /* @_UPPER:Name_@_MSGIDS_H */

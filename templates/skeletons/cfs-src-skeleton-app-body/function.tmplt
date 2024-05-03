@@ -442,6 +442,8 @@ void @_UPPER:Name_@_ProcessCommandPacket(CFE_SB_Buffer_t *SBBufPtr)
             @_UPPER:Name_@_ReportHousekeeping((CFE_MSG_CommandHeader_t *)SBBufPtr);
             break;
 
+        @_Receive_Messages_Process_@
+
         default:
             CFE_EVS_SendEvent(@_UPPER:Name_@_INVALID_MSGID_ERR_EID, CFE_EVS_EventType_ERROR,
                               "@_UPPER:Name_@: invalid command packet,MID = 0x%x", (unsigned int)CFE_SB_MsgIdToValue(MsgId));

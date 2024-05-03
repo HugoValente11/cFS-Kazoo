@@ -349,6 +349,11 @@ package body TASTE.Backend.Code_Generators is
                                      (Func_Tmpl.Required,
                                      "send_messages_init_call.tmplt", Path,
                                      CPU_Platform))
+                         & Assoc ("Receive_Messages_Process",
+                                  Process_Interfaces
+                                     (Func_Tmpl.Required,
+                                     "receive_messages_process.tmplt", Path,
+                                     CPU_Platform))
                          & Assoc ("Receive_Messages_Functions",
                                   Process_Interfaces
                                      (Func_Tmpl.Required,
