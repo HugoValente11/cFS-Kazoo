@@ -176,8 +176,6 @@ void @_UPPER:Name_@_APP_Main(void)
     // Main app loop 
     while (CFE_ES_RunLoop(&@_UPPER:Name_@_APP_Data.RunStatus) == true)
     {
-        // Call user loop
-        @_UPPER:Name_@_User_Main();
 
         /* Pend on receipt of command packet */
         status = CFE_SB_ReceiveBuffer(&@_UPPER:Name_@_APP_Data.Buffer, @_UPPER:Name_@_APP_Data.CommandPipe, CFE_SB_PEND_FOREVER);
@@ -192,6 +190,9 @@ void @_UPPER:Name_@_APP_Main(void)
 
             @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         }
+        
+        // Call user loop
+        @_UPPER:Name_@_User_Main();
     }
 
 @@IF@@ @_FDIR_@ = "YES"

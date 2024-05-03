@@ -98,7 +98,7 @@ SET(SPACECRAFT_ID 0x42)
 # Example:
 
 @@INLINE()( )()@@
-list(APPEND MISSION_GLOBAL_APPLIST dataview_lib sch_lab ci_lab to_lab 
+list(APPEND MISSION_GLOBAL_APPLIST dataview_lib sample_lib sample_app sch_lab ci_lab to_lab 
 @@IF@@ @_Unique_Protocols'Length_@ > 0
 sbn
 @@END_IF@@   

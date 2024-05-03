@@ -82,10 +82,6 @@ int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
 int32 @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
     // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
-        
-    status = CFE_SB_ReceiveBuffer(&@_UPPER:Parent_Function_@_APP_Data.Buffer,
-                           @_UPPER:Parent_Function_@_APP_Data.CommandPipe,
-                           CFE_SB_PEND_FOREVER);
 
     if (status != CFE_SUCCESS)
     {
