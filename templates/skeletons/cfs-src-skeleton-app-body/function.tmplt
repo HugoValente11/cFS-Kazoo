@@ -182,6 +182,8 @@ void @_UPPER:Name_@_APP_Main(void)
         /* Pend on receipt of command packet */
         status = CFE_SB_ReceiveBuffer(&@_UPPER:Name_@_APP_Data.Buffer, @_UPPER:Name_@_APP_Data.CommandPipe, CFE_SB_PEND_FOREVER);
 
+        @_UPPER:Name_@_ProcessCommandPacket(@_UPPER:Name_@_APP_Data.Buffer);
+
 
         if (status != CFE_SUCCESS)
         {
