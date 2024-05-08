@@ -191,8 +191,6 @@ void @_UPPER:Name_@_APP_Main(void)
             @_UPPER:Name_@_APP_Data.RunStatus = CFE_ES_RunStatus_APP_ERROR;
         }
         
-        // Call user loop
-        @_UPPER:Name_@_User_Main();
     }
 
 @@IF@@ @_FDIR_@ = "YES"
@@ -441,6 +439,9 @@ void @_UPPER:Name_@_ProcessCommandPacket(CFE_SB_Buffer_t *SBBufPtr)
 
         case @_UPPER:Name_@_SEND_HK_MID:
             @_UPPER:Name_@_ReportHousekeeping((CFE_MSG_CommandHeader_t *)SBBufPtr);
+            
+            // Call user loop
+            @_UPPER:Name_@_User_Main();
             break;
 
         @_Receive_Messages_Process_@
