@@ -536,7 +536,7 @@ package body TASTE.Deployment_View is
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::transmission")));
          else
-            Result.Device_Transmission := US ("HALF-DUPLEX");
+            Result.Device_Transmission := US ("HALF_DUPLEX");
          end if;
 
          if Is_Defined_Property (CI, "taste::throughput") and then
