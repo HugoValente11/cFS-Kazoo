@@ -28,4 +28,39 @@ Bus stuff
 @@END_IF@@
 
 ---------------------
+
+
+------------------
+Network stuff
+
+@@TABLE@@
+@@IF@@ @_Device_Throughput_@ /= ""
+Processing_Resource (
+   Type                          => Packet_Based_Network,
+   Name                          => @_Device_Names_@,
+   Transmission                  => @_Device_Transmission_@,
+   Throughput                    => @_Device_Throughput_@,
+   Max_Blocking                  => @_Device_Max_Blocking_@,
+   Max_Packet_Size               => @_Device_Max_Packet_Size_@,
+   Min_Packet_Size               => @_Device_Min_Packet_Size_@,
+   Speed_Factor                  => @_Device_Speed_Factor_@
+   
+   );
+
+Scheduler (
+   Type            => Primary_Scheduler,
+   Name            => @_Device_Names_@,
+   Host            => @_Device_Names_@,
+   Policy          => 
+      ( Type                     => FP_Packet_Based,
+        Packet_Overhead_Max_Size => 0.00,
+        Packet_Overhead_Avg_Size => 0.00,
+        Packet_Overhead_Min_Size => 0.00,
+        Max_Priority             => 101,
+        Min_Priority             => 1));
+
+
+@@END_IF@@
+@@END_TABLE@@
+
 @_Threads_@

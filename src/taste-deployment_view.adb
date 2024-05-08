@@ -535,8 +535,6 @@ package body TASTE.Deployment_View is
             Result.Device_Transmission :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::transmission")));
-         else
-            Result.Device_Transmission := US ("HALF_DUPLEX");
          end if;
 
          if Is_Defined_Property (CI, "taste::throughput") and then
@@ -545,8 +543,6 @@ package body TASTE.Deployment_View is
             Result.Device_Throughput :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::throughput")));
-         else
-            Result.Device_Throughput := US ("0");
          end if;
 
          if Is_Defined_Property (CI, "taste::max_blocking") and then
@@ -555,8 +551,6 @@ package body TASTE.Deployment_View is
             Result.Device_Max_Blocking :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::max_blocking")));
-         else
-            Result.Device_Max_Blocking := US ("0");
          end if;
 
          if Is_Defined_Property (CI, "taste::max_packet_size") and then
@@ -565,8 +559,6 @@ package body TASTE.Deployment_View is
             Result.Device_Max_Packet_Size :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::max_packet_size")));
-         else
-            Result.Device_Max_Packet_Size := US ("0");
          end if;
 
          if Is_Defined_Property (CI, "taste::min_packet_size") and then
@@ -575,8 +567,6 @@ package body TASTE.Deployment_View is
             Result.Device_Min_Packet_Size :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::min_packet_size")));
-         else
-            Result.Device_Min_Packet_Size := US ("0");
          end if;
 
          if Is_Defined_Property (CI, "taste::speed_factor") and then
@@ -585,8 +575,6 @@ package body TASTE.Deployment_View is
             Result.Device_Speed_Factor :=
               US (Get_Name_String
                   (Get_String_Property (CI, "taste::speed_factor")));
-         else
-            Result.Device_Speed_Factor := US ("1");
          end if;
 
          if Is_Defined_Property (CI, "taste::protocol") and then
