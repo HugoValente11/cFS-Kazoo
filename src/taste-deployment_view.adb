@@ -85,6 +85,7 @@ package body TASTE.Deployment_View is
       Device_Addresses,
       Device_Network_Numbers,
       Device_Throughputs,
+      Device_Transmissions,
       Device_Max_Blockings,
       Device_Max_Packet_Sizes,
       Device_Min_Packet_Sizes,
