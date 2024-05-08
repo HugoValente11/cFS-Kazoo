@@ -84,6 +84,11 @@ package body TASTE.Deployment_View is
       Device_Packetizers,
       Device_Addresses,
       Device_Network_Numbers,
+      Device_Throughputs,
+      Device_Max_Blockings,
+      Device_Max_Packet_Sizes,
+      Device_Min_Packet_Sizes,
+      Device_Speed_Factors,
       Device_Protocols,
       Device_Accessed_Bus_Names,
       Device_Accessed_Port_Names,
@@ -115,6 +120,18 @@ package body TASTE.Deployment_View is
               & Driver.Device_Address;
             Device_Network_Numbers := Device_Network_Numbers
               & Driver.Device_Network_Number;
+            Device_Transmissions := Device_Transmissions
+              & Driver.Device_Transmission;
+            Device_Throughputs := Device_Throughputs
+              & Driver.Device_Throughput;
+            Device_Max_Blockings := Device_Max_Blockings
+              & Driver.Device_Max_Blocking;
+            Device_Max_Packet_Sizes := Device_Max_Packet_Sizes
+              & Driver.Device_Max_Packet_Size;
+            Device_Min_Packet_Sizes := Device_Min_Packet_Sizes
+              & Driver.Device_Min_Packet_Size;
+            Device_Speed_Factors := Device_Speed_Factors
+              & Driver.Device_Speed_Factor;
             Device_Protocols := Device_Protocols
               & Driver.Device_Protocol;
             Device_Accessed_Bus_Names :=  Device_Accessed_Bus_Names
@@ -145,6 +162,12 @@ package body TASTE.Deployment_View is
         & Assoc ("Device_Packetizer",    Device_Packetizers)
         & Assoc ("Device_Address",    Device_Addresses)
         & Assoc ("Device_Network_Number",    Device_Network_Numbers)
+        & Assoc ("Device_Throughput",    Device_Throughputs)
+        & Assoc ("Device_Transmission",    Device_Transmissions)
+        & Assoc ("Device_Max_Blocking",    Device_Max_Blockings)
+        & Assoc ("Device_Max_Packet_Size",    Device_Max_Packet_Sizes)
+        & Assoc ("Device_Min_Packet_Size",    Device_Min_Packet_Sizes)
+        & Assoc ("Device_Speed_Factor",    Device_Speed_Factors)
         & Assoc ("Device_Protocol",    Device_Protocols)
         & Assoc ("Device_Bus_Name",      Device_Accessed_Bus_Names)
         & Assoc ("Device_Port_Name",     Device_Accessed_Port_Names)
@@ -503,6 +526,66 @@ package body TASTE.Deployment_View is
                   (Get_String_Property (CI, "taste::networknumber")));
          else
             Result.Device_Network_Number := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::transmission") and then
+            Get_String_Property (CI, "taste::transmission") /= No_Name
+         then
+            Result.Device_Transmission :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::transmission")));
+         else
+            Result.Device_Transmission := US ("HALF-DUPLEX");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::throughput") and then
+            Get_String_Property (CI, "taste::throughput") /= No_Name
+         then
+            Result.Device_Throughput :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::throughput")));
+         else
+            Result.Device_Throughput := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::max_blocking") and then
+            Get_String_Property (CI, "taste::max_blocking") /= No_Name
+         then
+            Result.Device_Max_Blocking :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::max_blocking")));
+         else
+            Result.Device_Max_Blocking := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::max_packet_size") and then
+            Get_String_Property (CI, "taste::max_packet_size") /= No_Name
+         then
+            Result.Device_Max_Packet_Size :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::max_packet_size")));
+         else
+            Result.Device_Max_Packet_Size := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::min_packet_size") and then
+            Get_String_Property (CI, "taste::min_packet_size") /= No_Name
+         then
+            Result.Device_Min_Packet_Size :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::min_packet_size")));
+         else
+            Result.Device_Min_Packet_Size := US ("0");
+         end if;
+
+         if Is_Defined_Property (CI, "taste::speed_factor") and then
+            Get_String_Property (CI, "taste::speed_factor") /= No_Name
+         then
+            Result.Device_Speed_Factor :=
+              US (Get_Name_String
+                  (Get_String_Property (CI, "taste::speed_factor")));
+         else
+            Result.Device_Speed_Factor := US ("1");
          end if;
 
          if Is_Defined_Property (CI, "taste::protocol") and then
@@ -1009,8 +1092,16 @@ package body TASTE.Deployment_View is
                          & To_String (Driver.Device_Packetizer));
                Put_Line (Output, "    |_ Address : "
                          & To_String (Driver.Device_Address));
-               Put_Line (Output, "    |_ Network Number : "
-                         & To_String (Driver.Device_Network_Number));
+               Put_Line (Output, "    |_ Device_Transmission : "
+                         & To_String (Driver.Device_Transmission));
+               Put_Line (Output, "    |_ Device_Throughput : "
+                         & To_String (Driver.Device_Throughput));
+               Put_Line (Output, "    |_ Device_Max_Blocking : "
+                         & To_String (Driver.Device_Max_Blocking));
+               Put_Line (Output, "    |_ Device_Min_Packet_Size : "
+                         & To_String (Driver.Device_Min_Packet_Size));
+               Put_Line (Output, "    |_ Device_Speed_Factor : "
+                         & To_String (Driver.Device_Speed_Factor));
                Put_Line (Output, "    |_ Protocol : "
                          & To_String (Driver.Device_Protocol));
                Put_Line (Output, "    |_ Bus_Name      : "
