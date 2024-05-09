@@ -12,7 +12,7 @@ Transaction (
      	( Type   	=> Sporadic,
       	Name   	=> @_LOWER:Name_@1,
       	Min_Interarrival => @_Period_@,
-		Avg_Interarrival => Add jitter,
+		Avg_Interarrival => Add jitter
       	)),
    Internal_Events =>
   	(
@@ -51,7 +51,6 @@ Transaction (
   	Activity_Server	=> @_LOWER:Remote_Function_Names_@_@_LOWER:Name_@)
 ));
 
-@_LOWER:Remote_Function_Names_@_@_LOWER:Name_@
 @@END_TABLE@@
 
 
