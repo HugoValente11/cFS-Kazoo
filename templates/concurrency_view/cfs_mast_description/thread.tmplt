@@ -15,8 +15,12 @@ Transaction (
       	)),
    Internal_Events =>
   	(
+		  ( Type => Regular,
+      	Name => @_LOWER:Name_@2),
+		  ( Type => Regular,
+      	Name => @_LOWER:Name_@3),
     	( Type => Regular,
-      	Name => @_Remote_Function_Names_@,
+      	Name => @_LOWER:Name_@4,
       	Timing_Requirements =>
         	( Type         	=> Hard_Global_Deadline,
 			@@INLINE(Deadline     	=> )()(,)@@
@@ -26,7 +30,7 @@ Transaction (
 @_Period_@
 @@END_IF@@
 @@END_INLINE@@
-          	Referenced_Event => @_LOWER:Pro_Block_Name_@))),
+          	Referenced_Event => @_LOWER:Name_@1))),
    Event_Handlers =>
    (
   	(Type           	=> Activity,

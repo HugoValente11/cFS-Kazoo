@@ -8,9 +8,6 @@ Model (
    Model_Date      	=> @_YEAR_@-@_MONTH_@-@_DAY_@,
    System_Pip_Behaviour=> STRICT);
 
-------------------
-Network stuff
-
 @@TABLE@@
 @@IF@@ @_Device_Throughput_@ /= ""
 Processing_Resource (
