@@ -11,3 +11,5 @@ Scheduler (
   	( Type             	=> Fixed_Priority,
     	Max_Priority     	=> 101,
     	Min_Priority     	=> 1));
+
+@_Blocks_@

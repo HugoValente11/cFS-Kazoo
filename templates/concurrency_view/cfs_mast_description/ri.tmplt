@@ -8,3 +8,7 @@
 @@-- @_Param_Types_@         :   |_ Corresponding parameter types
 @@-- @_Param_Directions_@    :   |_ Corresponding direction
 Required interfaces here
+Scheduling_Server
+Name = @_Parent_Function_@_@_Name_@
+Scheduler = @_Partition_Name_@
+

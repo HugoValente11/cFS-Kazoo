@@ -1,0 +1,60 @@
+System properties:
+------------------------------------------------------
+@_Node_Names_@          Node_Names                         
+@_Node_CPU_@            Node_CPU                           
+@_Node_CPU_Classifier_@         Node_CPU_Classifier                
+@_Node_Major_Frame_@            Node_Major_Frame                   
+@_Partition_Names_@         Partition_Names                    
+@_Partition_Node_@          Partition_Node                     
+@_Partition_CPU_@           Partition_CPU                      
+@_Partition_Duration_@          Partition_Duration                 
+@_Partition_VP_@            Partition_VP                       
+@_Thread_Names_@            Thread_Names                       
+@_Target_Packages_@         Target_Packages                    
+@_Part_Source_Name_@            Part_Source_Name                   
+@_Part_Source_Port_@            Part_Source_Port                   
+@_Part_Dest_Name_@          Part_Dest_Name                     
+@_Part_Dest_Port_@          Part_Dest_Port                     
+@_Bus_Names_@           Bus_Names                          
+@_Bus_AADL_Package_@            Bus_AADL_Package                   
+@_Bus_Classifier_@          Bus_Classifier                     
+@_Device_Node_Name_@            Device_Node_Name                   
+@_Device_Partition_@            Device_Partition                   
+@_Device_AADL_Pkg_@         Device_AADL_Pkg                    
+@_Device_Classifier_@           Device_Classifier                  
+@_Device_CPU_@          Device_CPU                         
+@_Device_Config_@           Device_Config                      
+@_Device_Bus_Name_@         Device_Bus_Name                    
+@_Device_Port_Name_@            Device_Port_Name                   
+@_Device_ASN1_File_@            Device_ASN1_File                   
+@_Device_ASN1_Sort_@            Device_ASN1_Sort                   
+@_Device_ASN1_Module_@          Device_ASN1_Module                 
+@_Unique_Dev_ASN1_Files_@           Unique_Dev_ASN1_Files              
+@_Unique_Dev_ASN1_Mod_@         Unique_Dev_ASN1_Mod                
+@_Unique_Dev_ASN1_Sorts_@           Unique_Dev_ASN1_Sorts              
+@_Connect_From_Part_@           Connect_From_Part                  
+@_Connect_Via_Bus_@         Connect_Via_Bus                    
+@_Connect_Port_Name_@           Connect_Port_Name                  
+@_Deployment_View_@         Deployment_View                    
+@_Interface_View_@          Interface_View                     
+@_Binary_Path_@         Binary_Path                        
+@_Output_Dir_@          Output_Dir                         
+@_Data_View_@           Data_View                          
+@_Skeletons_@           Skeletons                          
+@_Node_Has_Memory_@         Node_Has_Memory                    
+@_Device_Names_@            Device_Names                       
+@_Other_Files_@         Other_Files                        
+@_Block_Names_@         Block_Names                        
+@_Debug_Flag_@          Debug_Flag                         
+@_Timer_Resolution_@            Timer_Resolution                   
+@_Glue_@            Glue                               
+@_Use_POHIC_@           Use_POHIC                          
+@_Check_Data_View_@         Check_Data_View                    
+@_No_Stdlib_Flag_@          No_Stdlib_Flag                     
+------------------------------------------------------
+
+
+@_Threads_@
+
+@_Nodes_@
+

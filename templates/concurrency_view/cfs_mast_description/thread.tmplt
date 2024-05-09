@@ -1,4 +1,6 @@
 
+@@IF@@ FALSE
+
 @@TABLE@@
 Scheduling_Server (
    Type                   	=> Regular,
@@ -51,21 +53,64 @@ Transaction (
 
 
 
-@@-- Thread_Name = @_Thread_Name_@
-@@-- Entry_Port_Name = @_Entry_Port_Name_@
-@@-- Pro_Block_Name = @_Pro_Block_Name_@
-@@-- Parent_Function = @_Parent_Function_@
-@@-- Remote_Function_Names = @_Remote_Function_Names_@
-@@-- Name = @_Name_@
-@@-- Remote_Interface_Names = @_Remote_Interface_Names_@
-@@-- Param_Names = @_Param_Names_@
-@@-- Param_Types = @_Param_Types_@
-@@-- Param_Basic_Types = @_Param_Basic_Types_@
-@@-- Period = @_Period_@
-@@-- WCET = @_WCET_@
-@@-- Queue_Size = @_Queue_Size_@
-@@-- IF_Property_Names = @_IF_Property_Names_@
-@@-- IF_Property_Values = @_IF_Property_Values_@
-@@-- Param_ASN1_Modules = @_Param_ASN1_Modules_@
-@@-- Priority = @_Priority_@
-@@-- IF_Priority = @_IF_Priority_@
+
+@_Thread_Name_@: Thread_Name
+@_Partition_Name_@: Partition_Name
+@_Entry_Port_Name_@: Entry_Port_Name
+@_RCM_@: RCM
+@_Need_Mutex_@: Need_Mutex
+@_Pro_Block_Name_@: Pro_Block_Name
+@_Node_Name_@: Node_Name
+@_Remote_Threads_@: Remote_Threads
+@_Remote_PIs_@: Remote_PIs
+@_Remote_PI_Sorts_@: Remote_PI_Sorts
+@_Remote_PI_Modules_@: Remote_PI_Modules
+@_Name_@: Name
+@_Kind_@: Kind
+@_Parent_Function_@: Parent_Function
+@_Param_Names_@: Param_Names
+@_Period_@: Period
+@_WCET_@: WCET
+@_Queue_Size_@: Queue_Size
+@_IF_Property_Names_@: IF_Property_Names
+@_Skeletons_@: Skeletons
+@_Glue_@: Glue
+@_Param_Directions_@: Param_Directions
+@_Is_Timer_@: Is_Timer
+@_Debug_Flag_@: Debug_Flag
+@_Timer_Resolution_@: Timer_Resolution
+@_Param_Encodings_@: Param_Encodings
+@_Interface_View_@: Interface_View
+@_IF_Property_Values_@: IF_Property_Values
+@_Language_@: Language
+@_Binary_Path_@: Binary_Path
+@_Remote_Function_Names_@: Remote_Function_Names
+@_Deployment_View_@: Deployment_View
+@_No_Stdlib_Flag_@: No_Stdlib_Flag
+@_Remote_Languages_@: Remote_Languages
+@_Param_ASN1_Modules_@: Param_ASN1_Modules
+@_Output_Dir_@: Output_Dir
+@_RI_Port_Names_@: RI_Port_Names
+@_Param_Types_@: Param_Types
+@_Remote_Interface_Names_@: Remote_Interface_Names
+@_Check_Data_View_@: Check_Data_View
+@_Use_POHIC_@: Use_POHIC
+@_Other_Files_@: Other_Files
+@_Data_View_@: Data_View
+@_Param_Basic_Types_@: Param_Basic_Types
+@_Target_@: Target
+@_Priority_@: Priority
+@_Dispatch_Offset_ms_@: Dispatch_Offset_ms
+@_Stack_Size_In_Bytes_@: Stack_Size_In_Bytes
+@_Shared_Types_@: Shared_Types
+@_Shared_Lib_Dir_@: Shared_Lib_Dir
+@_Coord_@.Y: Coord.Y
+@_Coord_@.X: Coord.X
+@_Pro_Instance_Of_@: Pro_Instance_Of
+@_IF_Offset_@: IF_Offset
+@_IF_Stack_Size_@: IF_Stack_Size
+@_IF_Priority_@: IF_Priority
+@_CPU_Platform_@: CPU_Platform
+@_Per_If_Param_Names_@: Per_If_Param_Names
+
+@@END_IF@@

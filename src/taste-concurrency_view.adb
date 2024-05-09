@@ -677,6 +677,7 @@ package body TASTE.Concurrency_View is
                         for PI of B.Ref_Function.Provided loop
                            if PI.RCM = Sporadic_Operation
                            or PI.RCM = Cyclic_Operation
+                           or PI.RCM = Message_Operation
                            then
                               Is_Passive := False;
                            end if;

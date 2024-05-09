@@ -1,0 +1,53 @@
+-------------------------------
+Block properties:
+@_Name_@ Name                       
+@_Language_@ Language                   
+@_Calling_Threads_@ Calling_Threads            
+@_Protected_PIs_@ Protected_PIs              
+@_Unprotected_PIs_@ Unprotected_PIs            
+@_Required_@ Required                   
+@_Deployment_View_@ Deployment_View            
+@_Interface_View_@ Interface_View             
+@_Binary_Path_@ Binary_Path                
+@_Zip_File_@ Zip_File                   
+@_Output_Dir_@ Output_Dir                 
+@_Skeletons_@ Skeletons                  
+@_List_Of_PIs_@ List_Of_PIs                
+@_ASync_PI_Param_Name_@ ASync_PI_Param_Name        
+@_Data_View_@ Data_View                  
+@_Instance_Of_@ Instance_Of                
+@_PIs_Have_Params_@ PIs_Have_Params            
+@_List_Of_ASync_PIs_@ List_Of_ASync_PIs          
+@_Is_Type_@ Is_Type                    
+@_List_Of_RIs_@ List_Of_RIs                
+@_Partition_Name_@ Partition_Name             
+@_ASync_RI_Param_Type_@ ASync_RI_Param_Type        
+@_Property_Values_@ Property_Values            
+@_CP_Names_@ CP_Names                   
+@_List_Of_ASync_RIs_@ List_Of_ASync_RIs          
+@_Node_Name_@ Node_Name                  
+@_RIs_Have_Params_@ RIs_Have_Params            
+@_CP_Types_@ CP_Types                   
+@_CP_Asn1Modules_@ CP_Asn1Modules             
+@_Async_RIs_Parent_@ Async_RIs_Parent           
+@_Sync_RIs_Parent_@ Sync_RIs_Parent            
+@_Other_Files_@ Other_Files                
+@_ASync_RI_Param_Name_@ ASync_RI_Param_Name        
+@_Debug_Flag_@ Debug_Flag                 
+@_Timer_Resolution_@ Timer_Resolution           
+@_List_Of_Sync_RIs_@ List_Of_Sync_RIs           
+@_Glue_@ Glue                       
+@_Use_POHIC_@ Use_POHIC                  
+@_CP_Values_@ CP_Values                  
+@_Property_Names_@ Property_Names             
+@_List_Of_Sync_PIs_@ List_Of_Sync_PIs           
+@_Has_Context_@ Has_Context                
+@_Check_Data_View_@ Check_Data_View            
+@_Timers_@ Timers                     
+@_CP_Asn1Filenames_@ CP_Asn1Filenames           
+@_ASync_PI_Param_Type_@ ASync_PI_Param_Type        
+@_No_Stdlib_Flag_@ No_Stdlib_Flag             
+----------------------------------------------
+
+@_Provided_Interfaces_@
+@_Required_Interfaces_@ 

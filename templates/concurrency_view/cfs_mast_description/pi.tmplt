@@ -8,3 +8,14 @@
 @@-- @_Param_Types_@         :   |_ Corresponding parameter types
 @@-- @_Param_Directions_@    :   |_ Corresponding direction
 Provided interfaces here
+Scheduling_Server
+Name = @_Parent_Function_@_@_Name_@
+Scheduler = @_Partition_Name_@
+
+Scheduling_Server
+Name = msg_@_Name_@
+@@IF@@ @_Caller_Is_Local_@ = FALSE
+Scheduler                  => net1);
+@@ELSE@@
+Scheduler                  => @_Partition_Name_@);
+@@END_IF@@

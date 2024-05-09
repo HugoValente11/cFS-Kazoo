@@ -1,0 +1,30 @@
+@@-- The up to date list of tags available for this template is available here:
+@@-- https://taste.tuxfamily.org/wiki/index.php?title=Kazoo_Templates_Documentation#templates.2Fconcurrency_view.2Fsub.2Fpartition.tmplt
+@@-- If you are using vim, go over the URL and pres gx in to follow the link
+@@-- If you have no internet access you can also use (with vim) Ctrl-W-f or gf in vim to open the text doc:
+@@-- $HOME/tool-inst/share/kazoo/doc/templates_concurrency_view_sub_pi.ascii
+------------------------------
+PI properties:
+@_Name_@                          Name                          
+@_Kind_@                          Kind                          
+@_Parent_Function_@               Parent_Function               
+@_Param_Names_@                   Param_Names                   
+@_Param_Types_@                   Param_Types                   
+@_Param_Directions_@              Param_Directions              
+@_Remote_Languages_@              Remote_Languages              
+@_Language_@                      Language                      
+@_Param_Encodings_@               Param_Encodings               
+@_Protected_Block_Name_@          Protected_Block_Name          
+@_Period_@                        Period                        
+@_WCET_@                          WCET                          
+@_Param_ASN1_Modules_@            Param_ASN1_Modules            
+@_Queue_Size_@                    Queue_Size                    
+@_Partition_Name_@                Partition_Name                
+@_IF_Property_Values_@            IF_Property_Values            
+@_IF_Property_Names_@             IF_Property_Names             
+@_Caller_Is_Local_@               Caller_Is_Local               
+@_Is_Timer_@                      Is_Timer                      
+@_Remote_Interface_Names_@        Remote_Interface_Names        
+@_Calling_Threads_@               Calling_Threads               
+@_Remote_Function_Names_@         Remote_Function_Names         
+------------------------------
