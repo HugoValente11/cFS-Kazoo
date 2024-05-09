@@ -1,29 +1,16 @@
 
-@@IF@@ FALSE
+@@IF@@ TRUE
 
 @@TABLE@@
-Scheduling_Server (
-   Type                   	=> Regular,
-   Name                   	=> s@_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
-   Server_Sched_Parameters	=>
-  	( Type     	=> Fixed_Priority_Policy,
-    	The_Priority => @_Priority_@,
-    	Preassigned  => NO),
-   Scheduler              	=> processor_1);
- 
-Operation (
-   Type                   	=> Simple,
-   Name                   	=> @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
-   Worst_Case_Execution_Time  => @_WCET_@
-   );
+
  
 Transaction (
    Type        	=> regular,
-   Name        	=> @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
+   Name        	=> trans_@_LOWER:Name_@,
    External_Events =>
   	(
      	( Type   	=> Sporadic,
-      	Name   	=> @_Pro_Block_Name_@,
+      	Name   	=> @_LOWER:Name_@1,
       	Min_Interarrival => @_Period_@
       	)),
    Internal_Events =>
@@ -39,20 +26,33 @@ Transaction (
 @_Period_@
 @@END_IF@@
 @@END_INLINE@@
-          	Referenced_Event => @_Pro_Block_Name_@))),
+          	Referenced_Event => @_LOWER:Pro_Block_Name_@))),
    Event_Handlers =>
    (
   	(Type           	=> Activity,
-  	Input_Event    	=> @_Pro_Block_Name_@,
-  	Output_Event   	=> @_Remote_Function_Names_@,
-  	Activity_Operation => @_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@,
-  	Activity_Server	=> s@_CAPITALIZE:Thread_Name_@_@_Remote_Function_Names_@)
+  	Input_Event    	=> @_LOWER:Name_@1,
+  	Output_Event   	=> @_LOWER:Name_@2,
+  	Activity_Operation => @_LOWER:Pro_Block_Name_@_@_LOWER:Name_@,
+  	Activity_Server	=> @_LOWER:Pro_Block_Name_@_@_LOWER:Name_@),
+	    	(Type           	=> Activity,
+  	Input_Event    	=> @_LOWER:Name_@2,
+  	Output_Event   	=> @_LOWER:Name_@3,
+  	Activity_Operation => msg_@_LOWER:Name_@,
+  	Activity_Server	=> msg_@_LOWER:Name_@),
+	    	(Type           	=> Activity,
+  	Input_Event    	=> @_LOWER:Name_@3,
+  	Output_Event   	=> @_LOWER:Name_@4,
+  	Activity_Operation => @_LOWER:Remote_Function_Names_@_@_LOWER:Name_@,
+  	Activity_Server	=> @_LOWER:Remote_Function_Names_@_@_LOWER:Name_@)
 ));
 
+@_LOWER:Remote_Function_Names_@_@_LOWER:Name_@
 @@END_TABLE@@
 
 
+@@END_IF@@
 
+@@IF@@ FALSE
 
 @_Thread_Name_@: Thread_Name
 @_Partition_Name_@: Partition_Name
