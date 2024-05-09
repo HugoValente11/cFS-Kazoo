@@ -8,29 +8,6 @@ Model (
    Model_Date      	=> @_YEAR_@-@_MONTH_@-@_DAY_@,
    System_Pip_Behaviour=> STRICT);
 
-@_Nodes_@
-
----------------------
-@@IF@@ @_EXIST:Bus_Names_@
-
-Bus stuff
-@_Bus_Names_@ - bus names
-@_Bus_Properties_@ - bus properties
-@_Device_Bus_Name_@ - device bus name
-@_Device_Names_@ - device names
-@_Connect_From_Part_@
-@_Connect_Via_Bus_@
-@_Connect_Port_Name_@
-@_Unique_Connect_Port_Name_@
-@_Device_Packetizer_@
-@_Unique_Connect_In_Port_Name_@
-@_Connect_In_Port_Name_@
-
-@@END_IF@@
-
----------------------
-
-
 ------------------
 Network stuff
 
@@ -64,7 +41,6 @@ Scheduler (
 @@END_IF@@
 @@END_TABLE@@
 
-@_Threads_@
 
-@_Device_Bus_Name_@
+@_Nodes_@
 

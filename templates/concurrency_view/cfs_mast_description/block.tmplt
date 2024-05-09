@@ -12,11 +12,5 @@
 @@-- Output_Dir, Skeletons, Glue, Use_POHIC, Timer_Resolution, Debug_Flag,
 @@-- No_Stdlib_Flag, Timer_Resolution, Other_Files (list of aadl files)
 
---------------------------------------
-Provided interfaces:
 @_Protected_PIs_@
-----------------------------------------
-----------------------------------------
-Required interfaces:
-@_Required_@ - this renders the required interfaces
---------------------------------------
+@_Required_@

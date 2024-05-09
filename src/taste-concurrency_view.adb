@@ -776,6 +776,7 @@ package body TASTE.Concurrency_View is
             Connect_From_Partition,           --  Partition to bus connections
             Connect_Port_Name,
             Connect_Via_Bus,
+            Connect_Via_Device,
             Unique_Connect_In_Port_Name,
             Unique_Connect_Port_Name : Vector_Tag;
             Found : Boolean := False;
@@ -816,6 +817,7 @@ package body TASTE.Concurrency_View is
                end if;
 
                Connect_Via_Bus   := Connect_Via_Bus   & BC.Bus_Name;
+               Connect_Via_Device   := Connect_Via_Device   & BC.Channel_Name;
                Connect_Port_Name := Connect_Port_Name & BC.Source_Port;
                Found := False;
                for Node of CV.Deployment.Nodes loop
@@ -1045,6 +1047,7 @@ package body TASTE.Concurrency_View is
                  & Assoc ("Unique_Dev_ASN1_Sorts", Unique_ASN1_Sorts)
                  & Assoc ("Connect_From_Part",   Connect_From_Partition)
                  & Assoc ("Connect_Via_Bus",     Connect_Via_Bus)
+                 & Assoc ("Connect_Via_Device",     Connect_Via_Device)
                  & Assoc ("Connect_Port_Name",   Connect_Port_Name)
                  & Assoc ("Used_Shared_Types",   Used_Shared_Types)
                  & Assoc ("Unique_Connect_In_Port_Name",

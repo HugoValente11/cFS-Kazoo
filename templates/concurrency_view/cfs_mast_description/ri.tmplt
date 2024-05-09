@@ -7,8 +7,16 @@
 @@-- @_Param_Names_@         : List of parameter names
 @@-- @_Param_Types_@         :   |_ Corresponding parameter types
 @@-- @_Param_Directions_@    :   |_ Corresponding direction
-Required interfaces here
-Scheduling_Server
-Name = @_Parent_Function_@_@_Name_@
-Scheduler = @_Partition_Name_@
+Scheduling_Server (
+   Type                       => Regular,
+   Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
+   Server_Sched_Parameters    => 
+      ( Type         => Fixed_Priority_Policy,
+        The_Priority => Add priority,
+        Preassigned  => NO),
+   Scheduler                  => @_LOWER:Partition_Name_@);
 
+Operation (
+   Type                       => Simple,
+   Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
+   Worst_Case_Execution_Time  => Add wcet);
