@@ -211,6 +211,39 @@ package body TASTE.Interface_View is
    end Get_WCET;
 
    --------------------
+   -- Get_Send_WCET --
+   --------------------
+
+   function Get_Send_WCET (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::send_wcet");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Send_WCET;
+
+   --------------------
+   -- Get_Receive_WCET --
+   --------------------
+
+   function Get_Receive_WCET (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::receive_wcet");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Receive_WCET;
+
+   --------------------
+   -- Get_Queue_WCET --
+   --------------------
+
+   function Get_Queue_WCET (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::queue_wcet");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Queue_WCET;
+
+   --------------------
    -- Get_Deadline --
    --------------------
 
@@ -220,6 +253,17 @@ package body TASTE.Interface_View is
    begin
       return Get_String_Property (D, Event_Name);
    end Get_Deadline;
+
+   --------------------
+   -- Get_Jitter --
+   --------------------
+
+   function Get_Jitter (D : Node_Id) return String is
+      Event_Name : constant Name_Id :=
+         Get_String_Name ("taste::jitter");
+   begin
+      return Get_String_Property (D, Event_Name);
+   end Get_Jitter;
 
    --------------------
    -- Get_Message_Content --
@@ -578,6 +622,10 @@ package body TASTE.Interface_View is
          Result.Period_Or_MIAT := Get_RCM_Period (If_I);
          --  Result.WCET_ms := Get_Upper_WCET (If_I);
          Result.WCET_ms := US (Get_WCET (If_I));
+         Result.Send_WCET_ms := US (Get_Send_WCET (If_I));
+         Result.Receive_WCET_ms := US (Get_Receive_WCET (If_I));
+         Result.Queue_WCET_ms := US (Get_Queue_WCET (If_I));
+         Result.Jitter := US (Get_Jitter (If_I));
          Result.Deadline := US (Get_Deadline (If_I));
          Result.Event_Info := US (Get_Event_Info (If_I));
          Result.Event_Type := US (Get_Event_Type (If_I));
@@ -1576,6 +1624,10 @@ package body TASTE.Interface_View is
         & Assoc ("Language",               TI_Language)
         & Assoc ("Period",                 TI.Period_Or_MIAT'Img)
         & Assoc ("WCET",                   TI.WCET_ms)
+        & Assoc ("Send_WCET",                   TI.Send_WCET_ms)
+        & Assoc ("Receive_WCET",                   TI.Receive_WCET_ms)
+        & Assoc ("Queue_WCET",                   TI.Queue_WCET_ms)
+        & Assoc ("Jitter",                   TI.Jitter)
         & Assoc ("Deadline",                   TI.Deadline)
         & Assoc ("Queue_Size",             TI.Queue_Size.Value_Or (1)'Img)
         & Assoc ("Event_Name",             TI.Name)

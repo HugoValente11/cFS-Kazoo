@@ -12,7 +12,7 @@ Transaction (
      	( Type   	=> Sporadic,
       	Name   	=> @_LOWER:Name_@1,
       	Min_Interarrival => @_Period_@,
-		Avg_Interarrival => Add jitter
+		Avg_Interarrival => @_Jitter_@
       	)),
    Internal_Events =>
   	(
@@ -56,7 +56,12 @@ Transaction (
 
 @@END_IF@@
 
+
+@_Send_WCET_ms_@
 @@IF@@ FALSE
+
+
+
 
 @_Thread_Name_@: Thread_Name
 @_Partition_Name_@: Partition_Name

@@ -136,6 +136,10 @@ package TASTE.Interface_View is
          RCM               : Supported_RCM_Operation_Kind;
          Period_Or_MIAT    : Unsigned_Long_Long;
          WCET_ms           : Unbounded_String;
+         Send_WCET_ms           : Unbounded_String;
+         Receive_WCET_ms           : Unbounded_String;
+         Queue_WCET_ms           : Unbounded_String;
+         Jitter           : Unbounded_String;
          Deadline           : Unbounded_String;
          Queue_Size        : Option_ULL.Option := Option_ULL.Nothing;
          Event_Name        : Unbounded_String;

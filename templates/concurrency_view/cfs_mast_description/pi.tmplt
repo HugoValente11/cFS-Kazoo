@@ -12,7 +12,7 @@ Scheduling_Server (
    Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
    Server_Sched_Parameters    => 
       ( Type         => Fixed_Priority_Policy,
-        The_Priority => Add priority,
+        The_Priority => @_Priority_@,
         Preassigned  => NO),
    Scheduler                  => @_LOWER:Partition_Name_@);
 
@@ -21,7 +21,7 @@ Scheduling_Server (
    Name                       => msg_@_LOWER:Name_@,
    Server_Sched_Parameters    => 
       ( Type         => Fixed_Priority_Policy,
-        The_Priority => Add priority,
+        The_Priority => @_Priority_@,
         Preassigned  => NO),
 @@IF@@ @_Caller_Is_Local_@ = FALSE
 Scheduler                  => eth0);
@@ -32,9 +32,9 @@ Scheduler                  => @_LOWER:Partition_Name_@);
 Operation (
    Type                       => Simple,
    Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
-   Worst_Case_Execution_Time  => Add wcet);
+   Worst_Case_Execution_Time  => @_Send_WCET_@);
 
 Operation (
    Type                       => Simple,
    Name                       => msg_@_LOWER:Name_@,
-   Worst_Case_Execution_Time  => Add wcet);
+   Worst_Case_Execution_Time  => @_Queue_WCET_@);

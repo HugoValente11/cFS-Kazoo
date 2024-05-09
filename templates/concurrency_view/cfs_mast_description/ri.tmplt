@@ -19,4 +19,4 @@ Scheduling_Server (
 Operation (
    Type                       => Simple,
    Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
-   Worst_Case_Execution_Time  => Add wcet);
+   Worst_Case_Execution_Time  => @_Receive_WCET_@);
