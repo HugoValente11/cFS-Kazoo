@@ -12,7 +12,7 @@ Scheduling_Server (
    Name                       => @_LOWER:Parent_Function_@_@_LOWER:Name_@,
    Server_Sched_Parameters    => 
       ( Type         => Fixed_Priority_Policy,
-        The_Priority => Add priority,
+        The_Priority => @_ADD(1):IF_Priority_@,
         Preassigned  => NO),
    Scheduler                  => @_LOWER:Partition_Name_@);
 
