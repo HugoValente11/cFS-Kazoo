@@ -18,7 +18,7 @@ Scheduling_Server (
 
 Scheduling_Server (
    Type                       => Regular,
-   Name                       => msg_@_LOWER:Name_@,
+   Name                       => @_LOWER:Parent_Function_@_msg_@_LOWER:Name_@,
    Server_Sched_Parameters    => 
       ( Type         => Fixed_Priority_Policy,
         The_Priority => @_IF_Priority_@,
@@ -36,5 +36,5 @@ Operation (
 
 Operation (
    Type                       => Simple,
-   Name                       => msg_@_LOWER:Name_@,
+   Name                       => @_LOWER:Parent_Function_@_msg_@_LOWER:Name_@,
    Worst_Case_Execution_Time  => @_Queue_WCET_@);

@@ -6,7 +6,7 @@
  
 Transaction (
    Type        	=> regular,
-   Name        	=> trans_@_LOWER:Name_@_@_LOWER:Remote_Function_Names_@,
+   Name        	=> trans_@_LOWER:Thread_Name_@_@_LOWER:Remote_Function_Names_@,
    External_Events =>
   	(
      	( Type   	=> Sporadic,
@@ -42,8 +42,8 @@ Transaction (
 	    	(Type           	=> Activity,
   	Input_Event    	=> @_LOWER:Name_@2,
   	Output_Event   	=> @_LOWER:Name_@3,
-  	Activity_Operation => msg_@_LOWER:Name_@,
-  	Activity_Server	=> msg_@_LOWER:Name_@),
+  	Activity_Operation => @_LOWER:Pro_Block_Name_@_msg_@_LOWER:Name_@,
+  	Activity_Server	=> @_LOWER:Pro_Block_Name_@_msg_@_LOWER:Name_@),
 	    	(Type           	=> Activity,
   	Input_Event    	=> @_LOWER:Name_@3,
   	Output_Event   	=> @_LOWER:Name_@4,
