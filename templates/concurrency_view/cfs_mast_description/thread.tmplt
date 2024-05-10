@@ -6,7 +6,7 @@
  
 Transaction (
    Type        	=> regular,
-   Name        	=> trans_@_LOWER:Name_@,
+   Name        	=> trans_@_LOWER:Name_@_@_LOWER:Remote_Function_Names_@,
    External_Events =>
   	(
      	( Type   	=> Sporadic,
