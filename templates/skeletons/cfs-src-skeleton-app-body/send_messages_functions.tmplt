@@ -81,41 +81,32 @@ int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
 int32 @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
-    // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Try number %i of receiving message", i);
+    // Get buffer data
+    byte *data = CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.Buffer->Msg);
 
-    if (status != CFE_SUCCESS)
+    // Declare bit stream
+    BitStream bitstream;
+
+    // Initialize bitstream
+    BitStream_AttachBuffer(&bitstream, data, asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING);
+
+    // Declare errorCode
+    int errorCode;
+
+    // Decode data
+    if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
     {
-        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Error ReceiveBuffer, RC = 0x%08lX\n",
-                             (unsigned long)status);
-       
+        CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
+        status = CFE_SB_BAD_ARGUMENT;
+
     } else 
     {
-        // Get buffer data
-        byte *data = CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.Buffer->Msg);
-
-        // Declare bit stream
-        BitStream bitstream;
-
-        // Initialize bitstream
-        BitStream_AttachBuffer(&bitstream, data, asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_REQUIRED_BITS_FOR_ENCODING);
-
-        // Declare errorCode
-        int errorCode;
-
-        // Decode data
-        if (!asn1Scc@_REPLACE_ALL((-)/_):Param_Types_@_Decode(&@_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@, &bitstream, &errorCode))
-        {
-            CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Decode failed. Error code: %d", errorCode);
-            status = CFE_SB_BAD_ARGUMENT;
-
-        } else 
-        {
         // Message received stored in @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@
         // TODO handle on receive
         // CFE_ES_WriteToSysLog("[@_UPPER:Parent_Function_@] Message received: %s", @_UPPER:Parent_Function_@_APP_Data.IN_@_Param_Names_@);
 
-        }
     }
+    
     return status;
 }
 
