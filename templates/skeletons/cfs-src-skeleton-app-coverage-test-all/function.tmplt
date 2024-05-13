@@ -123,6 +123,8 @@ static void UT_CheckEvent_Setup(UT_CheckEvent_t *Evt, uint16 ExpectedEvent, cons
 
 void Test_@_UPPER:Name_@_APP_Main(void)
 {
+    CFE_SB_MsgId_t MsgId = CFE_SB_INVALID_MSG_ID;
+
     // Nominal 
     @_UPPER:Name_@_APP_Main();
     UtAssert_True(UT_GetStubCount(UT_KEY(CFE_ES_ExitApp)) == 1, "CFE_ES_ExitApp was called once after nominal app execution, ensuring proper exit.");
@@ -151,6 +153,7 @@ void Test_@_UPPER:Name_@_APP_Main(void)
         UT_CheckEvent_t EventTest;
         UT_CheckEvent_Setup(&EventTest, @_UPPER:Name_@_PIPE_ERR_EID, "@_UPPER:Name_@ APP: SB Pipe Read Error, App Will Exit");
         UT_SetDeferredRetcode(UT_KEY(CFE_ES_RunLoop), 1, true);
+        UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &MsgId, sizeof(MsgId), false);
         UT_SetDeferredRetcode(UT_KEY(CFE_SB_ReceiveBuffer), 1, failureReceivingBufferCodes[i]);
         @_UPPER:Name_@_APP_Main();
         UtAssert_True(EventTest.MatchCount == 1, "Pipe error event event generated (%u)", (unsigned int)EventTest.MatchCount);
