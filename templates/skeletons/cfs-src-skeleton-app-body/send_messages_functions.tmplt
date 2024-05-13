@@ -81,6 +81,8 @@ int32 @_UPPER:Parent_Function_@_User_Send_@_Name_@() {
 
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION
 int32 @_UPPER:Parent_Function_@_User_Receive_@_Name_@() {
+    status = CFE_SUCCESS;
+
     // Get buffer data
     byte *data = CFE_SB_GetUserData(&@_UPPER:Parent_Function_@_APP_Data.Buffer->Msg);
 
