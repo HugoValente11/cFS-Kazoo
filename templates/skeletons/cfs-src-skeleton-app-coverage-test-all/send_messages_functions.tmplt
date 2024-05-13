@@ -96,6 +96,8 @@ void Test_@_UPPER:Parent_Function_@_Receive_@_Name_@_Init(void)
 
 void Test_@_UPPER:Parent_Function_@_User_Receive_@_Name_@(void)
 {
+    status = CFE_SUCCESS;
+    
     // Mock buffer and message
     CFE_SB_Buffer_t mockBuffer;
     memset(&mockBuffer, 0, sizeof(CFE_SB_Buffer_t)); // Clear the buffer
