@@ -1,0 +1,36 @@
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Language_@            : The implementation language of the function
+@@-- @_Property_Names_@      : All AADL properties (names) associated to the function
+@@-- @_Property_Values_@     : ... and corresponding values
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Is_Timer_@            : Flag set to true if this is a timer interface
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)
+@@-- The following tags are available in this template:
+@@--
+@@-- @_Name_@                : The name of the interface
+@@-- @_Direction_@           : "PI" or "RI"
+@@-- @_Kind_@                : The RCM Kind
+@@-- @_Parent_Function_@     : The name of the function
+@@-- @_Param_Names_@         : List of parameter names
+@@-- @_Param_Types_@         :   |_ Corresponding parameter types
+@@-- @_Param_Directions_@    :   |_ Corresponding direction
+@@-- @_Param_Encodings_@     :   |_ Corresponding ASN.1 encoding
+@@-- @_Period_@, @_WCET_@, @_Queue_Size_@ : Properties of the interface
+@@-- @_IF_Property_Names_@, _Values_@ : User-defined properties (vector tag)@@-- 
+@@-- @_Event_Name_@, @_Event_Info_@, @_Event_Type_@, @_Event_ID_@
+@@-- @_Message_Content_@, @_Message_ID_@, @_Message_Size_@, @_Store_Message_@
+@@IF@@ @_Kind_@ = MESSAGE_OPERATION and @_Direction_@ = "RI"
+    // @_Name_@ message id
+    TestMsgId = CFE_SB_ValueToMsgId(0x0@_Message_ID_@);
+    UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
+    @_UPPER:Parent_Function_@_ProcessCommandPacket(&TestMsg.SBBuf);
+@@END_IF@@

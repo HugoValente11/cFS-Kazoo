@@ -510,6 +510,8 @@ void Test_@_UPPER:Name_@_ProcessCommandPacket(void)
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
     @_UPPER:Name_@_ProcessCommandPacket(&TestMsg.SBBuf);
 
+    @_Receive_Messages_Process_@
+
     /* invalid message id */
     TestMsgId = CFE_SB_INVALID_MSG_ID;
     UT_SetDataBuffer(UT_KEY(CFE_MSG_GetMsgId), &TestMsgId, sizeof(TestMsgId), false);
