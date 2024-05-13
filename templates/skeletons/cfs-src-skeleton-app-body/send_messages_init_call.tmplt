@@ -31,5 +31,8 @@
 @@IF@@ @_Direction_@ = "PI" and @_Kind_@ = MESSAGE_OPERATION
 @_UPPER:Parent_Function_@_Send_@_Name_@_Init();
 @@ELSIF@@ @_Kind_@ = MESSAGE_OPERATION and @_Direction_@ = "RI"
-@_UPPER:Parent_Function_@_Receive_@_Name_@_Init();
+if (status == CFE_SUCCESS)
+{
+    @_UPPER:Parent_Function_@_Receive_@_Name_@_Init();
+}
 @@END_IF@@
